@@ -143,16 +143,4 @@ namespace ex
         glfwSetKeyCallback(window, callback);
     }
 
-    /* example function for setting a key callback
-    void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-    {
-        if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
-        {
-            currentXPos--;
-            if (currentXPos < 0)
-                currentXPos = 0;
-        }
-    }
-    */
-
 } // namespace ex
