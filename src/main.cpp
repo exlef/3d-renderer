@@ -4,5 +4,11 @@ int main()
 {
     ex::renderer renderer;
     renderer.create_window(800, 600, "test");
-    std::cout << "hello" << std::endl;
+
+    while (renderer.running())
+    {
+        renderer.start_drawing();
+        
+        renderer.end_drawing();
+    }
 }

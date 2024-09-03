@@ -59,7 +59,7 @@ namespace ex
             // glfwSetScrollCallback(m_window, scroll_callback);
 
             // tell GLFW to capture our mouse
-            glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            // glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
             if (glewInit() != GLEW_OK)
             {
@@ -68,6 +68,23 @@ namespace ex
             }
 
             return SUCC;
+        }
+
+        bool running()
+        {
+            return !glfwWindowShouldClose(m_window);
+        }
+
+        void start_drawing()
+        {
+            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+        }
+
+        void end_drawing()
+        {
+            glfwSwapBuffers(m_window);
+            glfwPollEvents();
         }
     };
 } // namespace ex
