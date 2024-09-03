@@ -4,7 +4,7 @@
 void key_callbacks(GLFWwindow* window, int key, int scancode, int action, int mods);
 void framebuffer_size_callback(__attribute__((unused)) GLFWwindow* window, int width, int height);
 
-static ex::app app;
+static ex::App app;
 
 int main()
 {

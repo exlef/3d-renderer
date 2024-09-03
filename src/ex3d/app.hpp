@@ -3,13 +3,12 @@
 #include "GL/glew.h"
 #define GL_SILENCE_DEPRECATION
 #include "GLFW/glfw3.h"
-#include <string>
 #include <iostream>
-
+#include <string>
 
 namespace ex
 {
-    class app
+    class App
     {
     private:
         int m_screen_width = 0;
