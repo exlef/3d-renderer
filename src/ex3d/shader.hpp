@@ -13,6 +13,7 @@ class Shader
 private:
     u_int32_t m_id = -1;
 public:
+    Shader() = delete;
     Shader(std::string vert_file, std::string frag_file)
     {
         m_id = glCreateProgram();

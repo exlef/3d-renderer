@@ -20,7 +20,8 @@ namespace ex
         int get_screen_height() const { return m_screen_height; }
         GLFWwindow* window() const { return m_window; }
 
-        int create_window(int width, int height, const std::string& title)
+        App() = delete;
+        App(int width, int height, const std::string& title)
         {
             // glfw: initialize and configure
             // ------------------------------
@@ -42,28 +43,23 @@ namespace ex
             {
                 std::cerr << "Failed to create GLFW window" << std::endl;
                 glfwTerminate();
-                return -1;
             }
             // this function makes the context of specified window current on the calling thread.
             glfwMakeContextCurrent(m_window);
             // set vsyn on
             glfwSwapInterval(1);
-            
-            // set callback for when mouse moves
-            // glfwSetCursorPosCallback(m_window, mouse_callback);
-            // set callback for mouse scroll wheel scrolls
-            // glfwSetScrollCallback(m_window, scroll_callback);
-
-            // tell GLFW to capture our mouse
-            // glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
             if (glewInit() != GLEW_OK)
             {
                 std::cerr << "Failed to initialize GLEW" << std::endl;
-                return -1;
+                glfwTerminate();
             }
+        }
 
-            return 1;
+        ~App()
+        {
+            // This will clean up the window and other GLFW resources
+            glfwTerminate();
         }
 
         void set_resize_callback(GLFWframebuffersizefun callback)
