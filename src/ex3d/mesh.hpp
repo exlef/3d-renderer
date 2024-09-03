@@ -2,8 +2,8 @@
 
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
+#include <assimp/scene.h>
 #include <glm/glm.hpp>
-
 #include <vector>
 
 namespace ex
@@ -15,12 +15,6 @@ namespace ex
         glm::vec3 Normal;
         glm::vec2 TexCoords;
     };
-    struct Texture
-    {
-        unsigned int id;
-        std::string type; // type e.g. a diffuse or specular texture
-        std::string path;
-    };
 
     class Mesh
     {
@@ -30,24 +24,57 @@ namespace ex
         std::vector<unsigned int> indices;
 
         Mesh() = delete;
-        Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
+        Mesh(aiMesh* mesh, const aiScene* scene);
         void Draw(unsigned int shader);
-        ~Mesh() = default;
 
     private:
-        //  render data
         unsigned int VAO, VBO, EBO;
         void setupMesh();
     };
 
     // impl -----------------------------------------------------------------------------------
 
-    Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
+    Mesh::Mesh(aiMesh* assimp_mesh, const aiScene* scene)
     {
-        this->vertices = vertices;
-        this->indices = indices;
+        // process vertex positions, normals and texture coordinates
+        for (unsigned int i = 0; i < assimp_mesh->mNumVertices; i++)
+        {
+            Vertex vertex;
+            glm::vec3 vec;
+            vec.x = assimp_mesh->mVertices[i].x;
+            vec.y = assimp_mesh->mVertices[i].y;
+            vec.z = assimp_mesh->mVertices[i].z;
+            vertex.Position = vec;
 
-        setupMesh();
+            vec.x = assimp_mesh->mNormals[i].x;
+            vec.y = assimp_mesh->mNormals[i].y;
+            vec.z = assimp_mesh->mNormals[i].z;
+            vertex.Normal = vec;
+
+            if (assimp_mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+            {
+                glm::vec2 vec;
+                vec.x = assimp_mesh->mTextureCoords[0][i].x;
+                vec.y = assimp_mesh->mTextureCoords[0][i].y;
+                vertex.TexCoords = vec;
+            }
+            else
+            {
+                vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+            }
+
+            vertices.push_back(vertex);
+        }
+        // process indices
+        for (unsigned int i = 0; i < assimp_mesh->mNumFaces; i++)
+        {
+            aiFace face = assimp_mesh->mFaces[i];
+
+            for (unsigned int j = 0; j < face.mNumIndices; j++)
+            {
+                indices.push_back(face.mIndices[j]);
+            }
+        }
     }
 
     void Mesh::setupMesh()
