@@ -8,7 +8,7 @@
 
 namespace ex
 {
-    class renderer
+    class app
     {
     private:
         int m_screen_width = 0;
@@ -68,6 +68,11 @@ namespace ex
             }
 
             return SUCC;
+        }
+
+        void quit()
+        {
+            glfwSetWindowShouldClose(m_window, true);
         }
 
         bool running()
