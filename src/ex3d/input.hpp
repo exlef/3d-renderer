@@ -3,10 +3,9 @@
 #include "GLFW/glfw3.h"
 #include <iostream>
 
-namespace ex
-{
 #pragma region key_codes
 
+#define KEY_PRESS 1
 /* Printable keys */
 #define KEY_SPACE 32
 #define KEY_APOSTROPHE 39 /* ' */
@@ -133,9 +132,11 @@ namespace ex
 
 #pragma endregion
 
+namespace ex
+{
     bool is_key_down(GLFWwindow* window, u_int32_t key_code)
     {
-        return glfwGetKey(window, key_code) == GLFW_PRESS;
+        return glfwGetKey(window, key_code) == KEY_PRESS;
     }
 
     void set_key_callback(GLFWwindow* window, GLFWkeyfun callback)

@@ -2,6 +2,7 @@
 #include "ex3d/input.hpp"
 
 void key_callbacks(GLFWwindow* window, int key, int scancode, int action, int mods);
+void framebuffer_size_callback(__attribute__((unused)) GLFWwindow* window, int width, int height);
 
 static ex::app app;
 
@@ -10,6 +11,7 @@ int main()
     app.create_window(800, 600, "test");
 
     ex::set_key_callback(app.window(), key_callbacks);
+    app.set_resize_callback(framebuffer_size_callback);
 
     while (app.running())
     {
@@ -26,8 +28,16 @@ int main()
 
 void key_callbacks(__attribute__((unused)) GLFWwindow* window, int key, __attribute__((unused)) int scancode, int action, __attribute__((unused)) int mods)
 {
-    if (action == GLFW_PRESS)
+    if (action == KEY_PRESS)
     {
-        app.quit();
+        if (key == KEY_ESCAPE)
+        {
+            app.quit();
+        }        
     }
+}
+
+void framebuffer_size_callback(__attribute__((unused)) GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
 }

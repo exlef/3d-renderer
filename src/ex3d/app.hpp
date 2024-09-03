@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 
+
 namespace ex
 {
     class app
@@ -22,9 +23,6 @@ namespace ex
 
         int create_window(int width, int height, const std::string& title)
         {
-            #define SUCC 1
-            #define FAIL -1
-
             // glfw: initialize and configure
             // ------------------------------
             glfwInit();
@@ -45,14 +43,13 @@ namespace ex
             {
                 std::cerr << "Failed to create GLFW window" << std::endl;
                 glfwTerminate();
-                return FAIL;
+                return -1;
             }
             // this function makes the context of specified window current on the calling thread.
             glfwMakeContextCurrent(m_window);
             // set vsyn on
             glfwSwapInterval(1);
-            // set callback for window resize
-            // glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
+            
             // set callback for when mouse moves
             // glfwSetCursorPosCallback(m_window, mouse_callback);
             // set callback for mouse scroll wheel scrolls
@@ -64,10 +61,15 @@ namespace ex
             if (glewInit() != GLEW_OK)
             {
                 std::cerr << "Failed to initialize GLEW" << std::endl;
-                return FAIL;
+                return -1;
             }
 
-            return SUCC;
+            return 1;
+        }
+
+        void set_resize_callback(GLFWframebuffersizefun callback)
+        {
+            glfwSetFramebufferSizeCallback(m_window, callback);
         }
 
         void quit()
