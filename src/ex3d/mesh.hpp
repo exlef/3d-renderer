@@ -29,7 +29,7 @@ namespace ex
 
     private:
         unsigned int VAO, VBO, EBO;
-        void setupMesh();
+        void setup_attributes();
     };
 
     // impl -----------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ namespace ex
         }
     }
 
-    void Mesh::setupMesh()
+    void Mesh::setup_attributes()
     {
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
