@@ -6,10 +6,11 @@
 #include "input.hpp"
 #include <iostream>
 #include <string>
+#include <functional>
 
 namespace ex
 {
-    typedef void (*update_func)(float);
+    typedef std::function<void(float)> update_func;
 
     class App
     {
@@ -103,7 +104,6 @@ namespace ex
                     // Create a title string
                     std::string title = "FPS: " + std::to_string(static_cast<int>(fps));
                     glfwSetWindowTitle(window(), title.c_str());
-                    std::cout << "hello" << "\n";
 
                     // Reset frame count and elapsed time
                     frameCount = 0;
