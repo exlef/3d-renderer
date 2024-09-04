@@ -10,7 +10,7 @@
 
 namespace ex
 {
-    typedef std::function<void(float)> update_func;
+    typedef std::function<void()> update_func;
     typedef std::function<void(int, int)> resize_func;
     typedef std::function<void(int, int)> key_callback_func;
 
@@ -30,10 +30,12 @@ namespace ex
         int frameCount = 0;
         double elapsedTime = 0.0;
         std::chrono::high_resolution_clock::time_point lastTime = std::chrono::high_resolution_clock::now();
+        float m_dt = 0;
 
     public:
         int get_screen_width() const { return m_screen_width; }
         int get_screen_height() const { return m_screen_height; }
+        float dt() const { return m_dt; }
         GLFWwindow* window() const { return m_window; }
         App() = delete;
 
@@ -91,12 +93,12 @@ namespace ex
                 // Calculate elapsed time
                 auto currentTime = std::chrono::high_resolution_clock::now();
                 elapsedTime += std::chrono::duration<double>(currentTime - lastTime).count();
-                float delta_time = std::chrono::duration<double>(currentTime - lastTime).count();
+                m_dt = std::chrono::duration<double>(currentTime - lastTime).count();
                 lastTime = currentTime;
 
                 start_drawing();
 
-                m_update(delta_time);
+                m_update();
 
                 end_drawing();
 
@@ -137,11 +139,6 @@ namespace ex
             }
         }
 
-        // void set_resize_callback(GLFWframebuffersizefun callback)
-        // {
-        //     glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
-        // }
-
         void set_resize_callback(resize_func callback)
         {
             m_resize = callback;
@@ -165,7 +162,7 @@ namespace ex
             glfwSetKeyCallback(window(), key_callbacks);
         }
 
-        static void key_callbacks(GLFWwindow* window, int key,  int scancode, int action, __attribute__((unused)) int mods)
+        static void key_callbacks(GLFWwindow* window, int key, __attribute__((unused)) int scancode, int action, __attribute__((unused)) int mods)
         {
             // Retrieve the App instance from the user pointer
             App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
