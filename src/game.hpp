@@ -13,7 +13,7 @@ public:
     {
         app.set_update_callback([this]() { update(); });
         app.set_key_callback([this](int key, int action) { handle_key_callbacks(key, action); });
-        app.set_resize_callback([this](int width, int height) { handle_framebuffer_size_callback(width, height); });
+        // app.set_window_resize_callback([this](int width, int height) { handle_framebuffer_size_callback(width, height); });
     }
     ~Game() = default;
 
@@ -43,7 +43,7 @@ private:
 
     void handle_framebuffer_size_callback(int width, int height)
     {
-        glViewport(0, 0, width, height);
+        std::cout<< width << std::endl;
     }
 };
 

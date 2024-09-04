@@ -11,7 +11,7 @@
 namespace ex
 {
     typedef std::function<void()> update_func;
-    typedef std::function<void(int, int)> resize_func;
+    typedef std::function<void(int, int)> window_resize_func;
     typedef std::function<void(int, int)> key_callback_func;
 
     class App
@@ -21,7 +21,7 @@ namespace ex
         int m_screen_height = 0;
         GLFWwindow* m_window = nullptr;
         update_func m_update = nullptr;
-        resize_func m_resize = nullptr;
+        window_resize_func m_window_resize_funptr = nullptr;
         key_callback_func m_key_callback = nullptr;
 
         // delta time
@@ -139,9 +139,9 @@ namespace ex
             }
         }
 
-        void set_resize_callback(resize_func callback)
+        void set_window_resize_callback(window_resize_func callback)
         {
-            m_resize = callback;
+            m_window_resize_funptr = callback;
             glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
         }
 
@@ -151,7 +151,11 @@ namespace ex
             App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
             if (app)
             {
-                app->m_resize(width, height);
+                if(app->m_window_resize_funptr)
+                {
+                    app->m_window_resize_funptr(width, height);
+                }
+                glViewport(0, 0, width, height);
                 // app->handle_framebuffer_size_callback(window, width, height);
             }
         }
