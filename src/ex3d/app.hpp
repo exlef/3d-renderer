@@ -15,12 +15,16 @@ namespace ex
         int m_screen_height = 0;
         GLFWwindow* m_window = nullptr;
 
+        // const int TARGET_FPS = 60;
+        // const double TARGET_FRAME_TIME = 1.0 / TARGET_FPS;
+
     public:
         int get_screen_width() const { return m_screen_width; }
         int get_screen_height() const { return m_screen_height; }
         GLFWwindow* window() const { return m_window; }
 
         App() = delete;
+        
         App(int width, int height, const std::string& title)
         {
             // glfw: initialize and configure
@@ -87,6 +91,9 @@ namespace ex
         {
             glfwSwapBuffers(m_window);
             glfwPollEvents();
+
+            // Wait for the remaining time to achieve the target frame time
+            // glfwWaitEventsTimeout(TARGET_FRAME_TIME);
         }
     };
 } // namespace ex
