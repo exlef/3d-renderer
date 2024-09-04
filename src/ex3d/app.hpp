@@ -35,9 +35,8 @@ namespace ex
         int get_screen_width() const { return m_screen_width; }
         int get_screen_height() const { return m_screen_height; }
         GLFWwindow* window() const { return m_window; }
-
         App() = delete;
-        
+
         App(int width, int height, const std::string& title)
         {
             // glfw: initialize and configure

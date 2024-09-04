@@ -7,6 +7,7 @@ class Game
 {
 private:
     ex::App app = ex::App(800, 600, "test");
+
 public:
     Game()
     {
@@ -21,8 +22,12 @@ public:
         app.set_key_callback([this](int key, int action) { handle_key_callbacks(key, action); });
         app.set_resize_callback([this](int width, int height) { handle_framebuffer_size_callback(width, height); });
     }
-    ~Game();
+    ~Game() = default;
 
+    void run()
+    {
+        app.run();
+    }
 private:
     void update(float dt)
     {
@@ -57,7 +62,7 @@ private:
         {
             if (key == KEY_ESCAPE)
             {
-                // app.quit();
+                app.quit();
             }
         }
     }
