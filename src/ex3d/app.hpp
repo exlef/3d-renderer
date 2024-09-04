@@ -3,20 +3,28 @@
 #include "GL/glew.h"
 #define GL_SILENCE_DEPRECATION
 #include "GLFW/glfw3.h"
+#include "input.hpp"
 #include <iostream>
 #include <string>
 
 namespace ex
 {
+    typedef void (*update_func)(float);
+
     class App
     {
     private:
         int m_screen_width = 0;
         int m_screen_height = 0;
         GLFWwindow* m_window = nullptr;
+        update_func m_update = nullptr;
 
-        // const int TARGET_FPS = 60;
-        // const double TARGET_FRAME_TIME = 1.0 / TARGET_FPS;
+        // delta time
+        const int TARGET_FPS = 60;
+        const double TARGET_FRAME_TIME = 1.0 / TARGET_FPS;
+        int frameCount = 0;
+        double elapsedTime = 0.0;
+        std::chrono::high_resolution_clock::time_point lastTime = std::chrono::high_resolution_clock::now();
 
     public:
         int get_screen_width() const { return m_screen_width; }
@@ -66,9 +74,72 @@ namespace ex
             glfwTerminate();
         }
 
+        void run()
+        {
+            while (running())
+            {
+                auto frameStart = std::chrono::high_resolution_clock::now();
+
+                frameCount++;
+
+                // Calculate elapsed time
+                auto currentTime = std::chrono::high_resolution_clock::now();
+                elapsedTime += std::chrono::duration<double>(currentTime - lastTime).count();
+                float delta_time = std::chrono::duration<double>(currentTime - lastTime).count();
+                lastTime = currentTime;
+
+                start_drawing();
+
+                m_update(delta_time);
+
+                end_drawing();
+
+                // Update the window title every second
+                if (elapsedTime >= 1.0)
+                {
+                    // Calculate FPS
+                    double fps = frameCount / elapsedTime;
+
+                    // Create a title string
+                    std::string title = "FPS: " + std::to_string(static_cast<int>(fps));
+                    glfwSetWindowTitle(window(), title.c_str());
+                    std::cout << "hello" << "\n";
+
+                    // Reset frame count and elapsed time
+                    frameCount = 0;
+                    elapsedTime = 0.0;
+                }
+
+                // Wait for the remaining time to achieve the target frame time
+                // auto frameEnd = std::chrono::high_resolution_clock::now();
+                // std::chrono::duration<double> frameDuration = frameEnd - frameStart;
+                // double sleepTime = TARGET_FRAME_TIME - frameDuration.count();
+                // if (sleepTime > 0)
+                // {
+                //     std::this_thread::sleep_for(std::chrono::duration<double>(sleepTime));
+                // }
+
+                // Busy-wait loop to achieve the target frame time
+                auto frameEnd = std::chrono::high_resolution_clock::now();
+                std::chrono::duration<double> frameDuration = frameEnd - frameStart;
+                double sleepTime = TARGET_FRAME_TIME - frameDuration.count();
+                while (sleepTime > 0)
+                {
+                    frameEnd = std::chrono::high_resolution_clock::now();
+                    frameDuration = frameEnd - frameStart;
+                    sleepTime = TARGET_FRAME_TIME - frameDuration.count();
+                }
+            }
+        }
+
         void set_resize_callback(GLFWframebuffersizefun callback)
         {
             glfwSetFramebufferSizeCallback(m_window, callback);
+        }
+
+        void set_update_callback(update_func update)
+        {
+            m_update = update;
         }
 
         void quit()
@@ -91,9 +162,6 @@ namespace ex
         {
             glfwSwapBuffers(m_window);
             glfwPollEvents();
-
-            // Wait for the remaining time to achieve the target frame time
-            // glfwWaitEventsTimeout(TARGET_FRAME_TIME);
         }
     };
 } // namespace ex
