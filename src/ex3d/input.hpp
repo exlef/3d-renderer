@@ -139,9 +139,9 @@ namespace ex
         return glfwGetKey(window, key_code) == KEY_PRESS;
     }
 
-    void set_key_callback(GLFWwindow* window, GLFWkeyfun callback)
-    {
-        glfwSetKeyCallback(window, callback);
-    }
+    // void set_key_callback(GLFWwindow* window, GLFWkeyfun callback)
+    // {
+    //     glfwSetKeyCallback(window, callback);
+    // }
 
 } // namespace ex

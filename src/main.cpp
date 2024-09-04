@@ -11,8 +11,8 @@ int main()
 {
     ex::App app = ex::App(800, 600, "test");
 
-    ex::set_key_callback(app.window(), key_callbacks);
-    app.set_resize_callback(framebuffer_size_callback);
+    // ex::set_key_callback(app.window(), key_callbacks);
+    // app.set_resize_callback(framebuffer_size_callback);
 
     const int TARGET_FPS = 60;
     const double TARGET_FRAME_TIME = 1.0 / TARGET_FPS;

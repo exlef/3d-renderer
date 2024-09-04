@@ -11,6 +11,8 @@
 namespace ex
 {
     typedef std::function<void(float)> update_func;
+    typedef std::function<void(int, int)> resize_func;
+    typedef std::function<void(int, int)> key_callback_func;
 
     class App
     {
@@ -19,6 +21,8 @@ namespace ex
         int m_screen_height = 0;
         GLFWwindow* m_window = nullptr;
         update_func m_update = nullptr;
+        resize_func m_resize = nullptr;
+        key_callback_func m_key_callback = nullptr;
 
         // delta time
         const int TARGET_FPS = 60;
@@ -61,6 +65,8 @@ namespace ex
             glfwMakeContextCurrent(m_window);
             // set vsyn on
             glfwSwapInterval(1);
+            // Set the user pointer to the current instance of App
+            glfwSetWindowUserPointer(window(), this);
 
             if (glewInit() != GLEW_OK)
             {
@@ -132,9 +138,42 @@ namespace ex
             }
         }
 
-        void set_resize_callback(GLFWframebuffersizefun callback)
+        // void set_resize_callback(GLFWframebuffersizefun callback)
+        // {
+        //     glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
+        // }
+
+        void set_resize_callback(resize_func callback)
         {
-            glfwSetFramebufferSizeCallback(m_window, callback);
+            m_resize = callback;
+            glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
+        }
+
+        static void framebuffer_size_callback(__attribute__((unused)) GLFWwindow* window, int width, int height)
+        {
+            // Retrieve the App instance from the user pointer
+            App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
+            if (app)
+            {
+                app->m_resize(width, height);
+                // app->handle_framebuffer_size_callback(window, width, height);
+            }
+        }
+
+        void set_key_callback(key_callback_func callback)
+        {
+            m_key_callback = callback;
+            glfwSetKeyCallback(window(), key_callbacks);
+        }
+
+        static void key_callbacks(GLFWwindow* window, int key,  int scancode, int action, __attribute__((unused)) int mods)
+        {
+            // Retrieve the App instance from the user pointer
+            App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
+            if (app)
+            {
+                app->m_key_callback(key, action);
+            }
         }
 
         void set_update_callback(update_func update)
