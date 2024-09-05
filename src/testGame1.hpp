@@ -45,7 +45,8 @@ private:
         model = glm::rotate(model, glm::radians(15.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         m_default_shader.setMat4("model", model);
         
-        m_cube.Draw();
+        // m_cube.Draw();
+        app.draw(m_cube);
     }
 
     void handle_key_callbacks(int key, int action)

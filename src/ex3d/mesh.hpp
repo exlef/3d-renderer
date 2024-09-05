@@ -1,7 +1,7 @@
 #pragma once
 
-#include "GL/glew.h"
-#include "GLFW/glfw3.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <assimp/scene.h>
 #include <glm/glm.hpp>
 #include <vector>
@@ -113,4 +113,5 @@ namespace ex
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
     }
+    
 } // namespace ex

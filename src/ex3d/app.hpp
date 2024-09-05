@@ -1,12 +1,15 @@
 #pragma once
 
-#include "GL/glew.h"
+#include <GL/glew.h>
 #define GL_SILENCE_DEPRECATION
-#include "GLFW/glfw3.h"
-#include "input.hpp"
+#include <GLFW/glfw3.h>
 #include <iostream>
 #include <string>
 #include <functional>
+
+#include "input.hpp"
+#include "mesh.hpp"
+#include "model.hpp"
 
 namespace ex
 {
@@ -17,8 +20,6 @@ namespace ex
     class App
     {
     private:
-        // int m_screen_width = 0;
-        // int m_screen_height = 0;
         GLFWwindow* m_window = nullptr;
         update_func m_update = nullptr;
         window_resize_func m_window_resize_funptr = nullptr;
@@ -59,7 +60,6 @@ namespace ex
         App(int width, int height, const std::string& title)
         {
             // glfw: initialize and configure
-            // ------------------------------
             glfwInit();
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -214,11 +214,18 @@ namespace ex
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
+        void draw(Model model)
+        {
+            for (unsigned int i = 0; i < model.meshes.size(); i++)
+                model.meshes[i].Draw();
+        }
+
         void end_drawing()
         {
             glfwSwapBuffers(m_window);
             glfwPollEvents();
         }
     };
+    
 } // namespace ex
 

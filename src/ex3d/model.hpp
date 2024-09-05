@@ -1,7 +1,5 @@
 #pragma once
 
-#include "mesh.hpp"
-#include "GLFW/glfw3.h"
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
@@ -9,19 +7,19 @@
 #include <string>
 #include <vector>
 
+#include "mesh.hpp"
+
 namespace ex
 {
     class Model
     {
     public:
-        Model() = delete;
-        Model(const std::string& path);
-        void Draw();
-
-    private:
-        // model data
         std::vector<Mesh> meshes;
 
+        Model() = delete;
+        Model(const std::string& path);
+
+    private:
         void processNode(aiNode* node, const aiScene* scene);
     };
 
@@ -40,13 +38,6 @@ namespace ex
         processNode(scene->mRootNode, scene);
     }
 
-    void Model::Draw()
-    {
-        for (unsigned int i = 0; i < meshes.size(); i++)
-            meshes[i].Draw();
-    }
-
-    // TODO: do it without recursion
     void Model::processNode(aiNode* node, const aiScene* scene)
     {
         // process all the node's meshes (if any)
