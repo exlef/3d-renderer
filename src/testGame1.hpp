@@ -24,12 +24,16 @@ public:
     {
         app.set_update_callback([this]() { update(); });
         app.set_key_callback([this](int key, int action) { handle_key_callbacks(key, action); });
+        app.set_window_resize_callback([this](int width, int height) { handle_window_resize(width, height); });
 
         m_default_shader.use();
 
         // bind textures on corresponding texture units
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_cube_tex.id());
+
+        glm::mat4 projection = m_cam.get_projection_matrix(app.screen_ratio());
+        m_default_shader.setMat4("projection", projection);
     }
     ~TestGame1() = default;
 
@@ -41,8 +45,8 @@ private:
     void update()
     {
         // pass projection matrix to shader (note that in this case it could change every frame)
-        glm::mat4 projection = m_cam.get_projection_matrix(app.screen_ratio());
-        m_default_shader.setMat4("projection", projection);
+        // glm::mat4 projection = m_cam.get_projection_matrix(app.screen_ratio());
+        // m_default_shader.setMat4("projection", projection);
 
         // camera/view transformation
         glm::mat4 view = m_cam.get_view_matrix();
@@ -67,5 +71,10 @@ private:
         }
     }
 
+    void handle_window_resize(__attribute__((unused)) int width, __attribute__((unused)) int height)
+    {
+        glm::mat4 projection = m_cam.get_projection_matrix(app.screen_ratio());
+        m_default_shader.setMat4("projection", projection);
+    }
 };
 
