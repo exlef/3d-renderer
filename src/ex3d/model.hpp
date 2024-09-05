@@ -15,12 +15,16 @@ namespace ex
     {
     public:
         std::vector<Mesh> meshes;
+        glm::vec3 pos = glm::vec3(0);
+        glm::vec3 rot = glm::vec3(0);
 
         Model() = delete;
         Model(const std::string& path);
+        glm::mat4 get_model_matrix();
 
     private:
         void processNode(aiNode* node, const aiScene* scene);
+        glm::mat4 m_model;
     };
 
     // imp ----------------------------------------------------------------------------------------
@@ -53,5 +57,16 @@ namespace ex
         }
     }
 
+    glm::mat4 Model::get_model_matrix()
+    {
+        // glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        m_model = glm::mat4(1.0f);
+        m_model = glm::translate(m_model, pos);
+        m_model = glm::rotate(m_model, glm::radians(rot.x), glm::vec3(1.0f, 0.0f, 0.0f));
+        m_model = glm::rotate(m_model, glm::radians(rot.y), glm::vec3(0.0f, 1.0f, 0.0f));
+        m_model = glm::rotate(m_model, glm::radians(rot.z), glm::vec3(0.0f, 0.0f, 1.0f));
+
+        return m_model;
+    }
 } // namespace ex
 

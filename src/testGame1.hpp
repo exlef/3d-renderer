@@ -1,14 +1,13 @@
 #pragma once
 
-#include "ex3d/app.hpp"
-#include "ex3d/input.hpp"
-#include "ex3d/model.hpp"
-#include "ex3d/shader.hpp"
-#include "ex3d/camera.hpp"
-#include "ex3d/texture.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include "ex3d/app.hpp"
+#include "ex3d/camera.hpp"
+#include "ex3d/shader.hpp"
+#include "ex3d/texture.hpp"
 
 class TestGame1
 {
@@ -27,8 +26,9 @@ public:
         app.set_window_resize_callback([this](int width, int height) { handle_window_resize(width, height); });
 
         m_default_shader.use();
-        m_default_shader.set_projection_matrix(m_cam.get_projection_matrix(app.aspect_ratio()));
+        m_default_shader.set_model_matrix(m_cube.get_model_matrix());
         m_default_shader.set_view_matrix(m_cam.get_view_matrix());
+        m_default_shader.set_projection_matrix(m_cam.get_projection_matrix(app.aspect_ratio()));
         m_default_shader.set_textures(m_cube_tex.id());
     }
     ~TestGame1() = default;
@@ -40,12 +40,11 @@ public:
 private:
     void update()
     {
-        glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-        model = glm::translate(model, glm::vec3(1.0,1.0,1.0));
-        model = glm::rotate(model, glm::radians(15.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        m_default_shader.setMat4("model", model);
+        // glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        // model = glm::translate(model, glm::vec3(1.0,1.0,1.0));
+        // model = glm::rotate(model, glm::radians(15.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        // m_default_shader.setMat4("model", model);
         
-        // m_cube.Draw();
         app.draw(m_cube);
     }
 

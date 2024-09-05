@@ -63,16 +63,22 @@ namespace ex
             glUseProgram(m_id);
         }
 
-        void set_projection_matrix(const glm::mat4& mat)
+        void set_model_matrix(const glm::mat4& mat)
         {
-            // glm::mat4 projection = m_cam.get_projection_matrix(screen_ratio);
-            setMat4("projection", mat);
+            // glm::mat4 view = m_cam.get_view_matrix();
+            setMat4("model", mat);
         }
 
         void set_view_matrix(const glm::mat4& mat)
         {
             // glm::mat4 view = m_cam.get_view_matrix();
             setMat4("view", mat);
+        }
+
+        void set_projection_matrix(const glm::mat4& mat)
+        {
+            // glm::mat4 projection = m_cam.get_projection_matrix(screen_ratio);
+            setMat4("projection", mat);
         }
 
         void set_textures(uint32_t texture_id)
