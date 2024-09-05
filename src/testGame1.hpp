@@ -24,6 +24,12 @@ public:
     {
         app.set_update_callback([this]() { update(); });
         app.set_key_callback([this](int key, int action) { handle_key_callbacks(key, action); });
+
+        m_default_shader.use();
+
+        // bind textures on corresponding texture units
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_cube_tex.id());
     }
     ~TestGame1() = default;
 
@@ -34,14 +40,8 @@ public:
 private:
     void update()
     {
-        m_default_shader.use();
-
-        // bind textures on corresponding texture units
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_cube_tex.id());
-
         // pass projection matrix to shader (note that in this case it could change every frame)
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)800 / (float)600, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), app.screen_ratio(), 0.1f, 100.0f);
         m_default_shader.setMat4("projection", projection);
 
         // camera/view transformation

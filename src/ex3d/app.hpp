@@ -17,8 +17,8 @@ namespace ex
     class App
     {
     private:
-        int m_screen_width = 0;
-        int m_screen_height = 0;
+        // int m_screen_width = 0;
+        // int m_screen_height = 0;
         GLFWwindow* m_window = nullptr;
         update_func m_update = nullptr;
         window_resize_func m_window_resize_funptr = nullptr;
@@ -33,8 +33,38 @@ namespace ex
         float m_dt = 0;
 
     public:
-        int get_screen_width() const { return m_screen_width; }
-        int get_screen_height() const { return m_screen_height; }
+        int screen_width() const 
+        {
+            // Variables to hold width and height
+            int width, height;
+
+            // Get the framebuffer size
+            glfwGetFramebufferSize(m_window, &width, &height);
+            return width;
+            // return m_screen_width; 
+        }
+        int screen_height() const 
+        {
+            // Variables to hold width and height
+            int width, height;
+
+            // Get the framebuffer size
+            glfwGetFramebufferSize(m_window, &width, &height);
+            return height;
+            // return m_screen_height; 
+        }
+        float screen_ratio() const 
+        {
+            // Variables to hold width and height
+            int width, height;
+
+            // Get the framebuffer size
+            glfwGetFramebufferSize(m_window, &width, &height);
+            return (float)width / (float)height;
+            // return height;
+            // return m_screen_height;
+            // return (float)m_window.width / (float)m_screen_height;
+        }
         float dt() const { return m_dt; }
         GLFWwindow* window() const { return m_window; }
         App() = delete;
@@ -54,9 +84,9 @@ namespace ex
 
             // glfw window creation
             // --------------------
-            m_screen_width = width;
-            m_screen_height = height;
-            m_window = glfwCreateWindow(m_screen_width, m_screen_height, title.c_str(), NULL, NULL);
+            // m_screen_width = width;
+            // m_screen_height = height;
+            m_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
             if (m_window == NULL)
             {
                 std::cerr << "Failed to create GLFW window" << std::endl;
