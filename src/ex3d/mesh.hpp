@@ -13,8 +13,8 @@ namespace ex
     struct Vertex
     {
         glm::vec3 Position;
-        // glm::vec3 Normal;
-        // glm::vec2 TexCoords;
+        glm::vec3 Normal;
+        glm::vec2 TexCoords;
     };
 
     class Mesh
@@ -25,7 +25,7 @@ namespace ex
         std::vector<unsigned int> indices;
 
         Mesh() = delete;
-        Mesh(aiMesh* mesh /*, const aiScene* scene*/);
+        Mesh(aiMesh* assimp_mesh);
         void Draw();
 
     private:
@@ -35,7 +35,7 @@ namespace ex
 
     // impl -----------------------------------------------------------------------------------
 
-    Mesh::Mesh(aiMesh* assimp_mesh /*, const aiScene* scene*/)
+    Mesh::Mesh(aiMesh* assimp_mesh)
     {
         // process vertex positions, normals and texture coordinates
         for (unsigned int i = 0; i < assimp_mesh->mNumVertices; i++)
@@ -50,18 +50,18 @@ namespace ex
             vec.x = assimp_mesh->mNormals[i].x;
             vec.y = assimp_mesh->mNormals[i].y;
             vec.z = assimp_mesh->mNormals[i].z;
-            // vertex.Normal = vec;
+            vertex.Normal = vec;
 
             if (assimp_mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
             {
                 glm::vec2 vec;
                 vec.x = assimp_mesh->mTextureCoords[0][i].x;
                 vec.y = assimp_mesh->mTextureCoords[0][i].y;
-                // vertex.TexCoords = vec;
+                vertex.TexCoords = vec;
             }
             else
             {
-                // vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+                vertex.TexCoords = glm::vec2(0.0f, 0.0f);
             }
 
             vertices.push_back(vertex);
@@ -76,8 +76,6 @@ namespace ex
                 indices.push_back(face.mIndices[j]);
             }
         }
-
-        std::cout << indices.size() << std::endl;
 
         setup_attributes();
     }
@@ -100,11 +98,11 @@ namespace ex
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
         // vertex normals
-        // glEnableVertexAttribArray(1);
-        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
         // vertex texture coords
-        // glEnableVertexAttribArray(2);
-        // glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
 
         glBindVertexArray(0);
     }
@@ -116,7 +114,3 @@ namespace ex
         glBindVertexArray(0);
     }
 } // namespace ex
-
-/*
-
-*/

@@ -24,24 +24,11 @@ namespace ex
         // model data
         std::vector<Mesh> meshes;
 
-        void loadModel(const std::string& path);
         void processNode(aiNode* node, const aiScene* scene);
-        Mesh processMesh(aiMesh* mesh, const aiScene* scene);
     };
 
     // imp ----------------------------------------------------------------------------------------
     Model::Model(const std::string& path)
-    {
-        loadModel(path);
-    }
-
-    void Model::Draw()
-    {
-        for (unsigned int i = 0; i < meshes.size(); i++)
-            meshes[i].Draw();
-    }
-
-    void Model::loadModel(const std::string& path)
     {
         Assimp::Importer import;
         const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -55,6 +42,12 @@ namespace ex
         processNode(scene->mRootNode, scene);
     }
 
+    void Model::Draw()
+    {
+        for (unsigned int i = 0; i < meshes.size(); i++)
+            meshes[i].Draw();
+    }
+
     // TODO: do it without recursion
     void Model::processNode(aiNode* node, const aiScene* scene)
     {
@@ -62,7 +55,7 @@ namespace ex
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            meshes.push_back(Mesh(mesh /*, scene*/));
+            meshes.push_back(Mesh(mesh));
         }
         // then do the same for each of its children
         for (unsigned int i = 0; i < node->mNumChildren; i++)
