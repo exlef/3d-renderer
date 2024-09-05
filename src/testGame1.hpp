@@ -41,7 +41,7 @@ private:
     void update()
     {
         // pass projection matrix to shader (note that in this case it could change every frame)
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), app.screen_ratio(), 0.1f, 100.0f);
+        glm::mat4 projection = m_cam.get_projection_matrix(app.screen_ratio());
         m_default_shader.setMat4("projection", projection);
 
         // camera/view transformation
