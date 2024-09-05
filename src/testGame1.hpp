@@ -16,7 +16,7 @@ private:
     ex::App app = ex::App(800, 600, "test");
     ex::Camera m_cam = ex::Camera();
     ex::Model m_cube = ex::Model("src/res/models/cube.obj");
-    ex::Shader m_default_shader = ex::Shader("src/shaders/default.vert", "src/shaders/default.frag");
+    ex::Shader m_default_shader = ex::Shader("src/shaders/default.vert", "src/shaders/default.frag", m_cam);
     ex::Texture m_cube_tex = ex::Texture("src/res/textures/container2.png");
 
 public:
@@ -44,10 +44,6 @@ public:
 private:
     void update()
     {
-        // pass projection matrix to shader (note that in this case it could change every frame)
-        // glm::mat4 projection = m_cam.get_projection_matrix(app.screen_ratio());
-        // m_default_shader.setMat4("projection", projection);
-
         // camera/view transformation
         glm::mat4 view = m_cam.get_view_matrix();
         m_default_shader.setMat4("view", view);
@@ -71,10 +67,11 @@ private:
         }
     }
 
-    void handle_window_resize(__attribute__((unused)) int width, __attribute__((unused)) int height)
+    void handle_window_resize(int width, int height)
     {
-        glm::mat4 projection = m_cam.get_projection_matrix(app.screen_ratio());
-        m_default_shader.setMat4("projection", projection);
+        m_default_shader.set_projection_matrix( (float)width / (float)height );
+        // glm::mat4 projection = m_cam.get_projection_matrix(app.screen_ratio());
+        // m_default_shader.setMat4("projection", projection);
     }
 };
 

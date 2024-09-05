@@ -1,6 +1,7 @@
 #pragma once
 
-#include "GLFW/glfw3.h"
+#include "camera.hpp"
+#include <GLFW/glfw3.h>
 #include <filesystem>
 #include <fstream>
 #include <sstream>
@@ -15,12 +16,15 @@ namespace ex
     {
     private:
         u_int32_t m_id = 0;
+        Camera m_cam;
 
     public:
         u_int32_t id() const { return m_id; }
         Shader() = delete;
-        Shader(std::string vert_file, std::string frag_file)
+        Shader(std::string vert_file, std::string frag_file, Camera cam)
         {
+            m_cam = cam;
+
             m_id = glCreateProgram();
 
             uint32_t vert_id = create_shader(GL_VERTEX_SHADER, vert_file);
@@ -60,6 +64,12 @@ namespace ex
         void use()
         {
             glUseProgram(m_id);
+        }
+
+        void set_projection_matrix(float screen_ratio)
+        {
+            glm::mat4 projection = m_cam.get_projection_matrix(screen_ratio);
+            setMat4("projection", projection);
         }
 
         // utility uniform functions
