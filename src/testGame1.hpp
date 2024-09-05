@@ -5,6 +5,7 @@
 #include "ex3d/model.hpp"
 #include "ex3d/shader.hpp"
 #include "ex3d/camera.hpp"
+#include "ex3d/texture.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -16,6 +17,7 @@ private:
     ex::Camera m_cam = ex::Camera();
     ex::Model m_cube = ex::Model("src/res/cube.obj");
     ex::Shader m_default_shader = ex::Shader("src/shaders/default.vert", "src/shaders/default.frag");
+    ex::Texture m_cube_tex = ex::Texture("src/res/textures/container2.png");
 
 public:
     TestGame1()
@@ -33,6 +35,10 @@ private:
     void update()
     {
         m_default_shader.use();
+
+        // bind textures on corresponding texture units
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_cube_tex.id());
 
         // pass projection matrix to shader (note that in this case it could change every frame)
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)800 / (float)600, 0.1f, 100.0f);
