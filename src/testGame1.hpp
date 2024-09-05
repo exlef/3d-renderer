@@ -18,6 +18,7 @@ private:
     ex::Shader m_default_shader = ex::Shader("src/shaders/default.vert", "src/shaders/default.frag");
     ex::Texture m_cube_tex = ex::Texture("src/res/textures/container2.png");
 
+    // float cube_angle_y = 0;
 public:
     TestGame1()
     {
@@ -30,21 +31,20 @@ public:
         m_default_shader.set_view_matrix(m_cam.get_view_matrix());
         m_default_shader.set_projection_matrix(m_cam.get_projection_matrix(app.aspect_ratio()));
         m_default_shader.set_textures(m_cube_tex.id());
+
+        m_cube.set_model_matrix_changed_callback([this](glm::mat4 mat) { m_default_shader.set_model_matrix(mat); });
+
+        app.run();
     }
     ~TestGame1() = default;
 
-    void run()
-    {
-        app.run();
-    }
 private:
     void update()
     {
-        // glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-        // model = glm::translate(model, glm::vec3(1.0,1.0,1.0));
-        // model = glm::rotate(model, glm::radians(15.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        // m_default_shader.setMat4("model", model);
-        
+        m_cube.rot.y += app.dt() * 50;
+        m_cube.rot.x += app.dt() * 25;
+        m_cube.update_model_matrix();
+
         app.draw(m_cube);
     }
 

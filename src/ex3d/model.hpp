@@ -11,6 +11,8 @@
 
 namespace ex
 {
+    typedef std::function<void(glm::mat4)> model_matrix_callback_func;
+
     class Model
     {
     public:
@@ -20,11 +22,14 @@ namespace ex
 
         Model() = delete;
         Model(const std::string& path);
-        glm::mat4 get_model_matrix();
+        glm::mat4 get_model_matrix() const { return m_model; }
+        glm::mat4 update_model_matrix();
+        void set_model_matrix_changed_callback(model_matrix_callback_func callback);
 
     private:
         void processNode(aiNode* node, const aiScene* scene);
         glm::mat4 m_model;
+        model_matrix_callback_func m_model_matrix_changed_callback = nullptr;
     };
 
     // imp ----------------------------------------------------------------------------------------
@@ -57,7 +62,7 @@ namespace ex
         }
     }
 
-    glm::mat4 Model::get_model_matrix()
+    glm::mat4 Model::update_model_matrix()
     {
         // glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
         m_model = glm::mat4(1.0f);
@@ -66,7 +71,18 @@ namespace ex
         m_model = glm::rotate(m_model, glm::radians(rot.y), glm::vec3(0.0f, 1.0f, 0.0f));
         m_model = glm::rotate(m_model, glm::radians(rot.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
+        if(m_model_matrix_changed_callback)
+        {
+            m_model_matrix_changed_callback(m_model);
+        }
+
         return m_model;
     }
-} // namespace ex
 
+    void Model::set_model_matrix_changed_callback(model_matrix_callback_func callback)
+    {
+        m_model_matrix_changed_callback = callback;
+        // callback(m_model);
+    }
+
+} // namespace ex
