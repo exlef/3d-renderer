@@ -72,6 +72,12 @@ namespace ex
             setMat4("projection", projection);
         }
 
+        void set_view_matrix()
+        {
+            glm::mat4 view = m_cam.get_view_matrix();
+            setMat4("view", view);
+        }
+
         // utility uniform functions
         // ------------------------------------------------------------------------
         void setBool(const std::string& name, bool value) const

@@ -45,7 +45,7 @@ namespace ex
             glfwGetFramebufferSize(m_window, &width, &height);
             return height;
         }
-        float screen_ratio() const 
+        float aspect_ratio() const 
         {
             int width, height;
 
