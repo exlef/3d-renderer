@@ -16,15 +16,12 @@ namespace ex
     {
     private:
         u_int32_t m_id = 0;
-        Camera m_cam;
 
     public:
         u_int32_t id() const { return m_id; }
         Shader() = delete;
-        Shader(std::string vert_file, std::string frag_file, Camera cam)
+        Shader(std::string vert_file, std::string frag_file)
         {
-            m_cam = cam;
-
             m_id = glCreateProgram();
 
             uint32_t vert_id = create_shader(GL_VERTEX_SHADER, vert_file);
@@ -66,16 +63,22 @@ namespace ex
             glUseProgram(m_id);
         }
 
-        void set_projection_matrix(float screen_ratio)
+        void set_projection_matrix(const glm::mat4& mat)
         {
-            glm::mat4 projection = m_cam.get_projection_matrix(screen_ratio);
-            setMat4("projection", projection);
+            // glm::mat4 projection = m_cam.get_projection_matrix(screen_ratio);
+            setMat4("projection", mat);
         }
 
-        void set_view_matrix()
+        void set_view_matrix(const glm::mat4& mat)
         {
-            glm::mat4 view = m_cam.get_view_matrix();
-            setMat4("view", view);
+            // glm::mat4 view = m_cam.get_view_matrix();
+            setMat4("view", mat);
+        }
+
+        void set_textures(uint32_t texture_id)
+        {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture_id);
         }
 
         // utility uniform functions
