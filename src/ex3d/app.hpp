@@ -74,6 +74,9 @@ namespace ex
                 std::cerr << "Failed to initialize GLEW" << std::endl;
                 glfwTerminate();
             }
+
+            // configure global opengl states
+            glEnable(GL_DEPTH_TEST);
         }
 
         ~App()
@@ -194,7 +197,7 @@ namespace ex
         void start_drawing()
         {
             glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
         void end_drawing()
