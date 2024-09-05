@@ -5,6 +5,7 @@
 #include <assimp/scene.h>
 #include <glm/glm.hpp>
 #include <vector>
+#include <iostream>
 
 namespace ex
 {
@@ -12,8 +13,8 @@ namespace ex
     struct Vertex
     {
         glm::vec3 Position;
-        glm::vec3 Normal;
-        glm::vec2 TexCoords;
+        // glm::vec3 Normal;
+        // glm::vec2 TexCoords;
     };
 
     class Mesh
@@ -24,8 +25,8 @@ namespace ex
         std::vector<unsigned int> indices;
 
         Mesh() = delete;
-        Mesh(aiMesh* mesh, const aiScene* scene);
-        void Draw(unsigned int shader);
+        Mesh(aiMesh* mesh /*, const aiScene* scene*/);
+        void Draw();
 
     private:
         unsigned int VAO, VBO, EBO;
@@ -34,7 +35,7 @@ namespace ex
 
     // impl -----------------------------------------------------------------------------------
 
-    Mesh::Mesh(aiMesh* assimp_mesh, const aiScene* scene)
+    Mesh::Mesh(aiMesh* assimp_mesh /*, const aiScene* scene*/)
     {
         // process vertex positions, normals and texture coordinates
         for (unsigned int i = 0; i < assimp_mesh->mNumVertices; i++)
@@ -49,18 +50,18 @@ namespace ex
             vec.x = assimp_mesh->mNormals[i].x;
             vec.y = assimp_mesh->mNormals[i].y;
             vec.z = assimp_mesh->mNormals[i].z;
-            vertex.Normal = vec;
+            // vertex.Normal = vec;
 
             if (assimp_mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
             {
                 glm::vec2 vec;
                 vec.x = assimp_mesh->mTextureCoords[0][i].x;
                 vec.y = assimp_mesh->mTextureCoords[0][i].y;
-                vertex.TexCoords = vec;
+                // vertex.TexCoords = vec;
             }
             else
             {
-                vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+                // vertex.TexCoords = glm::vec2(0.0f, 0.0f);
             }
 
             vertices.push_back(vertex);
@@ -75,6 +76,10 @@ namespace ex
                 indices.push_back(face.mIndices[j]);
             }
         }
+
+        std::cout << indices.size() << std::endl;
+
+        setup_attributes();
     }
 
     void Mesh::setup_attributes()
@@ -95,61 +100,23 @@ namespace ex
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
         // vertex normals
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+        // glEnableVertexAttribArray(1);
+        // glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
         // vertex texture coords
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+        // glEnableVertexAttribArray(2);
+        // glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
 
         glBindVertexArray(0);
     }
 
-    void Mesh::Draw(unsigned int shader)
+    void Mesh::Draw()
     {
-        /*
-            this solution requires shaders to have:
-
-            struct Material {
-            sampler2D texture_diffuse1;
-            sampler2D texture_diffuse2;
-            .
-            .
-            .
-            sampler2D texture_specular1;
-            sampler2D texture_specular2;
-            .
-            .
-            .
-            };
-            uniform Material material;
-        */
-        // unsigned int diffuse_counter = 1;
-        // unsigned int specular_counter = 1;
-        // for (unsigned int i = 0; i < textures.size(); i++)
-        // {
-        //     std::string number;
-        //     std::string name = textures[i].type;
-
-        //     if (name == "texture_diffuse")
-        //         number = std::to_string(diffuse_counter);
-        //     else if (name == "texture_specular")
-        //         number = std::to_string(specular_counter);
-
-        //     std::string uniform_name = "material." + name + number;
-
-        //     glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
-        //     glUniform1i(glGetUniformLocation(shader, uniform_name.c_str()), i);
-        //     glBindTexture(GL_TEXTURE_2D, textures[i].id);
-
-        //     diffuse_counter++;
-        //     specular_counter++;
-        // }
-        // glActiveTexture(GL_TEXTURE0);
-
-        // // draw mesh
-        // glBindVertexArray(VAO);
-        // glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-        // glBindVertexArray(0);
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
     }
 } // namespace ex
 
+/*
+
+*/

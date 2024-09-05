@@ -18,7 +18,7 @@ namespace ex
     public:
         Model() = delete;
         Model(const std::string& path);
-        void Draw(unsigned int shader);
+        void Draw();
 
     private:
         // model data
@@ -35,10 +35,10 @@ namespace ex
         loadModel(path);
     }
 
-    void Model::Draw(unsigned int shader)
+    void Model::Draw()
     {
         for (unsigned int i = 0; i < meshes.size(); i++)
-            meshes[i].Draw(shader);
+            meshes[i].Draw();
     }
 
     void Model::loadModel(const std::string& path)
@@ -62,7 +62,7 @@ namespace ex
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            meshes.push_back(Mesh(mesh, scene));
+            meshes.push_back(Mesh(mesh /*, scene*/));
         }
         // then do the same for each of its children
         for (unsigned int i = 0; i < node->mNumChildren; i++)
