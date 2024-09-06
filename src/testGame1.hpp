@@ -29,8 +29,6 @@ public:
         m_default_shader.set_textures(m_cube_tex.id());
         update_shader();
 
-        // m_cube.set_model_matrix_changed_callback([this](glm::mat4 mat) { m_default_shader.set_model_matrix(mat); });
-
         app.run();
     }
     ~TestGame1() = default;
@@ -59,10 +57,6 @@ private:
         {
             m_default_shader.set_projection_matrix(m_cam.get_projection_matrix());
         }
-        
-        // m_default_shader.set_model_matrix(m_cube.get_model_matrix());
-        // m_default_shader.set_view_matrix(m_cam.get_view_matrix());
-        // m_default_shader.set_projection_matrix(m_cam.get_projection_matrix());
     }
 
     void handle_key_callbacks(int key, int action)
@@ -79,7 +73,6 @@ private:
     void handle_window_resize(int width, int height)
     {
         m_cam.set_aspect_ratio((float)width / (float)height);
-        // m_default_shader.set_projection_matrix(m_cam.get_projection_matrix());
     }
 };
 

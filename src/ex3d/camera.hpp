@@ -17,54 +17,23 @@ namespace ex
         float m_far = 100.0f;
         float m_aspect_ratio = 1;
 
-        float fov_in_rad()
-        {
-            return glm::radians(m_fov);
-        }
-
     public:
         Transform tr;
         bool is_projection_matrix_require_update = true;
 
         Camera(float aspect_ratio, glm::vec3 pos = glm::vec3(0.0, 0.0, 10.0), float fov_in_degree = 45, float near = 0.1f, float far = 100.0f);
-        ~Camera() = default;
 
-        void set_fov(float fov_in_degree)
-        {
-            m_fov = fov_in_degree;
-            is_projection_matrix_require_update = true;
-        }
+        void set_fov(float fov_in_degree);
 
-        void set_near(float near)
-        {
-            m_near = near;
-            is_projection_matrix_require_update = true;
-        }
+        void set_near(float near);
 
-        void set_far(float far)
-        {
-            m_far = far;
-            is_projection_matrix_require_update = true;
-        }
+        void set_far(float far);
 
-        void set_aspect_ratio(float aspect_ratio)
-        {
-            m_aspect_ratio = aspect_ratio;
-            is_projection_matrix_require_update = true;
-        }
+        void set_aspect_ratio(float aspect_ratio);
 
-        glm::mat4 get_view_matrix()
-        {
-            tr.is_dirty = false;
-            return glm::lookAt(m_pos, m_pos + m_dir, m_world_up);
-        }
+        glm::mat4 get_view_matrix();
 
-        glm::mat4 get_projection_matrix()
-        {
-            is_projection_matrix_require_update = false;
-            return glm::perspective(fov_in_rad(), m_aspect_ratio, m_near, m_far);
-        }
-
+        glm::mat4 get_projection_matrix();
     };
 
     Camera::Camera(float aspect_ratio, glm::vec3 pos, float fov_in_degree, float near, float far)
@@ -75,5 +44,42 @@ namespace ex
         m_near = near;
         m_far = far;
     }
+
+    void Camera::set_fov(float fov_in_degree)
+    {
+        m_fov = fov_in_degree;
+        is_projection_matrix_require_update = true;
+    }
+
+    void Camera::set_near(float near)
+    {
+        m_near = near;
+        is_projection_matrix_require_update = true;
+    }
+
+    void Camera::set_far(float far)
+    {
+        m_far = far;
+        is_projection_matrix_require_update = true;
+    }
+
+    void Camera::set_aspect_ratio(float aspect_ratio)
+    {
+        m_aspect_ratio = aspect_ratio;
+        is_projection_matrix_require_update = true;
+    }
+
+    glm::mat4 Camera::get_view_matrix()
+    {
+        tr.is_dirty = false;
+        return glm::lookAt(m_pos, m_pos + m_dir, m_world_up);
+    }
+
+    glm::mat4 Camera::get_projection_matrix()
+    {
+        is_projection_matrix_require_update = false;
+        return glm::perspective(glm::radians(m_fov), m_aspect_ratio, m_near, m_far);
+    }
+
 } // namespace ex
 
