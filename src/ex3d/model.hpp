@@ -24,14 +24,19 @@ namespace ex
         glm::mat4 update_model_matrix();
         void set_model_matrix_changed_callback(model_matrix_callback_func callback);
 
-        void translate(glm::vec3 v);
+        void translate(glm::vec3 t);
         void translateX(float x);
         void translateY(float y);
         void translateZ(float z);
         void rotate(glm::vec3 v);
-        void rotateX(float x);
+        void rotateX(float r);
         void rotateY(float y);
         void rotateZ(float z);
+        void scale(glm::vec3 s);
+        void scale(float s);
+        void scaleX(float x);
+        void scaleY(float y);
+        void scaleZ(float z);
 
     private:
         void processNode(aiNode* node, const aiScene* scene);
@@ -40,7 +45,8 @@ namespace ex
 
         glm::vec3 m_pos = glm::vec3(0);
         glm::vec3 m_rot = glm::vec3(0);
-        bool m_is_model_matrix_updated = false;
+        glm::vec3 m_scale = glm::vec3(1);
+        bool m_is_dirty = true;
     };
 
     // imp ----------------------------------------------------------------------------------------
@@ -80,13 +86,15 @@ namespace ex
 
     glm::mat4 Model::update_model_matrix()
     {
-        if(m_is_model_matrix_updated)
+        if (m_is_dirty)
         {
             m_model = glm::mat4(1.0f);
             m_model = glm::translate(m_model, m_pos);
             m_model = glm::rotate(m_model, glm::radians(m_rot.x), glm::vec3(1.0f, 0.0f, 0.0f));
             m_model = glm::rotate(m_model, glm::radians(m_rot.y), glm::vec3(0.0f, 1.0f, 0.0f));
             m_model = glm::rotate(m_model, glm::radians(m_rot.z), glm::vec3(0.0f, 0.0f, 1.0f));
+            m_model = glm::scale(m_model, m_scale);
+            m_is_dirty = false;
         }
         if(m_model_matrix_changed_callback)
         {
@@ -96,45 +104,70 @@ namespace ex
         return m_model;
     }
 
-    void Model::translate(glm::vec3 v)
+    void Model::translate(glm::vec3 t)
     {
-        m_pos += v;
-        m_is_model_matrix_updated = true;
+        m_pos += t;
+        m_is_dirty = true;
     }
     void Model::translateX(float x)
     {
         m_pos.x += x;
-        m_is_model_matrix_updated = true;
+        m_is_dirty = true;
     }
     void Model::translateY(float y)
     {
         m_pos.y += y;
-        m_is_model_matrix_updated = true;
+        m_is_dirty = true;
     }
     void Model::translateZ(float z)
     {
         m_pos.z += z;
-        m_is_model_matrix_updated = true;
+        m_is_dirty = true;
     }
-    void Model::rotate(glm::vec3 v)
+    void Model::rotate(glm::vec3 r)
     {
-        m_rot += v;
-        m_is_model_matrix_updated = true;
+        m_rot += r;
+        m_is_dirty = true;
     }
     void Model::rotateX(float x)
     {
         m_rot.x += x;
-        m_is_model_matrix_updated = true;
+        m_is_dirty = true;
     }
     void Model::rotateY(float y)
     {
         m_rot.y += y;
-        m_is_model_matrix_updated = true;
+        m_is_dirty = true;
     }
     void Model::rotateZ(float z)
     {
         m_rot.z += z;
-        m_is_model_matrix_updated = true;
+        m_is_dirty = true;
+    }
+    void Model::scale(glm::vec3 s)
+    {
+        m_scale += s;
+        m_is_dirty = true;
+    }
+    void Model::scale(float s)
+    {
+        m_scale += glm::vec3(s,s,s);
+        m_is_dirty = true;
+    }
+    void Model::scaleX(float x)
+    {
+        m_scale.x += x;
+        m_is_dirty = true;
+    }
+    void Model::scaleY(float y)
+    {
+        m_scale.y += y;
+        m_is_dirty = true;
+    }
+    void Model::scaleZ(float z)
+    {
+        m_scale.z += z;
+        m_is_dirty = true;
     }
 
 } // namespace ex
