@@ -44,9 +44,11 @@ private:
         m_cube.rotateY(app.dt() * 50);
         m_cube.rotateX(app.dt() * 25);
         // m_cube.scale(app.dt() * 2);
-        m_cube.scaleX(app.dt() * 2);
-        m_cube.scaleY(app.dt() * 2);
-        m_cube.scaleZ(app.dt() * 2);
+        // m_cube.scaleX(app.dt() * 2);
+        // m_cube.scaleY(app.dt() * 2);
+        // m_cube.scaleZ(app.dt() * 2);
+        m_cube.set_pos(glm::vec3(1,1,1));
+        m_cube.set_scale(0.5f);
 
         app.draw(m_cube);
     }
