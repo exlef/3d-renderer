@@ -31,16 +31,46 @@ public:
 
         app.run();
     }
-    ~TestGame1() = default;
-
 private:
     void update()
     {
-        m_cube.tr.rotateY(app.dt() * 50);
-        m_cube.tr.rotateX(app.dt() * 25);
+        // m_cube.tr.rotateY(app.dt() * 50);
+        // m_cube.tr.rotateX(app.dt() * 25);
+
+        update_cam();
 
         update_shader();
         app.draw(m_cube);
+    }
+
+    void update_cam()
+    {
+        float cam_speed = 10;
+
+        if (ex::is_key_down(app.window(), KEY_E))
+        {
+            m_cam.tr.translateY(app.dt() * cam_speed);
+        }
+        if (ex::is_key_down(app.window(), KEY_Q))
+        {
+            m_cam.tr.translateY(app.dt() * -cam_speed);
+        }
+        if (ex::is_key_down(app.window(), KEY_W))
+        {
+            m_cam.tr.translateZ(app.dt() * -cam_speed);
+        }
+        if (ex::is_key_down(app.window(), KEY_S))
+        {
+            m_cam.tr.translateZ(app.dt() * cam_speed);
+        }
+        if (ex::is_key_down(app.window(), KEY_A))
+        {
+            m_cam.tr.translateX(app.dt() * -cam_speed);
+        }
+        if (ex::is_key_down(app.window(), KEY_D))
+        {
+            m_cam.tr.translateX(app.dt() * cam_speed);
+        }
     }
 
     void update_shader()

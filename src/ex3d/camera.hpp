@@ -39,7 +39,8 @@ namespace ex
     Camera::Camera(float aspect_ratio, glm::vec3 pos, float fov_in_degree, float near, float far)
     {
         m_aspect_ratio = aspect_ratio;
-        m_pos = pos;
+        tr.set_pos(pos);
+        // m_pos = pos;
         m_fov = fov_in_degree;
         m_near = near;
         m_far = far;
@@ -72,7 +73,8 @@ namespace ex
     glm::mat4 Camera::get_view_matrix()
     {
         tr.is_dirty = false;
-        return glm::lookAt(m_pos, m_pos + m_dir, m_world_up);
+        // return glm::lookAt(m_pos, m_pos + m_dir, m_world_up);
+        return glm::lookAt(tr.pos(), tr.pos() + m_dir, m_world_up);
     }
 
     glm::mat4 Camera::get_projection_matrix()
