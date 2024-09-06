@@ -216,6 +216,7 @@ namespace ex
 
         void draw(Model model)
         {
+            model.update_model_matrix();
             for (unsigned int i = 0; i < model.meshes.size(); i++)
                 model.meshes[i].Draw();
         }

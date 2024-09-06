@@ -41,9 +41,9 @@ public:
 private:
     void update()
     {
-        m_cube.rot.y += app.dt() * 50;
-        m_cube.rot.x += app.dt() * 25;
-        m_cube.update_model_matrix();
+        m_cube.rotateY(app.dt() * 50);
+        m_cube.rotateX(app.dt() * 25);
+        // m_cube.update_model_matrix();
 
         app.draw(m_cube);
     }
