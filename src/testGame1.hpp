@@ -35,10 +35,9 @@ public:
 private:
     void update()
     {
-        // m_cube.tr.rotateY(app.dt() * 50);
-        // m_cube.tr.rotateX(app.dt() * 25);
+        m_cube.tr.rotateY(app.dt() * 50);
+        m_cube.tr.rotateX(app.dt() * 25);
 
-        // update_cam();
         m_cam.move(app);
 
         update_shader();
