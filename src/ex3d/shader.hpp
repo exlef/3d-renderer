@@ -11,6 +11,7 @@
 
 #include "camera.hpp"
 #include "light.hpp"
+#include "texture.hpp"
 
 namespace ex
 {
@@ -21,25 +22,26 @@ namespace ex
         u_int32_t m_id = 0;
         // https://stackoverflow.com/questions/7322147/what-is-the-range-of-opengl-texture-id
         uint32_t m_diffuse_texture_id = 0, m_spec_texture_id = 0;
+        glm::vec3 m_sky_light;
 
     public:
         u_int32_t id() const { return m_id; }
         Shader() = delete;
-        Shader(const std::string& vert_file, const std::string& frag_file, uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0)
+        Shader(const std::string& vert_file, const std::string& frag_file, uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0, glm::vec3 sky_light = glm::vec3(0.2f))
         {
             create_shader(vert_file, frag_file);
             m_diffuse_texture_id = diffuse_texture_id;
             m_spec_texture_id = spec_texture_id;
+            m_sky_light = sky_light;
             setup();
         }
 
         ~Shader()
         {
-            // TODO: this gives warning. because unsigned int
-            // if (m_id != -1)
-            // {
-            //     glDeleteProgram(m_id);
-            // }
+            if (m_id != 0)
+            {
+                glDeleteProgram(m_id);
+            }
         }
 
         void create_shader(const std::string& vert_file, const std::string& frag_file)
@@ -78,11 +80,14 @@ namespace ex
             // set a default color for diffuse in case there is no textures provided
             if (m_diffuse_texture_id == 0)
             {
-                setVec3("material.color", 0.5f, 0.5f, 0.5f);
+                ex::Texture m_default_texture = ex::Texture("src/ex3d/res/default2.png");
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, m_default_texture.id());
+                glUniform1i(glGetUniformLocation(m_id, "material.diffuse"), 0);
+                // setVec3("material.color", 1.5f, 0.5f, 0.5f);
             }
             else
             {
-                // bind diffuse map
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, m_diffuse_texture_id);
                 glUniform1i(glGetUniformLocation(m_id, "material.diffuse"), 0);
@@ -90,18 +95,16 @@ namespace ex
 
             if (m_spec_texture_id != 0)
             {
-                // std::cout << "lol" << std::endl;
-                // bind specular map
                 glActiveTexture(GL_TEXTURE1);
                 glBindTexture(GL_TEXTURE_2D, m_spec_texture_id);
                 glUniform1i(glGetUniformLocation(m_id, "material.specular"), 1);
             }
 
-            
+            setVec3("skyLight", m_sky_light);
+
             setFloat("material.shininess", 32.0f);
 
-            // reset OpenGL states
-            // glBindTexture(GL_TEXTURE_2D, 0);
+            // reset the openGL state
             glUseProgram(0);
         }
         
@@ -112,19 +115,16 @@ namespace ex
 
         void set_model_matrix(const glm::mat4& mat)
         {
-            // glm::mat4 view = m_cam.get_view_matrix();
             setMat4("model", mat);
         }
 
         void set_view_matrix(const glm::mat4& mat)
         {
-            // glm::mat4 view = m_cam.get_view_matrix();
             setMat4("view", mat);
         }
 
         void set_projection_matrix(const glm::mat4& mat)
         {
-            // glm::mat4 projection = m_cam.get_projection_matrix(screen_ratio);
             setMat4("projection", mat);
         }
 

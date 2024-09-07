@@ -17,7 +17,7 @@ private:
     ex::Model m_cube = ex::Model("src/res/models/cube.obj");
     ex::Texture m_container_dif_tex = ex::Texture("src/res/textures/container2.png");
     ex::Texture m_container_spec_tex = ex::Texture("src/res/textures/container2_specular.png");
-    ex::Shader m_default_shader = ex::Shader("src/shaders/default.vert", "src/shaders/default.frag", m_container_dif_tex.id(), m_container_spec_tex.id());
+    ex::Shader m_default_shader = ex::Shader("src/shaders/default.vert", "src/shaders/default.frag", m_container_dif_tex.id(), m_container_spec_tex.id() /**/);
 
 public:
     TestGame1()
@@ -28,9 +28,7 @@ public:
         app.set_window_resize_callback([this](int width, int height) { handle_window_resize(width, height); });
 
         m_default_shader.use();
-        // m_default_shader.set_color(glm::vec3(1,0,0));
         m_default_shader.set_directional_light();
-        update_shader();
 
         app.run();
     }

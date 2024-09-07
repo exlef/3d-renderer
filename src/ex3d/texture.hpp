@@ -66,7 +66,7 @@ namespace ex
         }
         
         // unbind the texture
-        glBindTexture(GL_TEXTURE_2D, 0);
+        // glBindTexture(GL_TEXTURE_2D, 0);
 
         m_textureID = textureID;
     }
