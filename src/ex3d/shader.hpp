@@ -84,16 +84,39 @@ namespace ex
             setMat4("projection", mat);
         }
 
-        void set_material(uint32_t diffuse_texture_id = -1, uint32_t spec_texture_id = -1)
+        // https://stackoverflow.com/questions/7322147/what-is-the-range-of-opengl-texture-id
+        void set_material(uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0)
         {
-            if (diffuse_texture_id == -1 && spec_texture_id == -1)
+            // set a default color for diffuse in case there is no textures provided
+            if (diffuse_texture_id == 0)
             {
-                setBool("material.useColors", true);
-                setVec3("material.diffuseColor", 0.9f, 0.5f, 0.5f);
+                setVec3("material.diffuseColor", 0.5f, 0.5f, 0.5f);
+            }
+            else
+            {
+                // bind diffuse map
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, diffuse_texture_id);
+            }
+            // set a default color for specular in case there is no textures provided
+            if(spec_texture_id == 0)
+            {
                 setVec3("material.specularColor", 0.5f, 0.5f, 0.5f);
+            }
+            else
+            {
+                // bind specular map
+                glActiveTexture(GL_TEXTURE1);
+                glBindTexture(GL_TEXTURE_2D, spec_texture_id);
             }
 
             setFloat("material.shininess", 32.0f);
+        }
+
+        void set_colors(const glm::vec3& diffuse, const glm::vec3& specular)
+        {
+            setVec3("material.diffuseColor", diffuse);
+            setVec3("material.specularColor", specular);
         }
 
         void set_textures(uint32_t texture_id)
