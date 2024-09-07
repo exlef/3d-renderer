@@ -16,6 +16,7 @@ namespace ex
     typedef std::function<void()> update_func;
     typedef std::function<void(int, int)> window_resize_func;
     typedef std::function<void(int, int)> key_callback_func;
+    typedef std::function<void(float, float)> mouse_callback_func;
 
     class App
     {
@@ -24,6 +25,7 @@ namespace ex
         update_func m_update = nullptr;
         window_resize_func m_window_resize_funptr = nullptr;
         key_callback_func m_key_callback = nullptr;
+        mouse_callback_func m_mouse_callback = nullptr;
 
         // delta time
         const int TARGET_FPS = 60;
@@ -82,6 +84,8 @@ namespace ex
             glfwSwapInterval(1);
             // Set the user pointer to the current instance of App
             glfwSetWindowUserPointer(window(), this);
+            // hide cursor
+            glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
             if (glewInit() != GLEW_OK)
             {
@@ -173,7 +177,6 @@ namespace ex
                     app->m_window_resize_funptr(width, height);
                 }
                 glViewport(0, 0, width, height);
-                // app->handle_framebuffer_size_callback(window, width, height);
             }
         }
 
@@ -190,6 +193,21 @@ namespace ex
             if (app)
             {
                 app->m_key_callback(key, action);
+            }
+        }
+
+        void set_mouse_callback(mouse_callback_func callback)
+        {
+            m_mouse_callback = callback;
+            glfwSetCursorPosCallback(m_window, mouse_callback);
+        }
+
+        static void mouse_callback(__attribute__((unused)) GLFWwindow* window, double xpos, double ypos)
+        {
+            App* app = static_cast<App*>(glfwGetWindowUserPointer(window));
+            if (app)
+            {
+                app->m_mouse_callback((float)xpos, (float)ypos);
             }
         }
 
@@ -216,7 +234,6 @@ namespace ex
 
         void draw(Model model)
         {
-            // model.update_model_matrix();
             for (unsigned int i = 0; i < model.meshes.size(); i++)
                 model.meshes[i].Draw();
         }

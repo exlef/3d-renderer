@@ -23,6 +23,7 @@ public:
     {
         app.set_update_callback([this]() { update(); });
         app.set_key_callback([this](int key, int action) { handle_key_callbacks(key, action); });
+        app.set_mouse_callback([this](float xpos, float ypos) {handle_mouse_move(xpos, ypos);});
         app.set_window_resize_callback([this](int width, int height) { handle_window_resize(width, height); });
 
         m_default_shader.use();
@@ -37,40 +38,11 @@ private:
         // m_cube.tr.rotateY(app.dt() * 50);
         // m_cube.tr.rotateX(app.dt() * 25);
 
-        update_cam();
+        // update_cam();
+        m_cam.move(app);
 
         update_shader();
         app.draw(m_cube);
-    }
-
-    void update_cam()
-    {
-        float cam_speed = 10;
-
-        if (ex::is_key_down(app.window(), KEY_E))
-        {
-            m_cam.tr.translateY(app.dt() * cam_speed);
-        }
-        if (ex::is_key_down(app.window(), KEY_Q))
-        {
-            m_cam.tr.translateY(app.dt() * -cam_speed);
-        }
-        if (ex::is_key_down(app.window(), KEY_W))
-        {
-            m_cam.tr.translateZ(app.dt() * -cam_speed);
-        }
-        if (ex::is_key_down(app.window(), KEY_S))
-        {
-            m_cam.tr.translateZ(app.dt() * cam_speed);
-        }
-        if (ex::is_key_down(app.window(), KEY_A))
-        {
-            m_cam.tr.translateX(app.dt() * -cam_speed);
-        }
-        if (ex::is_key_down(app.window(), KEY_D))
-        {
-            m_cam.tr.translateX(app.dt() * cam_speed);
-        }
     }
 
     void update_shader()
@@ -98,6 +70,11 @@ private:
                 app.quit();
             }
         }
+    }
+
+    void handle_mouse_move(float xpos, float ypos)
+    {
+        m_cam.look_around(xpos, ypos);
     }
 
     void handle_window_resize(int width, int height)
