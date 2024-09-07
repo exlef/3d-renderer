@@ -3,8 +3,8 @@
 struct Material {
     sampler2D diffuse;
     sampler2D specular;
-	vec3 diffuseColor;
-	vec3 specularColor;
+
+	vec3 color;
     float shininess;
 };
 
@@ -17,7 +17,7 @@ struct DirLight {
 };
 
 // these are being set from shader class
-uniform vec3 viewPos; // todo
+uniform vec3 viewPos;
 uniform DirLight dirLight;
 uniform Material material;
 
@@ -53,12 +53,14 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     // combine results
     vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
     vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
-    vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
+    // vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
+	vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
 	
-	// add colors
-	ambient += light.ambient * material.diffuseColor;
-    diffuse += light.diffuse * diff * material.diffuseColor;
-    specular += light.specular * spec * material.specularColor;
+	// add color
+	ambient += light.ambient * material.color;
+    diffuse += light.diffuse * diff * material.color;
+    // specular += light.specular * spec * material.specularColor;
+	// return specular;
     return (ambient + diffuse + specular);
-	// return (specular);
+	// return (ambient + diffuse);
 }

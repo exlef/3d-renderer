@@ -19,11 +19,30 @@ namespace ex
     {
     private:
         u_int32_t m_id = 0;
+        // https://stackoverflow.com/questions/7322147/what-is-the-range-of-opengl-texture-id
+        uint32_t m_diffuse_texture_id = 0, m_spec_texture_id = 0;
 
     public:
         u_int32_t id() const { return m_id; }
         Shader() = delete;
-        Shader(std::string vert_file, std::string frag_file)
+        Shader(const std::string& vert_file, const std::string& frag_file, uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0)
+        {
+            create_shader(vert_file, frag_file);
+            m_diffuse_texture_id = diffuse_texture_id;
+            m_spec_texture_id = spec_texture_id;
+            setup();
+        }
+
+        ~Shader()
+        {
+            // TODO: this gives warning. because unsigned int
+            // if (m_id != -1)
+            // {
+            //     glDeleteProgram(m_id);
+            // }
+        }
+
+        void create_shader(const std::string& vert_file, const std::string& frag_file)
         {
             m_id = glCreateProgram();
 
@@ -52,15 +71,40 @@ namespace ex
             glDeleteShader(frag_id);
         }
 
-        ~Shader()
+        void setup()
         {
-            // TODO: this gives warning. because unsigned int
-            // if (m_id != -1)
-            // {
-            //     glDeleteProgram(m_id);
-            // }
-        }
+            use();
 
+            // set a default color for diffuse in case there is no textures provided
+            if (m_diffuse_texture_id == 0)
+            {
+                setVec3("material.color", 0.5f, 0.5f, 0.5f);
+            }
+            else
+            {
+                // bind diffuse map
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, m_diffuse_texture_id);
+                glUniform1i(glGetUniformLocation(m_id, "material.diffuse"), 0);
+            }
+
+            if (m_spec_texture_id != 0)
+            {
+                // std::cout << "lol" << std::endl;
+                // bind specular map
+                glActiveTexture(GL_TEXTURE1);
+                glBindTexture(GL_TEXTURE_2D, m_spec_texture_id);
+                glUniform1i(glGetUniformLocation(m_id, "material.specular"), 1);
+            }
+
+            
+            setFloat("material.shininess", 32.0f);
+
+            // reset OpenGL states
+            // glBindTexture(GL_TEXTURE_2D, 0);
+            glUseProgram(0);
+        }
+        
         void use()
         {
             glUseProgram(m_id);
@@ -84,42 +128,9 @@ namespace ex
             setMat4("projection", mat);
         }
 
-        // https://stackoverflow.com/questions/7322147/what-is-the-range-of-opengl-texture-id
-        void set_material(uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0)
+        void set_color(const glm::vec3& color)
         {
-            // set a default color for diffuse in case there is no textures provided
-            if (diffuse_texture_id == 0)
-            {
-                setVec3("material.diffuseColor", 0.5f, 0.5f, 0.5f);
-            }
-            else
-            {
-                // bind diffuse map
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, diffuse_texture_id);
-                glUniform1i(glGetUniformLocation(m_id, "material.diffuse"), 0);
-            }
-            // set a default color for specular in case there is no textures provided
-            if(spec_texture_id == 0)
-            {
-                // setVec3("material.specularColor", 0.5f, 0.5f, 0.5f);
-                setVec3("material.specularColor", 0.0f, 0.0f, 0.0f);
-            }
-            else
-            {
-                // bind specular map
-                glActiveTexture(GL_TEXTURE1);
-                glBindTexture(GL_TEXTURE_2D, spec_texture_id);
-                glUniform1i(glGetUniformLocation(m_id, "material.specular"), 1);
-            }
-
-            setFloat("material.shininess", 32.0f);
-        }
-
-        void set_colors(const glm::vec3& diffuse, const glm::vec3& specular)
-        {
-            setVec3("material.diffuseColor", diffuse);
-            setVec3("material.specularColor", specular);
+            setVec3("material.color", color);
         }
 
         void set_textures(uint32_t texture_id)
@@ -136,7 +147,6 @@ namespace ex
         void set_directional_light()
         {
             setVec3("dirLight.direction", 0.0f, -1.0f, 0.0f);
-            // setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
             setVec3("dirLight.ambient", 0.35f, 0.35f, 0.35f);
             setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
             setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);

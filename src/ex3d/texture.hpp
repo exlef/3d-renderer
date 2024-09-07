@@ -64,6 +64,9 @@ namespace ex
             std::cout << "Texture failed to load at path: " << path << std::endl;
             stbi_image_free(data);
         }
+        
+        // unbind the texture
+        glBindTexture(GL_TEXTURE_2D, 0);
 
         m_textureID = textureID;
     }
