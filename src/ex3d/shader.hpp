@@ -1,13 +1,16 @@
 #pragma once
 
-#include "camera.hpp"
 #include <GLFW/glfw3.h>
+
 #include <filesystem>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <string>
 #include <vector>
+
+#include "camera.hpp"
+#include "light.hpp"
 
 namespace ex
 {
@@ -81,10 +84,35 @@ namespace ex
             setMat4("projection", mat);
         }
 
+        void set_material(uint32_t diffuse_texture_id = -1, uint32_t spec_texture_id = -1)
+        {
+            if (diffuse_texture_id == -1 && spec_texture_id == -1)
+            {
+                setBool("material.useColors", true);
+                setVec3("material.diffuseColor", 0.9f, 0.5f, 0.5f);
+                setVec3("material.specularColor", 0.5f, 0.5f, 0.5f);
+            }
+
+            setFloat("material.shininess", 32.0f);
+        }
+
         void set_textures(uint32_t texture_id)
         {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture_id);
+        }
+
+        void set_view_pos(glm::vec3 cam_pos)
+        {
+            setVec3("viewPos", cam_pos);
+        }
+
+        void set_directional_light()
+        {
+            setVec3("dirLight.direction", 0.0f, -1.0f, 0.0f);
+            setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+            setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+            setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
         }
 
         // utility uniform functions

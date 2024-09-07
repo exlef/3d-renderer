@@ -27,7 +27,9 @@ public:
         app.set_window_resize_callback([this](int width, int height) { handle_window_resize(width, height); });
 
         m_default_shader.use();
-        m_default_shader.set_textures(m_cube_tex.id());
+        // m_default_shader.set_textures(m_cube_tex.id());
+        m_default_shader.set_material();
+        m_default_shader.set_directional_light();
         update_shader();
 
         app.run();
@@ -53,6 +55,7 @@ private:
         if(m_cam.tr.is_dirty)
         {
             m_default_shader.set_view_matrix(m_cam.get_view_matrix());
+            m_default_shader.set_view_pos(m_cam.tr.pos());
         }
         if(m_cam.is_projection_matrix_require_update)
         {
