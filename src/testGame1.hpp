@@ -15,9 +15,10 @@ private:
     ex::App app = ex::App(800, 600, "test");
     ex::Camera m_cam = ex::Camera(app.aspect_ratio());
     ex::Model m_cube = ex::Model("src/res/models/cube.obj");
+    ex::Light m_light_manager;
     ex::Texture m_container_dif_tex = ex::Texture("src/res/textures/container2.png");
     ex::Texture m_container_spec_tex = ex::Texture("src/res/textures/container2_specular.png");
-    ex::Shader m_default_shader = ex::Shader("src/shaders/default.vert", "src/shaders/default.frag", m_container_dif_tex.id(), m_container_spec_tex.id() /**/);
+    ex::Shader m_default_shader = ex::Shader(m_container_dif_tex.id(), m_container_spec_tex.id(), glm::vec3(0.4f));
 
 public:
     TestGame1()
@@ -27,16 +28,19 @@ public:
         app.set_mouse_callback([this](float xpos, float ypos) {handle_mouse_move(xpos, ypos);});
         app.set_window_resize_callback([this](int width, int height) { handle_window_resize(width, height); });
 
+        // TODO: when direction light's direction changed we need to update the material.
+        m_light_manager.add_dir_light(glm::vec3(-2.0f), 1);
+
         m_default_shader.use();
-        m_default_shader.set_directional_light();
+        m_default_shader.set_directional_light(m_light_manager.dir_light);
 
         app.run();
     }
 private:
     void update()
     {
-        m_cube.tr.rotateY(app.dt() * 50);
-        m_cube.tr.rotateX(app.dt() * 25);
+        // m_cube.tr.rotateY(app.dt() * 50);
+        // m_cube.tr.rotateX(app.dt() * 25);
 
         m_cam.move(app);
 

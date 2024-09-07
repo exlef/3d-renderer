@@ -12,6 +12,7 @@
 #include "camera.hpp"
 #include "light.hpp"
 #include "texture.hpp"
+#include "light.hpp"
 
 namespace ex
 {
@@ -20,6 +21,7 @@ namespace ex
     {
     private:
         u_int32_t m_id = 0;
+        std::string m_vert_source_path = "src/shaders/default.vert", m_frag_source_path = "src/shaders/default.frag";
         // https://stackoverflow.com/questions/7322147/what-is-the-range-of-opengl-texture-id
         uint32_t m_diffuse_texture_id = 0, m_spec_texture_id = 0;
         glm::vec3 m_sky_light;
@@ -27,9 +29,9 @@ namespace ex
     public:
         u_int32_t id() const { return m_id; }
         Shader() = delete;
-        Shader(const std::string& vert_file, const std::string& frag_file, uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0, glm::vec3 sky_light = glm::vec3(0.2f))
+        Shader(uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0, glm::vec3 sky_light = glm::vec3(0.2f))
         {
-            create_shader(vert_file, frag_file);
+            create_shader(m_vert_source_path, m_frag_source_path);
             m_diffuse_texture_id = diffuse_texture_id;
             m_spec_texture_id = spec_texture_id;
             m_sky_light = sky_light;
@@ -84,7 +86,6 @@ namespace ex
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, m_default_texture.id());
                 glUniform1i(glGetUniformLocation(m_id, "material.diffuse"), 0);
-                // setVec3("material.color", 1.5f, 0.5f, 0.5f);
             }
             else
             {
@@ -144,12 +145,10 @@ namespace ex
             setVec3("viewPos", cam_pos);
         }
 
-        void set_directional_light()
+        void set_directional_light(DirectionalLight dir_light)
         {
-            setVec3("dirLight.direction", 0.0f, -1.0f, 0.0f);
-            setVec3("dirLight.ambient", 0.35f, 0.35f, 0.35f);
-            setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-            setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+            setVec3("dirLight.direction", dir_light.dir);
+            setVec3("dirLight.color", dir_light.color);
         }
 
         // utility uniform functions
