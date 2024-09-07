@@ -97,17 +97,20 @@ namespace ex
                 // bind diffuse map
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, diffuse_texture_id);
+                glUniform1i(glGetUniformLocation(m_id, "material.diffuse"), 0);
             }
             // set a default color for specular in case there is no textures provided
             if(spec_texture_id == 0)
             {
-                setVec3("material.specularColor", 0.5f, 0.5f, 0.5f);
+                // setVec3("material.specularColor", 0.5f, 0.5f, 0.5f);
+                setVec3("material.specularColor", 0.0f, 0.0f, 0.0f);
             }
             else
             {
                 // bind specular map
                 glActiveTexture(GL_TEXTURE1);
                 glBindTexture(GL_TEXTURE_2D, spec_texture_id);
+                glUniform1i(glGetUniformLocation(m_id, "material.specular"), 1);
             }
 
             setFloat("material.shininess", 32.0f);
@@ -133,7 +136,8 @@ namespace ex
         void set_directional_light()
         {
             setVec3("dirLight.direction", 0.0f, -1.0f, 0.0f);
-            setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+            // setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+            setVec3("dirLight.ambient", 0.35f, 0.35f, 0.35f);
             setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
             setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
         }

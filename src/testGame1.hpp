@@ -16,7 +16,8 @@ private:
     ex::Camera m_cam = ex::Camera(app.aspect_ratio());
     ex::Model m_cube = ex::Model("src/res/models/cube.obj");
     ex::Shader m_default_shader = ex::Shader("src/shaders/default.vert", "src/shaders/default.frag");
-    ex::Texture m_cube_tex = ex::Texture("src/res/textures/container2.png");
+    ex::Texture m_container_dif_tex = ex::Texture("src/res/textures/container2.png");
+    ex::Texture m_container_spec_tex = ex::Texture("src/res/textures/container2_specular.png");
 
 public:
     TestGame1()
@@ -27,8 +28,7 @@ public:
         app.set_window_resize_callback([this](int width, int height) { handle_window_resize(width, height); });
 
         m_default_shader.use();
-        // m_default_shader.set_textures(m_cube_tex.id());
-        m_default_shader.set_material();
+        m_default_shader.set_material(m_container_dif_tex.id(), m_container_spec_tex.id());
         m_default_shader.set_directional_light();
         update_shader();
 

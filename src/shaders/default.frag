@@ -3,7 +3,6 @@
 struct Material {
     sampler2D diffuse;
     sampler2D specular;
-	// bool useColors;
 	vec3 diffuseColor;
 	vec3 specularColor;
     float shininess;
@@ -55,15 +54,11 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
     vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
     vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
-	// if(material.useColors)
-	// {
-	// 	ambient = light.ambient * material.diffuseColor;
-    // 	diffuse = light.diffuse * diff * material.diffuseColor;
-    // 	specular = light.specular * spec * material.specularColor;
-	// }
+	
+	// add colors
 	ambient += light.ambient * material.diffuseColor;
     diffuse += light.diffuse * diff * material.diffuseColor;
     specular += light.specular * spec * material.specularColor;
     return (ambient + diffuse + specular);
-	// return diffuse;
+	// return (specular);
 }
