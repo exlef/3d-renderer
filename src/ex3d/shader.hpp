@@ -147,7 +147,7 @@ namespace ex
 
         void set_directional_light(DirectionalLight dir_light)
         {
-            setVec3("dirLight.direction", dir_light.dir);
+            setVec3("dirLight.direction", dir_light.tr.get_forward());
             setVec3("dirLight.color", dir_light.color);
         }
 

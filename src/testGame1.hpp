@@ -31,11 +31,9 @@ public:
         app.set_mouse_callback([this](float xpos, float ypos) {handle_mouse_move(xpos, ypos);});
         app.set_window_resize_callback([this](int width, int height) { handle_window_resize(width, height); });
 
-        // TODO: when direction light's direction changed we need to update the material.
-        m_light_manager.add_dir_light(glm::vec3(-2.0f), 1);
+        m_light_manager.add_dir_light(glm::vec3(-45, 0, 0), 1);
 
         m_default_shader.use();
-        m_default_shader.set_directional_light(m_light_manager.dir_light);
 
         app.run();
     }
@@ -46,6 +44,8 @@ private:
         // m_cube.tr.rotateX(app.dt() * 25);
 
         fly_cam.move(app);
+
+        // m_light_manager.dir_light.tr.rotateX(app.dt() * 10);
 
         update_shader();
         app.draw(m_cube);
@@ -65,6 +65,10 @@ private:
         if(m_cam.is_projection_matrix_require_update)
         {
             m_default_shader.set_projection_matrix(m_cam.get_projection_matrix());
+        }
+        if(m_light_manager.dir_light.tr.is_dirty())
+        {
+            m_default_shader.set_directional_light(m_light_manager.dir_light);
         }
     }
 
