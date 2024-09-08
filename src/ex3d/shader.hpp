@@ -21,7 +21,7 @@ namespace ex
     {
     private:
         u_int32_t m_id = 0;
-        std::string m_vert_source_path = "src/shaders/default.vert", m_frag_source_path = "src/shaders/default.frag";
+        std::string m_vert_source_path = "src/ex3d/shaders/default.vert", m_frag_source_path = "src/ex3d/shaders/default.frag";
         // https://stackoverflow.com/questions/7322147/what-is-the-range-of-opengl-texture-id
         uint32_t m_diffuse_texture_id = 0, m_spec_texture_id = 0;
         glm::vec3 m_sky_light;
