@@ -34,15 +34,16 @@ namespace ex
         void local_translateY(float y);
         void local_translateZ(float z);
         // rotation
-        void setRotation(const glm::quat& r);
+        void set_rot(const glm::quat& r);
+        void set_rot(float x_in_deg, float y_in_deg, float z_in_deg);
+        void set_rot(glm::vec3 v_in_deg);
         void rotate(const glm::quat& r);
-        void set_rot(float x, float y, float z);
-        void rotateX(float r);
-        void rotateY(float y);
-        void rotateZ(float z);
-        void local_rotateX(float r);
-        void local_rotateY(float y);
-        void local_rotateZ(float z);
+        void rotateX(float angle_in_degrees);
+        void rotateY(float angle_in_degrees);
+        void rotateZ(float angle_in_degrees);
+        void local_rotateX(float angle_in_degrees);
+        void local_rotateY(float angle_in_degrees);
+        void local_rotateZ(float angle_in_degrees);
         // scale
         void set_scale(glm::vec3 s);
         void scale(glm::vec3 s);
@@ -109,14 +110,9 @@ namespace ex
     }
     // rotation
     // ------------------------------------------------------------------------------------------------------
-    void Transform::setRotation(const glm::quat& r)
+    void Transform::set_rot(const glm::quat& r)
     {
         m_rot = r;
-        m_is_dirty = true;
-    }
-    void Transform::rotate(const glm::quat& r)
-    {
-        m_rot = r * m_rot;
         m_is_dirty = true;
     }
     void Transform::set_rot(float x_in_deg, float y_in_deg, float z_in_deg)
@@ -134,6 +130,15 @@ namespace ex
         // Combine the rotations (note the order)
         // m_rot = qY * qX * qZ; // Yaw -> Pitch -> Roll
         m_rot = qX * qY * qZ;
+        m_is_dirty = true;
+    }
+    void Transform::set_rot(glm::vec3 v_in_deg)
+    {
+        set_rot(v_in_deg.x, v_in_deg.y, v_in_deg.z);
+    }
+    void Transform::rotate(const glm::quat& r)
+    {
+        m_rot = r * m_rot;
         m_is_dirty = true;
     }
     void Transform::rotateX(float angle_in_degrees)
