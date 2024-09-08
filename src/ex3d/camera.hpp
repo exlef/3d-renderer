@@ -8,9 +8,6 @@ namespace ex
     class Camera
     {
     private:
-        glm::vec3 m_forward = glm::vec3(0.0f, 0.0f, -1.0f);
-        glm::vec3 m_right = glm::vec3(1.0f, 0.0f, 0.0f);
-        glm::vec3 m_up = glm::vec3(0.0f, 1.0f, 0.0f);
         glm::vec3 m_world_up = glm::vec3(0.0f, 1.0f, 0.0f);
 
         glm::vec3 m_pos = glm::vec3(0.0, 0.0, 10.0);
@@ -25,7 +22,7 @@ namespace ex
         bool m_at_start = true;
         float cam_speed = 10;
         const float sensitivity = 0.1f;
-        float yaw = -90.0;
+        float yaw = 0;
         float pitch = 0;
 
         void update_vectors();
@@ -57,7 +54,6 @@ namespace ex
     {
         m_aspect_ratio = aspect_ratio;
         tr.set_pos(pos);
-        // m_pos = pos;
         m_fov = fov_in_degree;
         m_near = near;
         m_far = far;
@@ -73,7 +69,8 @@ namespace ex
         }
 
         float xoffset = xpos - m_lastx;
-        float yoffset = m_lasty - ypos; // reversed since y-coordinates range from bottom to top
+        // float yoffset = m_lasty - ypos; // reversed since y-coordinates range from bottom to top
+        float yoffset = ypos - m_lasty;
         m_lastx = xpos;
         m_lasty = ypos;
 
@@ -88,54 +85,44 @@ namespace ex
         if (pitch < -89.0f)
             pitch = -89.0f;
 
-        // tr.set_rot(glm::vec3(yaw, pitch, 0));
-
-        update_vectors();
+        // std::cout << yaw << std::endl;
+        // tr.rotateX(yoffset);
+        // tr.rotateY(xoffset);
+        // tr.set_rot(pitch, yaw, 0);
     }
 
-    // TODO: add abilty to localTranslateXYZ to the transform class.
-    // this will probably simplfy camera look around and move logic.
     void Camera::move(const App& app)
     {
         if (ex::is_key_down(app.window(), KEY_E))
         {
             tr.translateY(app.dt() * cam_speed);
+            // tr.local_translateY(app.dt() * cam_speed);
         }
         if (ex::is_key_down(app.window(), KEY_Q))
         {
             tr.translateY(app.dt() * -cam_speed);
+            // tr.local_translateY(app.dt() * -cam_speed);
         }
         if (ex::is_key_down(app.window(), KEY_W))
         {
-            tr.translate(m_forward * (cam_speed * app.dt()));
+            // tr.translate(m_forward * (cam_speed * app.dt()));
+            tr.local_translateZ(app.dt() * cam_speed);
         }
         if (ex::is_key_down(app.window(), KEY_S))
         {
-            tr.translate(-m_forward * (cam_speed * app.dt()));
+            // tr.translate(-m_forward * (cam_speed * app.dt()));
+            tr.local_translateZ(app.dt() * -cam_speed);
         }
         if (ex::is_key_down(app.window(), KEY_A))
         {
-            tr.translate(-m_right * (cam_speed * app.dt()));
+            // tr.translate(-m_right * (cam_speed * app.dt()));
+            tr.local_translateX(app.dt() * -cam_speed);
         }
         if (ex::is_key_down(app.window(), KEY_D))
         {
-            tr.translate(m_right * (cam_speed * app.dt()));
+            // tr.translate(m_right * (cam_speed * app.dt()));
+            tr.local_translateX(app.dt() * cam_speed);
         }
-    }
-
-    void Camera::update_vectors()
-    {
-        // tr.is_dirty = true;
-
-        glm::vec3 direction;
-
-        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        direction.y = sin(glm::radians(pitch));
-        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-
-        m_forward = glm::normalize(direction);
-        m_right = glm::normalize(glm::cross(m_forward, m_world_up));
-        m_up = glm::normalize(glm::cross(m_right, m_forward));
     }
 
     void Camera::set_fov(float fov_in_degree)
@@ -164,9 +151,7 @@ namespace ex
 
     glm::mat4 Camera::get_view_matrix()
     {
-        // tr.is_dirty = false;
-        // return glm::lookAt(m_pos, m_pos + m_dir, m_world_up);
-        return glm::lookAt(tr.get_pos(), tr.get_pos() + m_forward, m_world_up);
+        return glm::lookAt(tr.get_pos(), tr.get_pos() + tr.get_forward(), m_world_up);
     }
 
     glm::mat4 Camera::get_projection_matrix()

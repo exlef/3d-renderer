@@ -9,7 +9,6 @@ namespace ex
     private:
         /* data */
         glm::vec3 m_pos = glm::vec3(0);
-        // glm::vec3 m_rot = glm::vec3(0);
         glm::quat m_rot = glm::quat(1, 0, 0, 0);
         glm::vec3 m_scale = glm::vec3(1);
 
@@ -31,13 +30,19 @@ namespace ex
         void translateX(float x);
         void translateY(float y);
         void translateZ(float z);
+        void local_translateX(float x);
+        void local_translateY(float y);
+        void local_translateZ(float z);
         // rotation
         void setRotation(const glm::quat& r);
         void rotate(const glm::quat& r);
-        // void set_rot(float x, float y, float z);  // not implemented
+        void set_rot(float x, float y, float z);
         void rotateX(float r);
         void rotateY(float y);
         void rotateZ(float z);
+        void local_rotateX(float r);
+        void local_rotateY(float y);
+        void local_rotateZ(float z);
         // scale
         void set_scale(glm::vec3 s);
         void scale(glm::vec3 s);
@@ -87,6 +92,21 @@ namespace ex
         m_pos.z += z;
         m_is_dirty = true;
     }
+    void Transform::local_translateX(float x)
+    {
+        m_pos += get_right() * x;
+        m_is_dirty = true;
+    }
+    void Transform::local_translateY(float y)
+    {
+        m_pos += get_up() * y;
+        m_is_dirty = true;
+    }
+    void Transform::local_translateZ(float z)
+    {
+        m_pos += get_forward() * z;
+        m_is_dirty = true;
+    }
     // rotation
     // ------------------------------------------------------------------------------------------------------
     void Transform::setRotation(const glm::quat& r)
@@ -99,12 +119,23 @@ namespace ex
         m_rot = r * m_rot;
         m_is_dirty = true;
     }
-    // TODO: implement this
-    // void Transform::set_rot(float x, float y, float z)
-    // {
-    //     m_rot = glm::vec3(x, y, z);
-    //     is_dirty = true;
-    // }
+    void Transform::set_rot(float x_in_deg, float y_in_deg, float z_in_deg)
+    {
+        // Convert degrees to radians
+        float pitch = glm::radians(x_in_deg); // Rotation around X-axis
+        float yaw = glm::radians(y_in_deg);   // Rotation around Y-axis
+        float roll = glm::radians(z_in_deg);  // Rotation around Z-axis
+
+        // Create quaternions for each rotation
+        glm::quat qX = glm::angleAxis(pitch, glm::vec3(1, 0, 0));
+        glm::quat qY = glm::angleAxis(yaw, glm::vec3(0, 1, 0));
+        glm::quat qZ = glm::angleAxis(roll, glm::vec3(0, 0, 1));
+
+        // Combine the rotations (note the order)
+        // m_rot = qY * qX * qZ; // Yaw -> Pitch -> Roll
+        m_rot = qX * qY * qZ;
+        m_is_dirty = true;
+    }
     void Transform::rotateX(float angle_in_degrees)
     {
         float angle = glm::radians(angle_in_degrees);
@@ -121,6 +152,24 @@ namespace ex
     {
         float angle = glm::radians(angle_in_degrees);
         glm::quat rotationZ = glm::angleAxis(angle, glm::vec3(0, 0, 1));
+        rotate(rotationZ);
+    }
+    void Transform::local_rotateX(float angle_in_degrees)
+    {
+        float angle = glm::radians(angle_in_degrees);
+        glm::quat rotationX = glm::angleAxis(angle, get_right());
+        rotate(rotationX);
+    }
+    void Transform::local_rotateY(float angle_in_degrees)
+    {
+        float angle = glm::radians(angle_in_degrees);
+        glm::quat rotationY = glm::angleAxis(angle, get_up());
+        rotate(rotationY);
+    }
+    void Transform::local_rotateZ(float angle_in_degrees)
+    {
+        float angle = glm::radians(angle_in_degrees);
+        glm::quat rotationZ = glm::angleAxis(angle, get_forward());
         rotate(rotationZ);
     }
     // scale
