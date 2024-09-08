@@ -21,10 +21,6 @@ private:
     ex::Texture m_container_dif_tex = ex::Texture("src/res/textures/container2.png");
     ex::Texture m_container_spec_tex = ex::Texture("src/res/textures/container2_specular.png");
     ex::Shader m_default_shader = ex::Shader(m_container_dif_tex.id(), m_container_spec_tex.id(), glm::vec3(0.4f));
-    // float last_x = 0;
-    // float last_y = 0;
-    // bool is_first = true;
-    // float sensitivity = 5;
     FlyCam fly_cam = FlyCam(&m_cam);
 
 public:
@@ -49,7 +45,6 @@ private:
         // m_cube.tr.rotateY(app.dt() * 50);
         // m_cube.tr.rotateX(app.dt() * 25);
 
-        // m_cam.move(app);
         fly_cam.move(app);
 
         update_shader();
@@ -86,19 +81,6 @@ private:
 
     void handle_mouse_move(float xpos, float ypos)
     {
-        // if(is_first) 
-        // {
-        //     last_x = xpos;
-        //     last_y = ypos;
-        //     is_first = false;
-        // }
-        // float dx = (last_x - xpos) * sensitivity;
-        // float dy = (last_y - ypos) * sensitivity;
-        // last_x = xpos;
-        // last_y = ypos;
-        // m_cam.tr.local_rotateY(dx * app.dt());
-        // m_cam.tr.local_rotateX(dy * app.dt());
-        // m_cam.look_around(xpos, ypos);
         fly_cam.look_around(xpos, ypos, app.dt());
     }
 
