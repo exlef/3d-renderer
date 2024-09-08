@@ -42,7 +42,7 @@ private:
         // m_cube.tr.rotateY(app.dt() * 50);
         // m_cube.tr.rotateX(app.dt() * 25);
 
-        m_cam.move(app);
+        // m_cam.move(app);
 
         update_shader();
         app.draw(m_cube);
@@ -50,14 +50,14 @@ private:
 
     void update_shader()
     {
-        if (m_cube.tr.is_dirty)
+        if (m_cube.tr.is_dirty())
         {
-            m_default_shader.set_model_matrix(m_cube.get_model_matrix());
+            m_default_shader.set_model_matrix(m_cube.tr.get_model_matrix());
         }
-        if(m_cam.tr.is_dirty)
+        if(m_cam.tr.is_dirty())
         {
             m_default_shader.set_view_matrix(m_cam.get_view_matrix());
-            m_default_shader.set_view_pos(m_cam.tr.pos());
+            m_default_shader.set_view_pos(m_cam.tr.get_pos());
         }
         if(m_cam.is_projection_matrix_require_update)
         {

@@ -88,7 +88,7 @@ namespace ex
         if (pitch < -89.0f)
             pitch = -89.0f;
 
-        tr.set_rot(glm::vec3(yaw, pitch, 0));
+        // tr.set_rot(glm::vec3(yaw, pitch, 0));
 
         update_vectors();
     }
@@ -125,7 +125,7 @@ namespace ex
 
     void Camera::update_vectors()
     {
-        tr.is_dirty = true;
+        // tr.is_dirty = true;
 
         glm::vec3 direction;
 
@@ -164,9 +164,9 @@ namespace ex
 
     glm::mat4 Camera::get_view_matrix()
     {
-        tr.is_dirty = false;
+        // tr.is_dirty = false;
         // return glm::lookAt(m_pos, m_pos + m_dir, m_world_up);
-        return glm::lookAt(tr.pos(), tr.pos() + m_forward, m_world_up);
+        return glm::lookAt(tr.get_pos(), tr.get_pos() + m_forward, m_world_up);
     }
 
     glm::mat4 Camera::get_projection_matrix()
