@@ -16,7 +16,7 @@ class TestGame1
 private:
     ex::App app = ex::App(800, 600, "test");
     ex::Camera m_cam = ex::Camera(app.aspect_ratio());
-    ex::Model m_cube_ = ex::Model("src/res/models/cube.obj");
+    ex::Model m_cube = ex::Model("src/res/models/cube.obj");
     ex::Model m_sphere = ex::Model("src/res/models/sphere.obj");
     ex::Light m_light_manager;
     ex::Texture m_container_dif_tex = ex::Texture("src/res/textures/container2.png");
@@ -34,6 +34,8 @@ public:
 
         m_light_manager.add_dir_light(glm::vec3(-45, 0, 0), 1);
 
+        m_cube.tr.pos.x = -1;
+        m_sphere.tr.pos.x = 1;
         
 
         app.run();
@@ -43,11 +45,11 @@ private:
     {
         fly_cam.move(app);
 
-        update_shader(m_default_shader, m_cube_);
-        app.draw(m_cube_);
+        m_cube.tr.pos.y -= sinf(glfwGetTime()) * app.dt();
+        update_shader(m_default_shader, m_cube);
+        app.draw(m_cube);
 
-        m_sphere.tr.pos.y += app.dt() *3; 
-
+        m_sphere.tr.pos.y += sinf(glfwGetTime()) * app.dt();
         update_shader(m_default_shader, m_sphere);
         app.draw(m_sphere);
     }
