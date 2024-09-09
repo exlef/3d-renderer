@@ -18,9 +18,9 @@ class TestGame1
 private:
     ex::App app = ex::App(800, 600, "test");
     ex::Camera m_cam = ex::Camera(app.aspect_ratio());
-    // std::vector<ex::Model> m_models;
-    ex::Model m_cube = ex::Model("src/res/models/cube.obj");
-    ex::Model m_sphere = ex::Model("src/res/models/sphere.obj");
+    std::vector<ex::Model> m_models;
+    // ex::Model m_cube = ex::Model("src/res/models/cube.obj");
+    // ex::Model m_sphere = ex::Model("src/res/models/sphere.obj");
     ex::Light m_light_manager;
     ex::Texture m_container_dif_tex = ex::Texture("src/res/textures/container2.png");
     ex::Texture m_container_spec_tex = ex::Texture("src/res/textures/container2_specular.png");
@@ -37,13 +37,14 @@ public:
         app.set_mouse_callback([this](float xpos, float ypos) {handle_mouse_move(xpos, ypos);});
         app.set_window_resize_callback([this](int width, int height) { handle_window_resize(width, height); });
 
-        // m_models.emplace_back(m_cube);
-        // m_models.push_back(m_sphere);
+        m_models.reserve(2);
+        m_models.emplace_back("src/res/models/cube.obj");
+        m_models.emplace_back("src/res/models/sphere.obj");
 
         m_light_manager.add_dir_light(glm::vec3(-45, 0, 0), 1);
 
-        m_cube.tr.pos.x = -1;
-        m_sphere.tr.pos.x = 1;
+        m_models[0].tr.pos.x = -1;
+        m_models[1].tr.pos.x = 1;
 
         app.run();
     }
@@ -52,13 +53,13 @@ private:
     {
         fly_cam.move(app);
 
-        m_cube.tr.pos.y -= sinf(glfwGetTime()) * app.dt();
-        update_shader(m_cube_shader, m_cube);
-        app.draw(m_cube);
+        m_models[0].tr.pos.y -= sinf(glfwGetTime()) * app.dt();
+        update_shader(m_cube_shader, m_models[0]);
+        app.draw(m_models[0]);
 
-        m_sphere.tr.pos.y += sinf(glfwGetTime()) * app.dt();
-        update_shader(m_sphere_shader, m_sphere);
-        app.draw(m_sphere);
+        m_models[1].tr.pos.y += sinf(glfwGetTime()) * app.dt();
+        update_shader(m_sphere_shader, m_models[1]);
+        app.draw(m_models[1]);
     }
 
     void update_shader(ex::Shader& s, ex::Model& m)
