@@ -4,8 +4,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <vector>
-
 #include "ex3d/app.hpp"
 #include "ex3d/camera.hpp"
 #include "ex3d/shader.hpp"
@@ -18,7 +16,7 @@ class TestGame1
 private:
     ex::App app = ex::App(800, 600, "test");
     ex::Camera m_cam = ex::Camera(app.aspect_ratio());
-    std::vector<ex::Model> m_models;
+    ex::Model m_cube = ex::Model("src/res/models/cube.obj");
     ex::Light m_light_manager;
     ex::Texture m_container_dif_tex = ex::Texture("src/res/textures/container2.png");
     ex::Texture m_container_spec_tex = ex::Texture("src/res/textures/container2_specular.png");
@@ -32,8 +30,6 @@ public:
         app.set_key_callback([this](int key, int action) { handle_key_callbacks(key, action); });
         app.set_mouse_callback([this](float xpos, float ypos) {handle_mouse_move(xpos, ypos);});
         app.set_window_resize_callback([this](int width, int height) { handle_window_resize(width, height); });
-
-        m_models.push_back(ex::Model("src/res/models/cube.obj"));
 
         m_light_manager.add_dir_light(glm::vec3(-45, 0, 0), 1);
 
@@ -52,22 +48,15 @@ private:
         // m_light_manager.dir_light.tr.rotateX(app.dt() * 10);
 
         update_shader();
-        for(auto& m : m_models)
-        {
-            app.draw(m);
-        }
+        app.draw(m_cube);
     }
 
     void update_shader()
     {
-        for (auto& m : m_models)
+        if (m_cube.tr.is_dirty())
         {
-            m_default_shader.set_model_matrix(m.tr.get_model_matrix());
+            m_default_shader.set_model_matrix(m_cube.tr.get_model_matrix());
         }
-        // if (m_cube.tr.is_dirty())
-        // {
-        //     m_default_shader.set_model_matrix(m_cube.tr.get_model_matrix());
-        // }
         if(m_cam.tr.is_dirty())
         {
             m_default_shader.set_view_matrix(m_cam.get_view_matrix());
