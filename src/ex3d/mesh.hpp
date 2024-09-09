@@ -106,13 +106,16 @@ namespace ex
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
 
+        // reset openGL states
         glBindVertexArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
     void Mesh::Draw()
     {
         glBindVertexArray(VAO);
-        glc(glDrawElements(GL_TRIANGLES, indices.size(), GL_INT, 0));
+        glc(glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0));
         glBindVertexArray(0);
     }
     
