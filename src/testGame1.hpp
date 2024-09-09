@@ -16,7 +16,8 @@ class TestGame1
 private:
     ex::App app = ex::App(800, 600, "test");
     ex::Camera m_cam = ex::Camera(app.aspect_ratio());
-    ex::Model m_cube = ex::Model("src/res/models/cube.obj");
+    ex::Model m_cube_ = ex::Model("src/res/models/cube.obj");
+    ex::Model m_sphere = ex::Model("src/res/models/sphere.obj");
     ex::Light m_light_manager;
     ex::Texture m_container_dif_tex = ex::Texture("src/res/textures/container2.png");
     ex::Texture m_container_spec_tex = ex::Texture("src/res/textures/container2_specular.png");
@@ -33,34 +34,36 @@ public:
 
         m_light_manager.add_dir_light(glm::vec3(-45, 0, 0), 1);
 
-        m_default_shader.use();
+        
 
         app.run();
     }
 private:
     void update()
     {
-        // m_cube.tr.rotateY(app.dt() * 50);
-        // m_cube.tr.rotateX(app.dt() * 25);
-
         fly_cam.move(app);
 
-        // m_light_manager.dir_light.tr.rotateX(app.dt() * 10);
+        update_shader(m_default_shader, m_cube_);
+        app.draw(m_cube_);
 
-        update_shader();
-        app.draw(m_cube);
+        m_sphere.tr.pos.y += app.dt() *3; 
+
+        update_shader(m_default_shader, m_sphere);
+        app.draw(m_sphere);
     }
 
-    void update_shader()
+    void update_shader(ex::Shader s, ex::Model m)
     {
-        m_default_shader.set_model_matrix(m_cube.tr.get_model_matrix());
+        s.use();
 
-        m_default_shader.set_view_matrix(m_cam.get_view_matrix());
-        m_default_shader.set_view_pos(m_cam.tr.pos);
+        s.set_model_matrix(m.tr.get_model_matrix());
 
-        m_default_shader.set_projection_matrix(m_cam.get_projection_matrix());
+        s.set_view_matrix(m_cam.get_view_matrix());
+        s.set_view_pos(m_cam.tr.pos);
 
-        m_default_shader.set_directional_light(m_light_manager.dir_light);
+        s.set_projection_matrix(m_cam.get_projection_matrix());
+
+        s.set_directional_light(m_light_manager.dir_light);
     }
 
     void handle_key_callbacks(int key, int action)
