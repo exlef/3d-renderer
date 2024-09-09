@@ -7,6 +7,8 @@
 #include <vector>
 #include <iostream>
 
+#include "open_gl_error_checking.hpp"
+
 namespace ex
 {
 
@@ -110,7 +112,7 @@ namespace ex
     void Mesh::Draw()
     {
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+        glc(glDrawElements(GL_TRIANGLES, indices.size(), GL_INT, 0));
         glBindVertexArray(0);
     }
     
