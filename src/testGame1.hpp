@@ -4,6 +4,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <vector>
+
 #include "ex3d/app.hpp"
 #include "ex3d/camera.hpp"
 #include "ex3d/shader.hpp"
@@ -16,13 +18,15 @@ class TestGame1
 private:
     ex::App app = ex::App(800, 600, "test");
     ex::Camera m_cam = ex::Camera(app.aspect_ratio());
+    // std::vector<ex::Model> m_models;
     ex::Model m_cube = ex::Model("src/res/models/cube.obj");
     ex::Model m_sphere = ex::Model("src/res/models/sphere.obj");
     ex::Light m_light_manager;
     ex::Texture m_container_dif_tex = ex::Texture("src/res/textures/container2.png");
     ex::Texture m_container_spec_tex = ex::Texture("src/res/textures/container2_specular.png");
+    ex::Texture m_marble_tex = ex::Texture("src/res/textures/marble.jpg");
     ex::Shader m_cube_shader = ex::Shader(m_container_dif_tex.id(), m_container_spec_tex.id(), glm::vec3(0.4f));
-    ex::Shader m_sphere_shader = ex::Shader(0, 0, glm::vec3(0.4f));
+    ex::Shader m_sphere_shader = ex::Shader(m_marble_tex.id(), 0, glm::vec3(0.4f));
     FlyCam fly_cam = FlyCam(&m_cam);
 
 public:
@@ -32,6 +36,9 @@ public:
         app.set_key_callback([this](int key, int action) { handle_key_callbacks(key, action); });
         app.set_mouse_callback([this](float xpos, float ypos) {handle_mouse_move(xpos, ypos);});
         app.set_window_resize_callback([this](int width, int height) { handle_window_resize(width, height); });
+
+        // m_models.emplace_back(m_cube);
+        // m_models.push_back(m_sphere);
 
         m_light_manager.add_dir_light(glm::vec3(-45, 0, 0), 1);
 

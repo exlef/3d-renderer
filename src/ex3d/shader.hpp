@@ -52,10 +52,10 @@ namespace ex
             // the original one and the copy one both are not valid.
             // I need to be careful about this.
             static int shader_count = 1;
-            std::cout <<  "\n ";
-            std::cout << "[shader destroyed] id: " << m_id << "\n ";
-            std::cout << "total destroyed shader count is: " << shader_count << "\n ";
-            std::cout << "\n ";
+            std::cout <<  std::endl;;
+            std::cout << "[shader destroyed] id: " << m_id << std::endl;
+            std::cout << "total destroyed shader count is: " << shader_count << std::endl;
+            std::cout << std::endl;;
             shader_count++;
             if (m_id != 0)
             {
