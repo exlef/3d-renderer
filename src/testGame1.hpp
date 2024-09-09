@@ -21,7 +21,8 @@ private:
     ex::Light m_light_manager;
     ex::Texture m_container_dif_tex = ex::Texture("src/res/textures/container2.png");
     ex::Texture m_container_spec_tex = ex::Texture("src/res/textures/container2_specular.png");
-    ex::Shader m_default_shader = ex::Shader(m_container_dif_tex.id(), m_container_spec_tex.id(), glm::vec3(0.4f));
+    ex::Shader m_cube_shader = ex::Shader(m_container_dif_tex.id(), m_container_spec_tex.id(), glm::vec3(0.4f));
+    ex::Shader m_sphere_shader = ex::Shader(0, 0, glm::vec3(0.4f));
     FlyCam fly_cam = FlyCam(&m_cam);
 
 public:
@@ -36,7 +37,6 @@ public:
 
         m_cube.tr.pos.x = -1;
         m_sphere.tr.pos.x = 1;
-        
 
         app.run();
     }
@@ -46,17 +46,19 @@ private:
         fly_cam.move(app);
 
         m_cube.tr.pos.y -= sinf(glfwGetTime()) * app.dt();
-        update_shader(m_default_shader, m_cube);
+        update_shader(m_cube_shader, m_cube);
         app.draw(m_cube);
 
         m_sphere.tr.pos.y += sinf(glfwGetTime()) * app.dt();
-        update_shader(m_default_shader, m_sphere);
+        update_shader(m_sphere_shader, m_sphere);
         app.draw(m_sphere);
     }
 
-    void update_shader(ex::Shader s, ex::Model m)
+    void update_shader(ex::Shader& s, ex::Model& m)
     {
         s.use();
+
+        s.set_textures();
 
         s.set_model_matrix(m.tr.get_model_matrix());
 

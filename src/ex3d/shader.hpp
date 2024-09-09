@@ -32,6 +32,10 @@ namespace ex
         Shader(uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0, glm::vec3 sky_light = glm::vec3(0.2f))
         {
             create_shader(m_vert_source_path, m_frag_source_path);
+            if (m_id == 0 || m_id == GL_INVALID_INDEX)
+            {
+                throw std::runtime_error("Failed to create shader program");
+            }
             m_diffuse_texture_id = diffuse_texture_id;
             m_spec_texture_id = spec_texture_id;
             m_sky_light = sky_light;
@@ -40,6 +44,19 @@ namespace ex
 
         ~Shader()
         {
+            // I want to be aware how many shaders are being destroyed 
+            // to not mistakenly destroy them
+            // becuase if I copy a shader (for example when pass by value to a function)
+            // and then this copy being destroyed. it will destroy the original one too because they 
+            // are obviously shares the same id. so we are telling openGL destroy the shader with this id and 
+            // the original one and the copy one both are not valid.
+            // I need to be careful about this.
+            static int shader_count = 1;
+            std::cout <<  "\n ";
+            std::cout << "[shader destroyed] id: " << m_id << "\n ";
+            std::cout << "total destroyed shader count is: " << shader_count << "\n ";
+            std::cout << "\n ";
+            shader_count++;
             if (m_id != 0)
             {
                 glDeleteProgram(m_id);
@@ -79,6 +96,18 @@ namespace ex
         {
             use();
 
+            set_textures();
+
+            setVec3("skyLight", m_sky_light);
+
+            setFloat("material.shininess", 32.0f);
+
+            // reset the openGL state
+            // glUseProgram(0);
+        }
+
+        void set_textures()
+        {
             // set a default color for diffuse in case there is no textures provided
             if (m_diffuse_texture_id == 0)
             {
@@ -100,17 +129,15 @@ namespace ex
                 glc(glBindTexture(GL_TEXTURE_2D, m_spec_texture_id));
                 glc(glUniform1i(glGetUniformLocation(m_id, "material.specular"), 1));
             }
-
-            setVec3("skyLight", m_sky_light);
-
-            setFloat("material.shininess", 32.0f);
-
-            // reset the openGL state
-            glUseProgram(0);
         }
-        
+
         void use()
         {
+            if (m_id == 0 || m_id == GL_INVALID_INDEX)
+            {
+                
+                throw std::runtime_error("Failed to create shader program");
+            }
             glc(glUseProgram(m_id));
         }
 
@@ -132,12 +159,6 @@ namespace ex
         void set_color(const glm::vec3& color)
         {
             setVec3("material.color", color);
-        }
-
-        void set_texture(uint32_t texture_id)
-        {
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, texture_id);
         }
 
         void set_view_pos(glm::vec3 cam_pos)
