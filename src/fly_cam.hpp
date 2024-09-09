@@ -37,12 +37,12 @@ void FlyCam::move(const ex::App& app)
 {
     if (ex::is_key_down(app.window(), KEY_E))
     {
-        m_cam->tr.translateY(app.dt() * cam_speed);
+        m_cam->tr.pos. y += (app.dt() * cam_speed);
         // tr.local_translateY(app.dt() * cam_speed);
     }
     if (ex::is_key_down(app.window(), KEY_Q))
     {
-        m_cam->tr.translateY(app.dt() * -cam_speed);
+        m_cam->tr.pos.y += (app.dt() * -cam_speed);
         // tr.local_translateY(app.dt() * -cam_speed);
     }
     if (ex::is_key_down(app.window(), KEY_W))
