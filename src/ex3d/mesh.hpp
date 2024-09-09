@@ -114,9 +114,9 @@ namespace ex
 
     void Mesh::Draw()
     {
-        glBindVertexArray(VAO);
+        glc(glBindVertexArray(VAO));
         glc(glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0));
-        glBindVertexArray(0);
+        glc(glBindVertexArray(0));
     }
     
 } // namespace ex

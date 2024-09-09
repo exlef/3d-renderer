@@ -83,22 +83,22 @@ namespace ex
             if (m_diffuse_texture_id == 0)
             {
                 ex::Texture m_default_texture = ex::Texture("src/ex3d/res/default2.png");
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, m_default_texture.id());
-                glUniform1i(glGetUniformLocation(m_id, "material.diffuse"), 0);
+                glc(glActiveTexture(GL_TEXTURE0));
+                glc(glBindTexture(GL_TEXTURE_2D, m_default_texture.id()));
+                glc(glUniform1i(glGetUniformLocation(m_id, "material.diffuse"), 0));
             }
             else
             {
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, m_diffuse_texture_id);
-                glUniform1i(glGetUniformLocation(m_id, "material.diffuse"), 0);
+                glc(glActiveTexture(GL_TEXTURE0));
+                glc(glBindTexture(GL_TEXTURE_2D, m_diffuse_texture_id));
+                glc(glUniform1i(glGetUniformLocation(m_id, "material.diffuse"), 0));
             }
 
             if (m_spec_texture_id != 0)
             {
-                glActiveTexture(GL_TEXTURE1);
-                glBindTexture(GL_TEXTURE_2D, m_spec_texture_id);
-                glUniform1i(glGetUniformLocation(m_id, "material.specular"), 1);
+                glc(glActiveTexture(GL_TEXTURE1));
+                glc(glBindTexture(GL_TEXTURE_2D, m_spec_texture_id));
+                glc(glUniform1i(glGetUniformLocation(m_id, "material.specular"), 1));
             }
 
             setVec3("skyLight", m_sky_light);
@@ -111,7 +111,7 @@ namespace ex
         
         void use()
         {
-            glUseProgram(m_id);
+            glc(glUseProgram(m_id));
         }
 
         void set_model_matrix(const glm::mat4& mat)
@@ -134,7 +134,7 @@ namespace ex
             setVec3("material.color", color);
         }
 
-        void set_textures(uint32_t texture_id)
+        void set_texture(uint32_t texture_id)
         {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture_id);
