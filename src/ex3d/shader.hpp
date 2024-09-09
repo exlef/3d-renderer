@@ -63,6 +63,14 @@ namespace ex
             }
         }
 
+        // Copy constructor
+        Shader(const Shader& other)
+        {
+            UNUSED(other);
+            std::cout << RED << "error" << RESET << std::endl;
+            throw std::runtime_error("Copy constructor for Shader class called\n");
+        }
+
         void create_shader(const std::string& vert_file, const std::string& frag_file)
         {
             m_id = glCreateProgram();

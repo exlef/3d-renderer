@@ -19,14 +19,15 @@ private:
     ex::App app = ex::App(800, 600, "test");
     ex::Camera m_cam = ex::Camera(app.aspect_ratio());
     std::vector<ex::Model> m_models;
+    std::vector<ex::Shader> m_shaders;
     // ex::Model m_cube = ex::Model("src/res/models/cube.obj");
     // ex::Model m_sphere = ex::Model("src/res/models/sphere.obj");
     ex::Light m_light_manager;
     ex::Texture m_container_dif_tex = ex::Texture("src/res/textures/container2.png");
     ex::Texture m_container_spec_tex = ex::Texture("src/res/textures/container2_specular.png");
     ex::Texture m_marble_tex = ex::Texture("src/res/textures/marble.jpg");
-    ex::Shader m_cube_shader = ex::Shader(m_container_dif_tex.id(), m_container_spec_tex.id(), glm::vec3(0.4f));
-    ex::Shader m_sphere_shader = ex::Shader(m_marble_tex.id(), 0, glm::vec3(0.4f));
+    // ex::Shader m_cube_shader = ex::Shader(m_container_dif_tex.id(), m_container_spec_tex.id(), glm::vec3(0.4f));
+    // ex::Shader m_sphere_shader = ex::Shader(m_marble_tex.id(), 0, glm::vec3(0.4f));
     FlyCam fly_cam = FlyCam(&m_cam);
 
 public:
@@ -40,6 +41,9 @@ public:
         m_models.reserve(2);
         m_models.emplace_back("src/res/models/cube.obj");
         m_models.emplace_back("src/res/models/sphere.obj");
+        m_shaders.reserve(2);
+        m_shaders.emplace_back(m_container_dif_tex.id(), m_container_spec_tex.id(), glm::vec3(0.4f));
+        m_shaders.emplace_back(m_marble_tex.id(), 0, glm::vec3(0.4f));
 
         m_light_manager.add_dir_light(glm::vec3(-45, 0, 0), 1);
 
@@ -54,11 +58,11 @@ private:
         fly_cam.move(app);
 
         m_models[0].tr.pos.y -= sinf(glfwGetTime()) * app.dt();
-        update_shader(m_cube_shader, m_models[0]);
-        app.draw(m_models[0]);
-
         m_models[1].tr.pos.y += sinf(glfwGetTime()) * app.dt();
-        update_shader(m_sphere_shader, m_models[1]);
+
+        update_shader(m_shaders[0], m_models[0]);
+        app.draw(m_models[0]);
+        update_shader(m_shaders[1], m_models[1]);
         app.draw(m_models[1]);
     }
 
