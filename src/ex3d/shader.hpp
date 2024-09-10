@@ -180,6 +180,22 @@ namespace ex
             setVec3("dirLight.color", dir_light.color);
         }
 
+        void set_point_light(PointLight light)
+        {
+            /*
+                vec3 position;
+                vec3 color;
+                float constant;
+                float linear;
+                float quadratic;
+            */
+            setVec3("pointLights[0].position", light.tr.pos);
+            setVec3("pointLights[0].color", light.color);
+            setFloat("pointLights[0].constant", light.constant);
+            setFloat("pointLights[0].linear", light.linear);
+            setFloat("pointLights[0].quadratic", light.quadratic);
+        }
+
         // utility uniform functions
         // ------------------------------------------------------------------------
         void setBool(const std::string& name, bool value) const

@@ -32,15 +32,14 @@ namespace ex
                 throw std::runtime_error("Failed to create shader program");
             }
 
-            setup();
+            setup(glm::vec3(1));
         }
         ~UnlitShader() = default;
 
-        void setup()
+        void setup(glm::vec3 color)
         {
             use();
-
-            setVec3("color", glm::vec3(1));
+            setVec3("color", color);
 
             // setFloat("material.shininess", 32.0f);
         }
