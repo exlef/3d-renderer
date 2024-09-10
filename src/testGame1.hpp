@@ -12,6 +12,7 @@
 #include "ex3d/texture.hpp"
 
 #include "fly_cam.hpp"
+#include "ex3d/unlit_shader.hpp"
 
 class TestGame1
 {
@@ -21,6 +22,7 @@ private:
     ex::Model m_cube = ex::Model("src/res/models/cube.obj");
     ex::Model m_sphere = ex::Model("src/res/models/sphere.obj");
     ex::Model m_ground = ex::Model("src/res/models/cube.obj");
+    ex::Model m_light = ex::Model("src/res/models/sphere.obj");
     ex::Light m_light_manager;
     ex::Texture m_container_dif_tex = ex::Texture("src/res/textures/container2.png");
     ex::Texture m_container_spec_tex = ex::Texture("src/res/textures/container2_specular.png");
@@ -29,6 +31,7 @@ private:
     ex::Shader m_cube_shader = ex::Shader(m_container_dif_tex.id(), m_container_spec_tex.id(), glm::vec3(0.4f));
     ex::Shader m_sphere_shader = ex::Shader(m_marble_tex.id(), 0, glm::vec3(0.4f));
     ex::Shader m_ground_shader = ex::Shader(m_wood_tex.id(), 0, glm::vec3(0.4f));
+    ex::UnlitShader m_light_source_shader = ex::UnlitShader();
     FlyCam fly_cam = FlyCam(&m_cam);
 
 public:
@@ -44,6 +47,9 @@ public:
         m_sphere.tr.pos.z = -2;
         m_ground.tr.pos = glm::vec3(0, -1, 0);
         m_ground.tr.scale = glm::vec3(10, 0.1f, 10);
+
+        m_light.tr.scale = glm::vec3(0.2f);
+        m_light.tr.pos = glm::vec3(1, 3, 0);
 
         app.run();
     }
@@ -63,6 +69,14 @@ private:
         draw(m_sphere, m_sphere_shader);
 
         draw(m_ground, m_ground_shader);
+
+        m_light_source_shader.setup();
+        m_light_source_shader.set_model_matrix(m_light.tr.get_model_matrix());
+
+        m_light_source_shader.set_view_matrix(m_cam.get_view_matrix());
+
+        m_light_source_shader.set_projection_matrix(m_cam.get_projection_matrix());
+        app.draw(m_light);
     }
 
     void draw(ex::Model& m, ex::Shader& s)
