@@ -43,9 +43,9 @@ namespace ex
             // setFloat("material.shininess", 32.0f);
         }
 
-        void update(ex::Model& model, ex::Camera& cam, ex::PointLight point_light)
+        void update(ex::Model& model, ex::Camera& cam, glm::vec3 color)
         {
-            setup(point_light.color);
+            setup(color);
             set_model_matrix(model.tr.get_model_matrix());
 
             set_view_matrix(cam.get_view_matrix());

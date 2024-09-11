@@ -75,7 +75,7 @@ namespace ex
             throw std::runtime_error("Copy constructor for Shader class called\n");
         }
 
-        void update(ex::Model& model, ex::Camera& cam, ex::DirectionalLight dir_light, ex::PointLight point_light)
+        void update(ex::Model& model, ex::Camera& cam, ex::DirectionalLight& dir_light, std::vector< ex::PointLight> point_lights)
         {
             use();
 
@@ -90,7 +90,13 @@ namespace ex
 
             set_directional_light(dir_light);
 
-            set_point_light(point_light);
+            setInt("pointLightCount", point_lights.size());
+
+            for (size_t i = 0; i < point_lights.size(); i++)
+            {
+                set_point_light(point_lights[i], i);
+            }
+            
         }
         
         void create_shader(const std::string& vert_file, const std::string& frag_file)
@@ -202,7 +208,7 @@ namespace ex
             setVec3("dirLight.color", dir_light.color);
         }
 
-        void set_point_light(PointLight light)
+        void set_point_light(PointLight& light, int index)
         {
             /*
                 vec3 position;
@@ -211,11 +217,13 @@ namespace ex
                 float linear;
                 float quadratic;
             */
-            setVec3("pointLights[0].position", light.tr.pos);
-            setVec3("pointLights[0].color", light.color);
-            setFloat("pointLights[0].constant", light.constant);
-            setFloat("pointLights[0].linear", light.linear);
-            setFloat("pointLights[0].quadratic", light.quadratic);
+
+            std::string index_str = std::to_string(index);
+            setVec3("pointLights[" + index_str + "].position", light.tr.pos);
+            setVec3("pointLights[" + index_str + "].color", light.color);
+            setFloat("pointLights[" + index_str + "].constant", light.constant);
+            setFloat("pointLights[" + index_str + "].linear", light.linear);
+            setFloat("pointLights[" + index_str + "].quadratic", light.quadratic);
         }
     private:
         std::string load_shader_source(const std::string& relativePath)

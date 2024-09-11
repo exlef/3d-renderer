@@ -21,7 +21,7 @@ struct PointLight {
     float linear;
     float quadratic;
 };  
-#define MAX_POINT_LIGHT_COUNT 1 
+#define MAX_POINT_LIGHT_COUNT 10
 
 // these are being set from shader class
 uniform vec3 viewPos;
@@ -29,6 +29,7 @@ uniform vec3 skyLight;
 uniform Material material;
 uniform DirLight dirLight;
 uniform PointLight pointLights[MAX_POINT_LIGHT_COUNT];
+uniform int pointLightCount;
 
 in vec3 FragPos;
 in vec3 Normal;
@@ -51,11 +52,10 @@ void main()
 	result = skyLight * vec3(texture(material.diffuse, TexCoords));;
 
 	result += CalcDirLight(dirLight, norm, viewDir);
-    for(int i = 0; i < MAX_POINT_LIGHT_COUNT; i++)
+    for(int i = 0; i < pointLightCount; i++)
     {
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
     }    
-    
 	FragColor = vec4(result, 1.0);
 }
 

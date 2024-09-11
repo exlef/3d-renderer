@@ -49,16 +49,18 @@ public:
         app.set_mouse_callback([this](float xpos, float ypos) {handle_mouse_move(xpos, ypos);});
         app.set_window_resize_callback([this](int width, int height) { handle_window_resize(width, height); });
 
-        m_light_manager.add_dir_light(glm::vec3(-45, 0, 0), 1);
+        m_light_manager.add_dir_light(glm::vec3(-45, 0, 0), 0.1);
+        
         m_light_manager.add_point_light(glm::vec3(1,0,0));
-        m_light_manager.point_light.tr.pos = glm::vec3(1, 3, 0);
+        m_light_manager.point_lights[0].tr.pos = glm::vec3(1, 3, 0);
+        m_light_manager.add_point_light(glm::vec3(0, 1, 0));
+        m_light_manager.point_lights[1].tr.pos = glm::vec3(-1, 3, 0);
 
         m_sphere.tr.pos.z = -2;
         m_ground.tr.pos = glm::vec3(0, -1, 0);
         m_ground.tr.scale = glm::vec3(10, 0.1f, 10);
 
-        m_light.tr.scale = glm::vec3(0.2f);
-        m_light.tr.pos = m_light_manager.point_light.tr.pos;
+        
 
         app.run();
     }
@@ -79,19 +81,23 @@ private:
 
         draw_model_with_default_shader(m_ground, m_ground_shader);
 
-        
-        draw_model_with_unlit_shader(m_light, m_light_source_shader);
+        for (size_t i = 0; i < m_light_manager.point_lights.size(); i++)
+        {
+            m_light.tr.scale = glm::vec3(0.2f);
+            m_light.tr.pos = m_light_manager.point_lights[i].tr.pos;
+            draw_model_with_unlit_shader(m_light, m_light_source_shader, i);
+        }        
     }
 
     void draw_model_with_default_shader(ex::Model& model, ex::DefaultShader& shader)
     {
-        shader.update(model, m_cam, m_light_manager.dir_light, m_light_manager.point_light);
+        shader.update(model, m_cam, m_light_manager.dir_light, m_light_manager.point_lights);
         app.draw(model);
     }
 
-    void draw_model_with_unlit_shader(ex::Model& model, ex::UnlitShader& shader)
+    void draw_model_with_unlit_shader(ex::Model& model, ex::UnlitShader& shader, int point_light_index)
     {
-        shader.update(model, m_cam, m_light_manager.point_light);
+        shader.update(model, m_cam, m_light_manager.point_lights[point_light_index].color);
         app.draw(model);
     }
 
