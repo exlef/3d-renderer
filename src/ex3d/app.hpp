@@ -10,6 +10,7 @@
 #include "input.hpp"
 #include "mesh.hpp"
 #include "model.hpp"
+#include "post_processing.hpp"
 
 namespace ex
 {
@@ -34,6 +35,9 @@ namespace ex
         double elapsedTime = 0.0;
         std::chrono::high_resolution_clock::time_point lastTime = std::chrono::high_resolution_clock::now();
         float m_dt = 0;
+
+        // post-processing 
+        PostProcessing* m_post_processing = nullptr;
 
     public:
         int screen_width() const 
@@ -95,6 +99,9 @@ namespace ex
 
             // configure global opengl states
             glEnable(GL_DEPTH_TEST);
+            
+            // 
+            m_post_processing = new PostProcessing(width, height);
         }
 
         ~App()
@@ -228,8 +235,12 @@ namespace ex
 
         void start_drawing()
         {
+            // Bind the custom framebuffer
+            glBindFramebuffer(GL_FRAMEBUFFER, m_post_processing->FBO);
             glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            // Enable depth testing since it's disabled when drawing the framebuffer rectangle
+            glEnable(GL_DEPTH_TEST);
         }
 
         void draw(Model& model)
@@ -240,6 +251,15 @@ namespace ex
 
         void end_drawing()
         {
+            // Bind the default framebuffer
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            // Draw the framebuffer rectangle
+            m_post_processing->pp_shader_prog.use();
+            glBindVertexArray(m_post_processing->rectVAO);
+            glDisable(GL_DEPTH_TEST); // prevents framebuffer rectangle from being discarded
+            glBindTexture(GL_TEXTURE_2D, m_post_processing->framebufferTexture);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+
             glfwSwapBuffers(m_window);
             glfwPollEvents();
         }
