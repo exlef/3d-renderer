@@ -46,36 +46,7 @@ namespace ex
             setup();
         }
 
-        ~DefaultShader()
-        {
-            // I want to be aware how many shaders are being destroyed 
-            // to not mistakenly destroy them
-            // becuase if I copy a shader (for example when pass by value to a function)
-            // and then this copy being destroyed. it will destroy the original one too because they 
-            // are obviously shares the same id. so we are telling openGL destroy the shader with this id and 
-            // the original one and the copy one both are not valid.
-            // I need to be careful about this.
-            static int shader_count = 1;
-            std::cout <<  std::endl;;
-            std::cout << "[shader destroyed] id: " << m_id << std::endl;
-            std::cout << "total destroyed shader count is: " << shader_count << std::endl;
-            std::cout << std::endl;;
-            shader_count++;
-            if (m_id != 0)
-            {
-                glDeleteProgram(m_id);
-            }
-        }
-
-        // Copy constructor
-        DefaultShader(const DefaultShader& other)
-        {
-            UNUSED(other);
-            std::cout << RED << "error" << RESET << std::endl;
-            throw std::runtime_error("Copy constructor for Shader class called\n");
-        }
-
-        void update(ex::Model& model, ex::Camera& cam, ex::DirectionalLight& dir_light, std::vector< ex::PointLight> point_lights)
+        void update(ex::Model& model, ex::Camera& cam, ex::DirectionalLight& dir_light, std::vector<ex::PointLight> point_lights)
         {
             use();
 
@@ -96,9 +67,8 @@ namespace ex
             {
                 set_point_light(point_lights[i], i);
             }
-            
         }
-        
+
         void create_shader(const std::string& vert_file, const std::string& frag_file)
         {
             m_id = glCreateProgram();

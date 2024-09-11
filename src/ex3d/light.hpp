@@ -30,7 +30,7 @@ namespace ex
         DirectionalLight dir_light;
         std::vector<PointLight> point_lights;
         void add_dir_light(glm::vec3 rot, float ambient = 0.5f);
-        void add_point_light(glm::vec3 color = glm::vec3(1));
+        void add_point_light(glm::vec3 pos, glm::vec3 color = glm::vec3(1));
     };
 
     // ---------------------------------------------------------------------------------------------
@@ -44,10 +44,11 @@ namespace ex
         dir_light = l;
     }
 
-    void Light::add_point_light(glm::vec3 color)
+    void Light::add_point_light(glm::vec3 pos, glm::vec3 color)
     {
         PointLight p;
         p.color = color;
+        p.tr.pos = pos;
         // TODO: avoid unnecesary copying and create struct directly in the vector (emplace_back)
         point_lights.push_back(p);
     }

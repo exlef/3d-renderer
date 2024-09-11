@@ -50,18 +50,13 @@ public:
         app.set_window_resize_callback([this](int width, int height) { handle_window_resize(width, height); });
 
         m_light_manager.add_dir_light(glm::vec3(-45, 0, 0), 0.1);
-        
-        m_light_manager.add_point_light(glm::vec3(1,0,0));
-        m_light_manager.point_lights[0].tr.pos = glm::vec3(1, 3, 0);
-        m_light_manager.add_point_light(glm::vec3(0, 1, 0));
-        m_light_manager.point_lights[1].tr.pos = glm::vec3(-1, 3, 0);
+        m_light_manager.add_point_light(glm::vec3(1, 3, 0), glm::vec3(1, 0, 0));
+        m_light_manager.add_point_light(glm::vec3(-1, 3, 0), glm::vec3(0, 1, 0));
 
         m_sphere.tr.pos.z = -2;
         m_ground.tr.pos = glm::vec3(0, -1, 0);
         m_ground.tr.scale = glm::vec3(10, 0.1f, 10);
-
         
-
         app.run();
     }
 private:
