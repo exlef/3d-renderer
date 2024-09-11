@@ -9,27 +9,31 @@
 #include <string>
 #include <vector>
 
+#include "base_shader.hpp"
 #include "camera.hpp"
 #include "light.hpp"
 #include "texture.hpp"
 #include "light.hpp"
+#include "helper.hpp"
+#include "open_gl_error_checking.hpp"
+#include "model.hpp"
 
 namespace ex
 {
-
-    class Shader
+    class DefaultShader : public BaseShader
     {
     private:
-        u_int32_t m_id = 0;
-        std::string m_vert_source_path = "src/ex3d/shaders/default.vert", m_frag_source_path = "src/ex3d/shaders/default.frag";
+        std::string m_vert_source_path = "src/ex3d/shaders/default.vert";
+        std::string m_frag_source_path = "src/ex3d/shaders/default.frag";
         // https://stackoverflow.com/questions/7322147/what-is-the-range-of-opengl-texture-id
-        uint32_t m_diffuse_texture_id = 0, m_spec_texture_id = 0;
+        uint32_t m_diffuse_texture_id = 0;
+        uint32_t m_spec_texture_id = 0;
         glm::vec3 m_sky_light;
 
     public:
         u_int32_t id() const { return m_id; }
-        Shader() = delete;
-        Shader(uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0, glm::vec3 sky_light = glm::vec3(0.2f))
+        DefaultShader() = delete;
+        DefaultShader(uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0, glm::vec3 sky_light = glm::vec3(0.2f))
         {
             create_shader(m_vert_source_path, m_frag_source_path);
             if (m_id == 0 || m_id == GL_INVALID_INDEX)
@@ -42,7 +46,7 @@ namespace ex
             setup();
         }
 
-        ~Shader()
+        ~DefaultShader()
         {
             // I want to be aware how many shaders are being destroyed 
             // to not mistakenly destroy them
@@ -64,13 +68,31 @@ namespace ex
         }
 
         // Copy constructor
-        Shader(const Shader& other)
+        DefaultShader(const DefaultShader& other)
         {
             UNUSED(other);
             std::cout << RED << "error" << RESET << std::endl;
             throw std::runtime_error("Copy constructor for Shader class called\n");
         }
 
+        void update(ex::Model& model, ex::Camera& cam, ex::DirectionalLight dir_light, ex::PointLight point_light)
+        {
+            use();
+
+            set_textures();
+
+            set_model_matrix(model.tr.get_model_matrix());
+
+            set_view_matrix(cam.get_view_matrix());
+            set_view_pos(cam.tr.pos);
+
+            set_projection_matrix(cam.get_projection_matrix());
+
+            set_directional_light(dir_light);
+
+            set_point_light(point_light);
+        }
+        
         void create_shader(const std::string& vert_file, const std::string& frag_file)
         {
             m_id = glCreateProgram();
@@ -195,66 +217,6 @@ namespace ex
             setFloat("pointLights[0].linear", light.linear);
             setFloat("pointLights[0].quadratic", light.quadratic);
         }
-
-        // utility uniform functions
-        // ------------------------------------------------------------------------
-        void setBool(const std::string& name, bool value) const
-        {
-            glUniform1i(glGetUniformLocation(m_id, name.c_str()), (int)value);
-        }
-        // ------------------------------------------------------------------------
-        void setInt(const std::string& name, int value) const
-        {
-            glUniform1i(glGetUniformLocation(m_id, name.c_str()), value);
-        }
-        // ------------------------------------------------------------------------
-        void setFloat(const std::string& name, float value) const
-        {
-            glUniform1f(glGetUniformLocation(m_id, name.c_str()), value);
-        }
-        // ------------------------------------------------------------------------
-        void setVec2(const std::string& name, const glm::vec2& value) const
-        {
-            glUniform2fv(glGetUniformLocation(m_id, name.c_str()), 1, &value[0]);
-        }
-        void setVec2(const std::string& name, float x, float y) const
-        {
-            glUniform2f(glGetUniformLocation(m_id, name.c_str()), x, y);
-        }
-        // ------------------------------------------------------------------------
-        void setVec3(const std::string& name, const glm::vec3& value) const
-        {
-            glUniform3fv(glGetUniformLocation(m_id, name.c_str()), 1, &value[0]);
-        }
-        void setVec3(const std::string& name, float x, float y, float z) const
-        {
-            glUniform3f(glGetUniformLocation(m_id, name.c_str()), x, y, z);
-        }
-        // ------------------------------------------------------------------------
-        void setVec4(const std::string& name, const glm::vec4& value) const
-        {
-            glUniform4fv(glGetUniformLocation(m_id, name.c_str()), 1, &value[0]);
-        }
-        void setVec4(const std::string& name, float x, float y, float z, float w) const
-        {
-            glUniform4f(glGetUniformLocation(m_id, name.c_str()), x, y, z, w);
-        }
-        // ------------------------------------------------------------------------
-        void setMat2(const std::string& name, const glm::mat2& mat) const
-        {
-            glUniformMatrix2fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-        }
-        // ------------------------------------------------------------------------
-        void setMat3(const std::string& name, const glm::mat3& mat) const
-        {
-            glUniformMatrix3fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-        }
-        // ------------------------------------------------------------------------
-        void setMat4(const std::string& name, const glm::mat4& mat) const
-        {
-            glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-        }
-
     private:
         std::string load_shader_source(const std::string& relativePath)
         {

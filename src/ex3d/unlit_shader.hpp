@@ -17,10 +17,9 @@
 namespace ex
 {
 
-    class UnlitShader
+    class UnlitShader: public BaseShader
     {
     private:
-        u_int32_t m_id = 0;
         std::string m_vert_source_path = "src/ex3d/shaders/unlit.vert", m_frag_source_path = "src/ex3d/shaders/unlit.frag";
 
     public:
@@ -42,6 +41,16 @@ namespace ex
             setVec3("color", color);
 
             // setFloat("material.shininess", 32.0f);
+        }
+
+        void update(ex::Model& model, ex::Camera& cam, ex::PointLight point_light)
+        {
+            setup(point_light.color);
+            set_model_matrix(model.tr.get_model_matrix());
+
+            set_view_matrix(cam.get_view_matrix());
+
+            set_projection_matrix(cam.get_projection_matrix());
         }
 
         void use()
@@ -70,16 +79,6 @@ namespace ex
         }
 
     private:
-        void setVec3(const std::string& name, const glm::vec3& value) const
-        {
-            glUniform3fv(glGetUniformLocation(m_id, name.c_str()), 1, &value[0]);
-        }
-
-        void setMat4(const std::string& name, const glm::mat4& mat) const
-        {
-            glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-        }
-
         void create_shader(const std::string& vert_file, const std::string& frag_file)
         {
             m_id = glCreateProgram();

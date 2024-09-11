@@ -8,7 +8,7 @@
 
 #include "ex3d/app.hpp"
 #include "ex3d/camera.hpp"
-#include "ex3d/shader.hpp"
+#include "ex3d/default_shader.hpp"
 #include "ex3d/texture.hpp"
 
 #include "fly_cam.hpp"
@@ -21,7 +21,7 @@ private:
     ex::Camera m_cam = ex::Camera(app.aspect_ratio(), glm::vec3(0, 2, 10));
     ex::Light m_light_manager;
     FlyCam fly_cam = FlyCam(&m_cam);
-    
+
 #pragma region models
     ex::Model m_cube = ex::Model("src/res/models/cube.obj");
     ex::Model m_sphere = ex::Model("src/res/models/sphere.obj");
@@ -35,9 +35,9 @@ private:
     ex::Texture m_wood_tex = ex::Texture("src/res/textures/wood.png");
 #pragma endregion
 #pragma region shaders
-    ex::Shader m_cube_shader = ex::Shader(m_container_dif_tex.id(), m_container_spec_tex.id(), glm::vec3(0.4f));
-    ex::Shader m_sphere_shader = ex::Shader(m_marble_tex.id(), 0, glm::vec3(0.4f));
-    ex::Shader m_ground_shader = ex::Shader(m_wood_tex.id(), 0, glm::vec3(0.4f));
+    ex::DefaultShader m_cube_shader = ex::DefaultShader(m_container_dif_tex.id(), m_container_spec_tex.id(), glm::vec3(0.4f));
+    ex::DefaultShader m_sphere_shader = ex::DefaultShader(m_marble_tex.id(), 0, glm::vec3(0.4f));
+    ex::DefaultShader m_ground_shader = ex::DefaultShader(m_wood_tex.id(), 0, glm::vec3(0.4f));
     ex::UnlitShader m_light_source_shader = ex::UnlitShader();
 #pragma endregion
 
@@ -57,6 +57,8 @@ public:
         m_ground.tr.pos = glm::vec3(0, -1, 0);
         m_ground.tr.scale = glm::vec3(10, 0.1f, 10);
 
+        m_light.tr.scale = glm::vec3(0.2f);
+        m_light.tr.pos = m_light_manager.point_light.tr.pos;
 
         app.run();
     }
@@ -70,46 +72,27 @@ private:
         for (size_t i = 0; i < 5; i++)
         {
             m_cube.tr.pos.x = (4 - ((int)i * 2));
-            draw(m_cube, m_cube_shader);
+            draw_model_with_default_shader(m_cube, m_cube_shader);
         }
+
+        draw_model_with_default_shader(m_sphere, m_sphere_shader);
+
+        draw_model_with_default_shader(m_ground, m_ground_shader);
+
         
-        draw(m_sphere, m_sphere_shader);
-
-        draw(m_ground, m_ground_shader);
-
-        m_light.tr.scale = glm::vec3(0.2f);
-        m_light.tr.pos = m_light_manager.point_light.tr.pos;
-        m_light_source_shader.setup(m_light_manager.point_light.color);
-        m_light_source_shader.set_model_matrix(m_light.tr.get_model_matrix());
-
-        m_light_source_shader.set_view_matrix(m_cam.get_view_matrix());
-
-        m_light_source_shader.set_projection_matrix(m_cam.get_projection_matrix());
-        app.draw(m_light);
+        draw_model_with_unlit_shader(m_light, m_light_source_shader);
     }
 
-    void draw(ex::Model& m, ex::Shader& s)
+    void draw_model_with_default_shader(ex::Model& model, ex::DefaultShader& shader)
     {
-        update_shader(m, s);
-        app.draw(m);
+        shader.update(model, m_cam, m_light_manager.dir_light, m_light_manager.point_light);
+        app.draw(model);
     }
 
-    void update_shader(ex::Model& m, ex::Shader& s)
+    void draw_model_with_unlit_shader(ex::Model& model, ex::UnlitShader& shader)
     {
-        s.use();
-
-        s.set_textures();
-
-        s.set_model_matrix(m.tr.get_model_matrix());
-
-        s.set_view_matrix(m_cam.get_view_matrix());
-        s.set_view_pos(m_cam.tr.pos);
-
-        s.set_projection_matrix(m_cam.get_projection_matrix());
-
-        s.set_directional_light(m_light_manager.dir_light);
-
-        s.set_point_light(m_light_manager.point_light);
+        shader.update(model, m_cam, m_light_manager.point_light);
+        app.draw(model);
     }
 
     void handle_key_callbacks(int key, int action)
