@@ -28,6 +28,9 @@ namespace ex
         key_callback_func m_key_callback = nullptr;
         mouse_callback_func m_mouse_callback = nullptr;
 
+        // config
+        bool hide_cursor = false;
+
         // delta time
         const int TARGET_FPS = 60;
         const double TARGET_FRAME_TIME = 1.0 / TARGET_FPS;
@@ -89,7 +92,7 @@ namespace ex
             // Set the user pointer to the current instance of App
             glfwSetWindowUserPointer(window(), this);
             // hide cursor
-            glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            if(hide_cursor) glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
             if (glewInit() != GLEW_OK)
             {
@@ -100,8 +103,12 @@ namespace ex
             // configure global opengl states
             glEnable(GL_DEPTH_TEST);
             
-            // 
-            m_post_processing = new PostProcessing(width, height);
+            // this object needs to be created after the openGL contex
+            int framebufferWidth, framebufferHeight;
+            glfwGetFramebufferSize(m_window, &framebufferWidth, &framebufferHeight);
+            std::cout << "--------" << framebufferWidth << std::endl;
+            // m_post_processing = new PostProcessing(width * 2, height * 2);
+            m_post_processing = new PostProcessing(framebufferWidth, framebufferHeight);
         }
 
         ~App()
@@ -183,8 +190,15 @@ namespace ex
                 {
                     app->m_window_resize_funptr(width, height);
                 }
+                app->on_window_resize(width, height);
+                std::cout <<"lollololoo " << width << std::endl;
                 glViewport(0, 0, width, height);
             }
+        }
+
+        void on_window_resize(int width, int height)
+        {
+            m_post_processing = new PostProcessing(width, height);
         }
 
         void set_key_callback(key_callback_func callback)
