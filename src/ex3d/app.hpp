@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <functional>
+#include <memory>
 
 #include "input.hpp"
 #include "mesh.hpp"
@@ -39,8 +40,8 @@ namespace ex
         std::chrono::high_resolution_clock::time_point lastTime = std::chrono::high_resolution_clock::now();
         float m_dt = 0;
 
-        // post-processing 
-        PostProcessing* m_post_processing = nullptr;
+        // post-processing
+        std::unique_ptr<PostProcessing> m_post_processing = nullptr;
 
     public:
         int screen_width() const 
@@ -103,12 +104,12 @@ namespace ex
             // configure global opengl states
             glEnable(GL_DEPTH_TEST);
             
-            // this object needs to be created after the openGL contex
+            // this object needs to be created after the openGL contex because the shader object of post processing depends on openGL being initialized. creating this post processing object before openGL being initialized will cause seg fault.
+            // we can't simply give width and height for post prcessing texture size. it will be stretched. it need to be framebuffer size.
             int framebufferWidth, framebufferHeight;
             glfwGetFramebufferSize(m_window, &framebufferWidth, &framebufferHeight);
-            std::cout << "--------" << framebufferWidth << std::endl;
-            // m_post_processing = new PostProcessing(width * 2, height * 2);
-            m_post_processing = new PostProcessing(framebufferWidth, framebufferHeight);
+            // m_post_processing = new PostProcessing(framebufferWidth, framebufferHeight);
+            m_post_processing = std::make_unique<PostProcessing>(framebufferWidth, framebufferHeight);
         }
 
         ~App()
@@ -191,14 +192,15 @@ namespace ex
                     app->m_window_resize_funptr(width, height);
                 }
                 app->on_window_resize(width, height);
-                std::cout <<"lollololoo " << width << std::endl;
                 glViewport(0, 0, width, height);
             }
         }
 
         void on_window_resize(int width, int height)
         {
-            m_post_processing = new PostProcessing(width, height);
+            // m_post_processing = new PostProcessing(width, height);
+            // in here we don't need glfwGetFramebufferSize as we did in the constructor. because the widht and height is already framebuffer sizes.
+            m_post_processing = std::make_unique<PostProcessing>(width, height);
         }
 
         void set_key_callback(key_callback_func callback)
