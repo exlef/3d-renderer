@@ -30,7 +30,8 @@ namespace ex
         mouse_callback_func m_mouse_callback = nullptr;
 
         // config
-        bool hide_cursor = false;
+        bool hide_cursor = true;
+        bool apply_pp = true; // apply post processing
 
         // delta time
         const int TARGET_FPS = 60;
@@ -103,6 +104,10 @@ namespace ex
 
             // configure global opengl states
             glEnable(GL_DEPTH_TEST);
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_FRONT);
+            glFrontFace(GL_CCW);
+            // glEnable(GL_FRAMEBUFFER_SRGB);
             
             // this object needs to be created after the openGL contex because the shader object of post processing depends on openGL being initialized. creating this post processing object before openGL being initialized will cause seg fault.
             // we can't simply give width and height for post prcessing texture size. it will be stretched. it need to be framebuffer size.
@@ -252,8 +257,13 @@ namespace ex
         void start_drawing()
         {
             // Bind the custom framebuffer
-            glBindFramebuffer(GL_FRAMEBUFFER, m_post_processing->FBO);
-            glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+            if(apply_pp) glBindFramebuffer(GL_FRAMEBUFFER, m_post_processing->FBO);
+            // Specify the color of the background
+            float gamma = 2.2; // TODO: this should be stored somewhere and send to the post processing fragment shader 
+            if(apply_pp)
+                glClearColor(pow(0.07f, gamma), pow(0.13f, gamma), pow(0.17f, gamma), 1.0f); // if the post processing is enabled I want to background color also be effected from gamma correction. since we can't set it from post processing fragment shader I set it here.
+            else 
+                glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             // Enable depth testing since it's disabled when drawing the framebuffer rectangle
             glEnable(GL_DEPTH_TEST);
@@ -270,11 +280,14 @@ namespace ex
             // Bind the default framebuffer
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             // Draw the framebuffer rectangle
-            m_post_processing->pp_shader_prog.use();
-            glBindVertexArray(m_post_processing->rectVAO);
-            glDisable(GL_DEPTH_TEST); // prevents framebuffer rectangle from being discarded
-            glBindTexture(GL_TEXTURE_2D, m_post_processing->framebufferTexture);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
+            if(apply_pp)
+            {
+                m_post_processing->pp_shader_prog.use();
+                glBindVertexArray(m_post_processing->rectVAO);
+                glDisable(GL_DEPTH_TEST); // prevents framebuffer rectangle from being discarded
+                glBindTexture(GL_TEXTURE_2D, m_post_processing->framebufferTexture);
+                glDrawArrays(GL_TRIANGLES, 0, 6);
+            }
 
             glfwSwapBuffers(m_window);
             glfwPollEvents();
