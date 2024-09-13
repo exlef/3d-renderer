@@ -25,12 +25,12 @@ namespace ex
         // https://stackoverflow.com/questions/7322147/what-is-the-range-of-opengl-texture-id
         uint32_t m_diffuse_texture_id = 0;
         uint32_t m_spec_texture_id = 0;
-        glm::vec3 m_sky_light;
+        // glm::vec3 m_sky_light;
 
     public:
         u_int32_t id() const { return m_id; }
         DefaultShader() = delete;
-        DefaultShader(uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0, glm::vec3 sky_light = glm::vec3(0.2f))
+        DefaultShader(uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0)
         {
             create_shader_program(m_vert_source_path, m_frag_source_path);
             if (m_id == 0 || m_id == GL_INVALID_INDEX)
@@ -39,11 +39,11 @@ namespace ex
             }
             m_diffuse_texture_id = diffuse_texture_id;
             m_spec_texture_id = spec_texture_id;
-            m_sky_light = sky_light;
+            // m_sky_light = sky_light;
             setup();
         }
 
-        void update(ex::Model& model, ex::Camera& cam, ex::DirectionalLight& dir_light, std::vector<ex::PointLight> point_lights)
+        void update(ex::Model& model, ex::Camera& cam, ex::Light& light_manager)
         {
             use();
 
@@ -56,13 +56,15 @@ namespace ex
 
             set_projection_matrix(cam.get_projection_matrix());
 
-            set_directional_light(dir_light);
+            set_sky_light(light_manager.sky_light);
 
-            setInt("pointLightCount", point_lights.size());
+            set_directional_light(light_manager.dir_light);
 
-            for (size_t i = 0; i < point_lights.size(); i++)
+            setInt("pointLightCount", light_manager.point_lights.size());
+
+            for (size_t i = 0; i < light_manager.point_lights.size(); i++)
             {
-                set_point_light(point_lights[i], i);
+                set_point_light(light_manager.point_lights[i], i);
             }
         }
 
@@ -100,8 +102,6 @@ namespace ex
             use();
 
             set_textures();
-
-            setVec3("skyLight", m_sky_light);
 
             setFloat("material.shininess", 32.0f);
 
@@ -159,10 +159,16 @@ namespace ex
             setVec3("viewPos", cam_pos);
         }
 
+        void set_sky_light(SkyLight light)
+        {
+            setFloat("skyLight", light.strength);
+        }
+
         void set_directional_light(DirectionalLight dir_light)
         {
             setVec3("dirLight.direction", dir_light.tr.get_forward());
             setVec3("dirLight.color", dir_light.color);
+            setFloat("dirLight.strength", dir_light.strength);
         }
 
         void set_point_light(PointLight& light, int index)
@@ -178,6 +184,7 @@ namespace ex
             std::string index_str = std::to_string(index);
             setVec3("pointLights[" + index_str + "].position", light.tr.pos);
             setVec3("pointLights[" + index_str + "].color", light.color);
+            setFloat("pointLights[" + index_str + "].strength", light.strength);
             setFloat("pointLights[" + index_str + "].constant", light.constant);
             setFloat("pointLights[" + index_str + "].linear", light.linear);
             setFloat("pointLights[" + index_str + "].quadratic", light.quadratic);

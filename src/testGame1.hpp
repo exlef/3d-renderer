@@ -35,9 +35,9 @@ private:
     ex::Texture m_wood_tex = ex::Texture("src/res/textures/wood.png");
 #pragma endregion
 #pragma region shaders
-    ex::DefaultShader m_cube_shader = ex::DefaultShader(m_container_dif_tex.id(), m_container_spec_tex.id(), glm::vec3(0.4f));
-    ex::DefaultShader m_sphere_shader = ex::DefaultShader(m_marble_tex.id(), 0, glm::vec3(0.4f));
-    ex::DefaultShader m_ground_shader = ex::DefaultShader(m_wood_tex.id(), 0, glm::vec3(0.4f));
+    ex::DefaultShader m_cube_shader = ex::DefaultShader(m_container_dif_tex.id(), m_container_spec_tex.id());
+    ex::DefaultShader m_sphere_shader = ex::DefaultShader(m_marble_tex.id(), 0);
+    ex::DefaultShader m_ground_shader = ex::DefaultShader(m_wood_tex.id(), 0);
     ex::UnlitShader m_light_source_shader = ex::UnlitShader();
 #pragma endregion
 
@@ -49,9 +49,11 @@ public:
         app.set_mouse_callback([this](float xpos, float ypos) {handle_mouse_move(xpos, ypos);});
         app.set_window_resize_callback([this](int width, int height) { handle_window_resize(width, height); });
 
-        m_light_manager.add_dir_light(glm::vec3(-45, 0, 0), 0.1);
-        m_light_manager.add_point_light(glm::vec3(1, 3, 0), glm::vec3(1, 0, 0));
-        m_light_manager.add_point_light(glm::vec3(-1, 3, 0), glm::vec3(0, 1, 0));
+        m_light_manager.add_sky_light(0);
+        m_light_manager.add_dir_light(glm::vec3(-45, 0, 0), 0);
+        // m_light_manager.add_point_light(glm::vec3(1, 3, 0), glm::vec3(1, 0, 0), 1);
+        // m_light_manager.add_point_light(glm::vec3(-1, 3, 0), glm::vec3(0, 1, 0), 1);
+        m_light_manager.add_point_light(glm::vec3(0, 0, 1.5f), glm::vec3(0, 0, 1), 3);
 
         m_sphere.tr.pos.z = -2;
         m_ground.tr.pos = glm::vec3(0, -1, 0);
@@ -86,7 +88,7 @@ private:
 
     void draw_model_with_default_shader(ex::Model& model, ex::DefaultShader& shader)
     {
-        shader.update(model, m_cam, m_light_manager.dir_light, m_light_manager.point_lights);
+        shader.update(model, m_cam, m_light_manager);
         app.draw(model);
     }
 
