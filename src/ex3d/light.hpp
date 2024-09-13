@@ -39,7 +39,7 @@ namespace ex
         DirectionalLight dir_light;
         std::vector<PointLight> point_lights;
         void add_sky_light(float strength);
-        void add_dir_light(glm::vec3 rot, float strength = 1);
+        void add_dir_light(glm::vec3 rot, glm::vec3 color, float strength);
         void add_point_light(glm::vec3 pos, glm::vec3 color = glm::vec3(1), float strength = 1);
     };
 
@@ -51,11 +51,12 @@ namespace ex
         sky_light = sl;
     }
 
-    void Light::add_dir_light(glm::vec3 rot, float strength)
+    void Light::add_dir_light(glm::vec3 rot, glm::vec3 color, float strength)
     {
         DirectionalLight l;
         l.tr.set_rot(rot);
-        dir_light.strength = strength;
+        l.color = color;
+        l.strength = strength;
 
         dir_light = l;
     }

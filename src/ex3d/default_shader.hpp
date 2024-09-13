@@ -164,7 +164,7 @@ namespace ex
             setFloat("skyLight", light.strength);
         }
 
-        void set_directional_light(DirectionalLight dir_light)
+        void set_directional_light(const DirectionalLight& dir_light)
         {
             setVec3("dirLight.direction", dir_light.tr.get_forward());
             setVec3("dirLight.color", dir_light.color);
