@@ -75,6 +75,10 @@ namespace ex
             auto fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
             if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
                 std::cout << "Framebuffer error: " << fboStatus << std::endl;
+
+
+            // resets OpenGL state
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
         //TODO: it's for debugging. delete this destructor 
         ~PostProcessing()

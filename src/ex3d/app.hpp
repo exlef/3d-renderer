@@ -12,6 +12,9 @@
 #include "mesh.hpp"
 #include "model.hpp"
 #include "post_processing.hpp"
+#include "config.hpp"
+#include "camera.hpp"
+#include "skybox.hpp"
 
 namespace ex
 {
@@ -31,7 +34,7 @@ namespace ex
 
         // config
         bool hide_cursor = true;
-        bool apply_pp = true; // apply post processing
+        bool apply_pp = APPLY_GAMMA_CRRC; // apply post processing
 
         // delta time
         const int TARGET_FPS = 60;
@@ -44,7 +47,11 @@ namespace ex
         // post-processing
         std::unique_ptr<PostProcessing> m_post_processing = nullptr;
 
+        // skybox
+        Skybox skybox;
+
     public:
+        Camera* cam = nullptr;
         int screen_width() const 
         {
             int width, height;
@@ -113,7 +120,6 @@ namespace ex
             // we can't simply give width and height for post prcessing texture size. it will be stretched. it need to be framebuffer size.
             int framebufferWidth, framebufferHeight;
             glfwGetFramebufferSize(m_window, &framebufferWidth, &framebufferHeight);
-            // m_post_processing = new PostProcessing(framebufferWidth, framebufferHeight);
             m_post_processing = std::make_unique<PostProcessing>(framebufferWidth, framebufferHeight);
         }
 
@@ -256,17 +262,21 @@ namespace ex
 
         void start_drawing()
         {
-            // Bind the custom framebuffer
-            if(apply_pp) glBindFramebuffer(GL_FRAMEBUFFER, m_post_processing->FBO);
-            // Specify the color of the background
-            float gamma = 2.2; // TODO: this should be stored somewhere and send to the post processing fragment shader 
             if(apply_pp)
+            {
+                // Bind the custom framebuffer
+                glBindFramebuffer(GL_FRAMEBUFFER, m_post_processing->FBO);
+                // Specify the color of the background
+                float gamma = 2.2; // TODO: this should be stored somewhere and send to the post processing fragment shader
                 glClearColor(pow(0.07f, gamma), pow(0.13f, gamma), pow(0.17f, gamma), 1.0f); // if the post processing is enabled I want to background color also be effected from gamma correction. since we can't set it from post processing fragment shader I set it here.
+                // Enable depth testing since it's disabled when drawing the framebuffer rectangle
+                glEnable(GL_DEPTH_TEST);
+            }
             else 
-                glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+            {
+                glClearColor(0.9f, 0.2f, 0.2f, 1.0f);
+            }
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            // Enable depth testing since it's disabled when drawing the framebuffer rectangle
-            glEnable(GL_DEPTH_TEST);
         }
 
         void draw(Model& model)
@@ -277,17 +287,28 @@ namespace ex
 
         void end_drawing()
         {
-            // Bind the default framebuffer
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            // Draw the framebuffer rectangle
-            if(apply_pp)
+            if (apply_pp)
             {
+                // Bind the default framebuffer
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                // Draw the framebuffer rectangle
+            
                 m_post_processing->pp_shader_prog.use();
                 glBindVertexArray(m_post_processing->rectVAO);
                 glDisable(GL_DEPTH_TEST); // prevents framebuffer rectangle from being discarded
                 glBindTexture(GL_TEXTURE_2D, m_post_processing->framebufferTexture);
                 glDrawArrays(GL_TRIANGLES, 0, 6);
             }
+
+            // draw skybox as last
+            glc(glDepthFunc(GL_LEQUAL)); // change depth function so depth test passes when values are equal to depth buffer's content
+            skybox.update_shader(cam);
+            glc(glBindVertexArray(skybox.skyboxVAO));
+            glc(glActiveTexture(GL_TEXTURE0));
+            glc(glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.cubemapTexture));
+            glc(glDrawArrays(GL_TRIANGLES, 0, 36));
+            glc(glBindVertexArray(0));
+            glc(glDepthFunc(GL_LESS)); // set depth function back to default
 
             glfwSwapBuffers(m_window);
             glfwPollEvents();

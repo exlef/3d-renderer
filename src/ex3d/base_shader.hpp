@@ -23,10 +23,7 @@ namespace ex
 
         void create_shader_program(const std::string& vert_file, const std::string& frag_file)
         {
-            std::cout << "here" << std::endl;
-            m_id = glCreateProgram();
-            std::cout << m_id << std::endl;
-            std::cout << "here2" << std::endl;
+            glc(m_id = glCreateProgram());
 
             uint32_t vert_id = create_shader(GL_VERTEX_SHADER, vert_file);
             uint32_t frag_id = create_shader(GL_FRAGMENT_SHADER, frag_file);

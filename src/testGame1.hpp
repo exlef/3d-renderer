@@ -58,7 +58,9 @@ public:
         m_sphere.tr.pos.z = -2;
         m_ground.tr.pos = glm::vec3(0, -1, 0);
         m_ground.tr.scale = glm::vec3(10, 0.1f, 10);
-        
+
+        app.cam = &m_cam;
+
         app.run();
     }
 private:

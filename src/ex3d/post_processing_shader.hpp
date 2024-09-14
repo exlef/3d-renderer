@@ -21,8 +21,6 @@ namespace ex
             {
                 throw std::runtime_error("Failed to create shader program");
             }
-            else
-                std::cout << "here" << std::endl;
         }
     };
     

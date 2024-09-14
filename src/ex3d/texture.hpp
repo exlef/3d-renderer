@@ -79,11 +79,11 @@
 
 #pragma once
 #include <string>
-#define STB_IMAGE_IMPLEMENTATION
+// #define STB_IMAGE_IMPLEMENTATION
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include <stb_image.h>
+// #include <stb_image.h>
 
 namespace ex
 {
@@ -91,11 +91,11 @@ namespace ex
     {
     private:
         uint32_t m_textureID;
-        bool m_is_srgb;
+        bool m_is_srgb = APPLY_GAMMA_CRRC;
 
     public:
         uint32_t id() const { return m_textureID; }
-        Texture(const std::string& path, bool is_srgb = true);
+        Texture(const std::string& path, bool is_srgb = APPLY_GAMMA_CRRC);
         ~Texture();
     };
 
