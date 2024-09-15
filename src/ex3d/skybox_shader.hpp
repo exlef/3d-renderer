@@ -13,8 +13,8 @@ namespace ex
 
         /* data */
     public:
-        SkyboxShader() = default;
-        void init()
+        // SkyboxShader() = default;
+        SkyboxShader()
         {
             create_shader_program(m_vert_source_path, m_frag_source_path);
             if (m_id == 0 || m_id == GL_INVALID_INDEX)

@@ -18,8 +18,6 @@ namespace ex
     class Skybox
     {
     private:
-        bool is_shader_init = false;
-        SkyboxShader skybox_shader;
 
         // loads a cubemap texture from 6 individual texture faces
         // order:
@@ -77,21 +75,15 @@ namespace ex
     public:
         unsigned int skyboxVAO;
         unsigned int cubemapTexture;
+        SkyboxShader skybox_shader;
 
-        void update_shader(Camera* cam)
+        // void update_shader(Camera* cam)
+        // {
+        //     skybox_shader.update(cam);
+        // }
+
+        Skybox()
         {
-            if (is_shader_init == false)
-            {
-                init();
-            }
-
-            skybox_shader.update(cam);
-            
-        }
-
-        void init()
-        {
-            is_shader_init = true;
             std::vector<std::string> faces{
                 std::filesystem::path("src/res/skybox/right.jpg"),
                 std::filesystem::path("src/res/skybox/left.jpg"),
@@ -101,8 +93,6 @@ namespace ex
                 std::filesystem::path("src/res/skybox/back.jpg")};
 
             cubemapTexture = loadCubemap(faces);
-
-            skybox_shader.init();
 
             float skyboxVertices[] = {
                 // positions
@@ -158,7 +148,7 @@ namespace ex
             glc(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
         }
 
-        Skybox() = default;
+        // Skybox() = default;
         ~Skybox() = default;
     };
     

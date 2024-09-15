@@ -48,7 +48,7 @@ namespace ex
         std::unique_ptr<PostProcessing> m_post_processing = nullptr;
 
         // skybox
-        Skybox skybox;
+        std::unique_ptr<Skybox> m_skybox = nullptr; // TODO: we need this being created after openGL context is created so I will make it pointer to not initialize when app class initialized. is there a better way to handle this?
 
     public:
         Camera* cam = nullptr;
@@ -121,6 +121,8 @@ namespace ex
             int framebufferWidth, framebufferHeight;
             glfwGetFramebufferSize(m_window, &framebufferWidth, &framebufferHeight);
             m_post_processing = std::make_unique<PostProcessing>(framebufferWidth, framebufferHeight);
+
+            m_skybox = std::make_unique<Skybox>();
         }
 
         ~App()
@@ -291,10 +293,10 @@ namespace ex
 
             // draw skybox as last
             glc(glDepthFunc(GL_LEQUAL)); // change depth function so depth test passes when values are equal to depth buffer's content
-            skybox.update_shader(cam);
-            glc(glBindVertexArray(skybox.skyboxVAO));
+            m_skybox->skybox_shader.update(cam);
+            glc(glBindVertexArray(m_skybox->skyboxVAO));
             glc(glActiveTexture(GL_TEXTURE0));
-            glc(glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.cubemapTexture));
+            glc(glBindTexture(GL_TEXTURE_CUBE_MAP, m_skybox->cubemapTexture));
             glc(glDrawArrays(GL_TRIANGLES, 0, 36));
             glc(glBindVertexArray(0));
             glc(glDepthFunc(GL_LESS)); // set depth function back to default
