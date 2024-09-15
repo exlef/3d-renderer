@@ -112,8 +112,8 @@ namespace ex
             // configure global opengl states
             glEnable(GL_DEPTH_TEST);
             glEnable(GL_CULL_FACE);
-            glCullFace(GL_FRONT);
-            glFrontFace(GL_CW);
+            // glCullFace(GL_BACK);
+            // glFrontFace(GL_CCW);
             // glEnable(GL_FRAMEBUFFER_SRGB);
             
             // this object needs to be created after the openGL contex because the shader object of post processing depends on openGL being initialized. creating this post processing object before openGL being initialized will cause seg fault.
