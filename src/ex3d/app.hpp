@@ -287,18 +287,7 @@ namespace ex
 
         void end_drawing()
         {
-            if (apply_pp)
-            {
-                // Bind the default framebuffer
-                glBindFramebuffer(GL_FRAMEBUFFER, 0);
-                // Draw the framebuffer rectangle
             
-                m_post_processing->pp_shader_prog.use();
-                glBindVertexArray(m_post_processing->rectVAO);
-                glDisable(GL_DEPTH_TEST); // prevents framebuffer rectangle from being discarded
-                glBindTexture(GL_TEXTURE_2D, m_post_processing->framebufferTexture);
-                glDrawArrays(GL_TRIANGLES, 0, 6);
-            }
 
             // draw skybox as last
             glc(glDepthFunc(GL_LEQUAL)); // change depth function so depth test passes when values are equal to depth buffer's content
@@ -309,6 +298,19 @@ namespace ex
             glc(glDrawArrays(GL_TRIANGLES, 0, 36));
             glc(glBindVertexArray(0));
             glc(glDepthFunc(GL_LESS)); // set depth function back to default
+
+            if (apply_pp)
+            {
+                // Bind the default framebuffer
+                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                // Draw the framebuffer rectangle
+
+                m_post_processing->pp_shader_prog.use();
+                glBindVertexArray(m_post_processing->rectVAO);
+                glDisable(GL_DEPTH_TEST); // prevents framebuffer rectangle from being discarded
+                glBindTexture(GL_TEXTURE_2D, m_post_processing->framebufferTexture);
+                glDrawArrays(GL_TRIANGLES, 0, 6);
+            }
 
             glfwSwapBuffers(m_window);
             glfwPollEvents();

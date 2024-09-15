@@ -27,16 +27,28 @@ namespace ex
             pp_shader_prog.use();
             pp_shader_prog.setTexture("screenTexture", 0);
 
-            float rectangleVertices[24] =
-                {
-                    // Coords    // texCoords
-                    1.0f, -1.0f, 1.0f, 0.0f,
-                    -1.0f, -1.0f, 0.0f, 0.0f,
-                    -1.0f, 1.0f, 0.0f, 1.0f,
+            // float rectangleVertices[24] =
+            //     {
+            //         // Coords    // texCoords
+            //         1.0f, -1.0f, 1.0f, 0.0f,
+            //         -1.0f, -1.0f, 0.0f, 0.0f,
+            //         -1.0f, 1.0f, 0.0f, 1.0f,
 
-                    1.0f, 1.0f, 1.0f, 1.0f,
-                    1.0f, -1.0f, 1.0f, 0.0f,
-                    -1.0f, 1.0f, 0.0f, 1.0f};
+            //         1.0f, 1.0f, 1.0f, 1.0f,
+            //         1.0f, -1.0f, 1.0f, 0.0f,
+            //         -1.0f, 1.0f, 0.0f, 1.0f};
+
+            float rectangleVertices[24]  = {
+
+                // Coords    // texCoords
+                -1.0f, -1.0f, 0.0f, 0.0f,
+                1.0f, -1.0f, 1.0f, 0.0f,
+                -1.0f, 1.0f, 0.0f, 1.0f,
+
+                1.0f, -1.0f, 1.0f, 0.0f,
+                1.0f, 1.0f, 1.0f, 1.0f,
+                -1.0f, 1.0f, 0.0f, 1.0f
+            };
 
             unsigned int rectVBO;
             glGenVertexArrays(1, &rectVAO);
