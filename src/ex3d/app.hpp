@@ -340,7 +340,7 @@ namespace ex
 
             // draw skybox as last
             glc(glDepthFunc(GL_LEQUAL)); // change depth function so depth test passes when values are equal to depth buffer's content
-            m_skybox->skybox_shader.update(cam);
+            m_skybox->skybox_shader.update_skybox(cam);
             glc(glBindVertexArray(m_skybox->skyboxVAO));
             glc(glActiveTexture(GL_TEXTURE0));
             glc(glBindTexture(GL_TEXTURE_CUBE_MAP, m_skybox->cubemapTexture));

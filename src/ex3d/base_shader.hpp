@@ -197,7 +197,7 @@ namespace ex
 
         u_int32_t id() const { return m_id; }
 
-        virtual void update(Model& model) { }
+        virtual void update(Model& model) { UNUSED(model); }
 
         // utility uniform functions
         // ------------------------------------------------------------------------
