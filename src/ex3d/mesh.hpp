@@ -28,7 +28,7 @@ namespace ex
 
         Mesh() = delete;
         Mesh(aiMesh* assimp_mesh);
-        void Draw();
+        void Draw(unsigned int shader_id);
 
     private:
         unsigned int VAO, VBO, EBO;
@@ -112,8 +112,10 @@ namespace ex
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    void Mesh::Draw()
+    void Mesh::Draw(unsigned int shader_id)
     {
+        assert(shader_id > 0);
+        glc(glUseProgram(shader_id));
         glc(glBindVertexArray(VAO));
         glc(glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0));
         glc(glBindVertexArray(0));

@@ -59,7 +59,9 @@ public:
         m_ground.tr.pos = glm::vec3(0, -1, 0);
         m_ground.tr.scale = glm::vec3(10, 0.1f, 10);
 
+        // move these into app class?
         app.cam = &m_cam;
+        app.setup_shadow_map(&m_light_manager.dir_light);
 
         app.run();
     }
@@ -91,13 +93,13 @@ private:
     void draw_model_with_default_shader(ex::Model& model, ex::DefaultShader& shader)
     {
         shader.update(model, m_cam, m_light_manager);
-        app.draw(model);
+        app.draw(model, shader.id());
     }
 
     void draw_model_with_unlit_shader(ex::Model& model, ex::UnlitShader& shader, int point_light_index)
     {
         shader.update(model, m_cam, m_light_manager.point_lights[point_light_index].color);
-        app.draw(model);
+        app.draw(model, shader.id());
     }
 
     void handle_key_callbacks(int key, int action)

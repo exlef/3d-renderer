@@ -15,6 +15,8 @@
 #include "config.hpp"
 #include "camera.hpp"
 #include "skybox.hpp"
+#include "shadow_map.hpp"
+#include "light.hpp"
 
 namespace ex
 {
@@ -44,11 +46,16 @@ namespace ex
         std::chrono::high_resolution_clock::time_point lastTime = std::chrono::high_resolution_clock::now();
         float m_dt = 0;
 
+        // TODO: we need these being created after openGL context is created so I will make it pointer to not initialize when app class initialized. is there a better way to handle this?
+
         // post-processing
         std::unique_ptr<PostProcessing> m_post_processing = nullptr;
 
         // skybox
-        std::unique_ptr<Skybox> m_skybox = nullptr; // TODO: we need this being created after openGL context is created so I will make it pointer to not initialize when app class initialized. is there a better way to handle this?
+        std::unique_ptr<Skybox> m_skybox = nullptr;
+
+        // shadow
+        std::unique_ptr<ShadowMap> m_shadow_map = nullptr;
 
     public:
         Camera* cam = nullptr;
@@ -123,6 +130,13 @@ namespace ex
             m_post_processing = std::make_unique<PostProcessing>(framebufferWidth, framebufferHeight);
 
             m_skybox = std::make_unique<Skybox>();
+        }
+
+        void setup_shadow_map(const DirectionalLight* dir_light)
+        {
+            m_shadow_map = std::make_unique<ShadowMap>();
+            assert(dir_light != nullptr);
+            m_shadow_map->setup_dir_light_shadow(dir_light);
         }
 
         ~App()
@@ -281,10 +295,40 @@ namespace ex
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
-        void draw(Model& model)
+        void draw(Model& model, unsigned int shader_id)
         {
             for (unsigned int i = 0; i < model.meshes.size(); i++)
-                model.meshes[i].Draw();
+                model.meshes[i].Draw(shader_id);
+        }
+
+        void shadow_pass(Model& model)
+        {
+            // Depth testing needed for Shadow Map
+            glEnable(GL_DEPTH_TEST);
+
+            // Preparations for the Shadow Map
+            glViewport(0, 0, m_shadow_map->SHADOW_WIDTH, m_shadow_map->SHADOW_HEIGHT);
+            glBindFramebuffer(GL_FRAMEBUFFER, m_shadow_map->depthMapFBO);
+            glClear(GL_DEPTH_BUFFER_BIT);
+
+            // Draw scene for shadow map
+            for (unsigned int i = 0; i < model.meshes.size(); i++)
+                // model.meshes[i].Draw();
+
+            // Switch back to the default framebuffer
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            // Switch back to the default viewport
+            // glViewport(0, 0, width, height);
+            reset_viewport();
+            // ----------------------------------------------------------------------------------
+            // pre_render();
+        }
+
+        void reset_viewport()
+        {
+            int framebufferWidth, framebufferHeight;
+            glfwGetFramebufferSize(m_window, &framebufferWidth, &framebufferHeight);
+            glViewport(0, 0, framebufferWidth, framebufferHeight);
         }
 
         void end_drawing()
