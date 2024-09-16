@@ -17,6 +17,7 @@
 #include "skybox.hpp"
 #include "shadow_map.hpp"
 #include "light.hpp"
+#include "base_shader.hpp"
 
 namespace ex
 {
@@ -295,10 +296,12 @@ namespace ex
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
-        void draw(Model& model, unsigned int shader_id)
+        void draw(Model& model, BaseShader& shader)
         {
+            shader.update(model);
+
             for (unsigned int i = 0; i < model.meshes.size(); i++)
-                model.meshes[i].Draw(shader_id);
+                model.meshes[i].Draw(shader.id());
         }
 
         void shadow_pass(Model& model)

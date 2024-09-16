@@ -29,9 +29,9 @@ namespace ex
 
         void set_aspect_ratio(float aspect_ratio);
 
-        glm::mat4 get_view_matrix();
+        glm::mat4 get_view_matrix() const;
 
-        glm::mat4 get_projection_matrix();
+        glm::mat4 get_projection_matrix() const;
     };
 
     Camera::Camera(float aspect_ratio, glm::vec3 pos, float fov_in_degree, float near, float far)
@@ -63,12 +63,12 @@ namespace ex
         m_aspect_ratio = aspect_ratio;
     }
 
-    glm::mat4 Camera::get_view_matrix()
+    glm::mat4 Camera::get_view_matrix() const
     {
         return glm::lookAt(tr.pos, tr.pos + tr.get_forward(), m_world_up);
     }
 
-    glm::mat4 Camera::get_projection_matrix()
+    glm::mat4 Camera::get_projection_matrix() const
     {
         return glm::perspective(glm::radians(m_fov), m_aspect_ratio, m_near, m_far);
     }

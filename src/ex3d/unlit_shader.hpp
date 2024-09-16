@@ -36,11 +36,6 @@ namespace ex
         }
         ~UnlitShader() = default;
 
-        unsigned int id()
-        {
-            return m_id;
-        }
-
         void setup(glm::vec3 color)
         {
             use();

@@ -46,6 +46,11 @@ namespace ex
                 }
             }
 
+            if (m_id == 0 || m_id == GL_INVALID_INDEX)
+            {
+                throw std::runtime_error("Failed to create shader program");
+            }
+
             glDeleteShader(vert_id);
             glDeleteShader(frag_id);
         }
@@ -179,6 +184,7 @@ namespace ex
         BaseShader& operator=(BaseShader&& other) = delete;
 
         // ------------------------------------------------------------------------
+        
         void use()
         {
             if (m_id == 0 || m_id == GL_INVALID_INDEX)
@@ -188,6 +194,11 @@ namespace ex
             }
             glc(glUseProgram(m_id));
         }
+
+        u_int32_t id() const { return m_id; }
+
+        virtual void update(Model& model) { }
+
         // utility uniform functions
         // ------------------------------------------------------------------------
         void setTexture(const std::string& name, int id)
