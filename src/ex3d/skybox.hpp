@@ -18,6 +18,7 @@ namespace ex
     class Skybox
     {
     private:
+        SkyboxShader m_skybox_shader;
 
         // loads a cubemap texture from 6 individual texture faces
         // order:
@@ -75,7 +76,7 @@ namespace ex
     public:
         unsigned int skyboxVAO;
         unsigned int cubemapTexture;
-        SkyboxShader skybox_shader;
+        
 
         // void update_shader(Camera* cam)
         // {
@@ -146,6 +147,11 @@ namespace ex
             glc(glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW));
             glc(glEnableVertexAttribArray(0));
             glc(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
+        }
+
+        void update_shader(const Camera* cam)
+        {
+            m_skybox_shader.update_skybox(cam);
         }
 
         // Skybox() = default;

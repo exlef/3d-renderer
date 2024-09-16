@@ -23,7 +23,7 @@ namespace ex
             }
         }
 
-        void update_skybox(Camera* cam)
+        void update_skybox(const Camera* cam)
         {
             use();
             setTexture("skybox", 0);

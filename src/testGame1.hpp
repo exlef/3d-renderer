@@ -76,14 +76,11 @@ private:
         {
             m_cube.tr.pos.x = (4 - ((int)i * 2));
             app.draw(m_cube, m_cube_shader);
-            // draw_model_with_default_shader(m_cube, m_cube_shader);
         }
 
         app.draw(m_sphere, m_sphere_shader);
-        // draw_model_with_default_shader(m_sphere, m_sphere_shader);
 
         app.draw(m_ground, m_ground_shader);
-        // draw_model_with_default_shader(m_ground, m_ground_shader);
 
         for (size_t i = 0; i < m_light_manager.point_lights.size(); i++)
         {
@@ -91,21 +88,8 @@ private:
             m_light.tr.pos = m_light_manager.point_lights[i].tr.pos;
             m_light_source_shader.color = m_light_manager.point_lights[i].color;
             app.draw(m_light, m_light_source_shader);
-            // draw_model_with_unlit_shader(m_light, m_light_source_shader, i);
         }        
     }
-
-    // void draw_model_with_default_shader(ex::Model& model, ex::DefaultShader& shader)
-    // {
-    //     shader.update(model, m_cam, m_light_manager);
-    //     app.draw(model, shader.id());
-    // }
-
-    // void draw_model_with_unlit_shader(ex::Model& model, ex::UnlitShader& shader, int point_light_index)
-    // {
-    //     shader.update(model, m_cam, m_light_manager.point_lights[point_light_index].color);
-    //     app.draw(model, shader.id());
-    // }
 
     void handle_key_callbacks(int key, int action)
     {
