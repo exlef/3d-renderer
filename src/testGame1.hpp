@@ -38,7 +38,7 @@ private:
     ex::DefaultShader m_cube_shader = ex::DefaultShader(&m_cam, &m_light_manager, m_container_dif_tex.id(), m_container_spec_tex.id());
     ex::DefaultShader m_sphere_shader = ex::DefaultShader(&m_cam, &m_light_manager, m_marble_tex.id(), 0);
     ex::DefaultShader m_ground_shader = ex::DefaultShader(&m_cam, &m_light_manager, m_wood_tex.id(), 0);
-    ex::UnlitShader m_light_source_shader = ex::UnlitShader();
+    ex::UnlitShader m_light_source_shader = ex::UnlitShader(&m_cam);
 #pragma endregion
 
 public:
@@ -89,6 +89,8 @@ private:
         {
             m_light.tr.scale = glm::vec3(0.2f);
             m_light.tr.pos = m_light_manager.point_lights[i].tr.pos;
+            m_light_source_shader.color = m_light_manager.point_lights[i].color;
+            app.draw(m_light, m_light_source_shader);
             // draw_model_with_unlit_shader(m_light, m_light_source_shader, i);
         }        
     }

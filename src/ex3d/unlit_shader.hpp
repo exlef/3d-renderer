@@ -21,52 +21,32 @@ namespace ex
     class UnlitShader: public BaseShader
     {
     private:
-        std::string m_vert_source_path = "src/ex3d/shaders/unlit.vert", m_frag_source_path = "src/ex3d/shaders/unlit.frag";
+        std::string m_vert_source_path = "src/ex3d/shaders/unlit.vert";
+        std::string m_frag_source_path = "src/ex3d/shaders/unlit.frag";
+        
+        const Camera* m_cam = nullptr;
 
     public:
-        UnlitShader()
+        glm::vec3 color = glm::vec3(1);
+
+        UnlitShader(const Camera* cam)
         {
             create_shader_program(m_vert_source_path, m_frag_source_path);
-            if (m_id == 0 || m_id == GL_INVALID_INDEX)
-            {
-                throw std::runtime_error("Failed to create shader program");
-            }
 
-            setup(glm::vec3(1));
-        }
-        ~UnlitShader() = default;
+            m_cam = cam;
 
-        void setup(glm::vec3 color)
-        {
             use();
             setVec3("color", color);
-
-            // setFloat("material.shininess", 32.0f);
         }
 
-        void update(ex::Model& model, ex::Camera& cam, glm::vec3 color)
+        void update(Model& model) override
         {
-            setup(color);
-            set_model_matrix(model.tr.get_model_matrix());
+            use();
 
-            set_view_matrix(cam.get_view_matrix());
-
-            set_projection_matrix(cam.get_projection_matrix());
-        }
-
-        void set_model_matrix(const glm::mat4& mat)
-        {
-            setMat4("model", mat);
-        }
-
-        void set_view_matrix(const glm::mat4& mat)
-        {
-            setMat4("view", mat);
-        }
-
-        void set_projection_matrix(const glm::mat4& mat)
-        {
-            setMat4("projection", mat);
+            setMat4("model", model.tr.get_model_matrix());
+            setMat4("view", m_cam->get_view_matrix());
+            setMat4("projection", m_cam->get_projection_matrix());
+            setVec3("color", color);
         }
 
     };
