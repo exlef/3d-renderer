@@ -10,6 +10,7 @@
 #include <string>
 
 #include "open_gl_error_checking.hpp"
+#include "helper.hpp"
 
 
 namespace ex

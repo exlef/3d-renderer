@@ -27,19 +27,19 @@ namespace ex
         uint32_t m_diffuse_texture_id = 0;
         uint32_t m_spec_texture_id = 0;
 
+        const Transform* m_tr = nullptr;
         const Camera* m_cam = nullptr;
         const Light* m_light_manager = nullptr;
-        const Entity* m_entt = nullptr;
 
     public:
         DefaultShader() = delete;
-        DefaultShader(const Camera* cam, const Light* light_manager, const Entity* entt, uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0)
+        DefaultShader(const Transform* tr, const Camera* cam, const Light* light_manager, uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0)
         {
             create_shader_program(m_vert_source_path, m_frag_source_path);
             
             m_cam = cam;
             m_light_manager = light_manager;
-            m_entt = entt;
+            m_tr = tr;
 
             m_diffuse_texture_id = diffuse_texture_id;
             m_spec_texture_id = spec_texture_id;
@@ -58,7 +58,7 @@ namespace ex
 
             set_textures();
 
-            setMat4("model", m_entt->tr->get_model_matrix());
+            setMat4("model", m_tr->get_model_matrix());
 
             setMat4("view", m_cam->get_view_matrix());
 

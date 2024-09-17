@@ -30,12 +30,12 @@ namespace ex
     public:
         glm::vec3 color = glm::vec3(1);
 
-        UnlitShader(const Camera* cam, const Transform* tr)
+        UnlitShader(const Transform* tr ,const Camera* cam)
         {
             create_shader_program(m_vert_source_path, m_frag_source_path);
 
-            m_cam = cam;
             m_tr = tr;
+            m_cam = cam;
 
             use();
             setVec3("color", color);

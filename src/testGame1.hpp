@@ -57,18 +57,34 @@ public:
         // m_light_manager.add_point_light(glm::vec3(-1, 3, 0), glm::vec3(0, 1, 0), 1);
         m_light_manager.add_point_light(glm::vec3(0, 0, 1.5f), glm::vec3(0, 1, 1), 1);
 
-        m_sphere.tr.pos.z = -2;
-        m_ground.tr.pos = glm::vec3(0, -1, 0);
-        m_ground.tr.scale = glm::vec3(10, 0.1f, 10);
+        // m_sphere.tr.pos.z = -2;
+        // m_ground.tr.pos = glm::vec3(0, -1, 0);
+        // m_ground.tr.scale = glm::vec3(10, 0.1f, 10);
 
         // move these into app class?
         app.cam = &m_cam;
         app.setup_shadow_map(&m_light_manager.dir_light);
 
-        auto sphere_entt = app.entt_man.add_entity("sphere");
-        sphere_entt->mesh = std::make_unique<ex::MeshComponent>("src/res/models/sphere.obj");
-        sphere_entt->tr = std::make_unique<ex::Transform>();
-        sphere_entt->shader = std::make_unique<ex::DefaultShader>(&m_cam, &m_light_manager, sphere_entt, m_marble_tex.id(), 0);
+        {
+            auto sphere_entt = app.entt_man.add_entity("sphere");
+            sphere_entt->mesh = std::make_unique<ex::MeshComponent>("src/res/models/sphere.obj");
+            sphere_entt->tr = std::make_unique<ex::Transform>();
+            sphere_entt->shader = std::make_unique<ex::DefaultShader>(sphere_entt->tr.get(), &m_cam, &m_light_manager, m_marble_tex.id(), 0);
+
+            sphere_entt->tr->pos = glm::vec3(0, 1, -2);
+            sphere_entt->tr->scale = glm::vec3(0.5f);
+        }
+
+        {
+            auto ground_entt = app.entt_man.add_entity("ground");
+            ground_entt->mesh = std::make_unique<ex::MeshComponent>("src/res/models/plane.obj");
+            ground_entt->tr = std::make_unique<ex::Transform>();
+            ground_entt->shader = std::make_unique<ex::DefaultShader>(ground_entt->tr.get(), &m_cam, &m_light_manager, m_wood_tex.id(), 0);
+
+            ground_entt->tr->pos = glm::vec3(0, -1, 0);
+            ground_entt->tr->scale = glm::vec3(10, 1, 10);
+        }
+        
         app.run();
     }
 private:
