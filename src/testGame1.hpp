@@ -37,13 +37,11 @@ private:
     ex::Texture m_wood_tex = ex::Texture("src/res/textures/wood.png");
 #pragma endregion
 #pragma region shaders
-    ex::DefaultShader m_cube_shader = ex::DefaultShader(&m_cam, &m_light_manager, m_container_dif_tex.id(), m_container_spec_tex.id());
-    ex::DefaultShader m_sphere_shader = ex::DefaultShader(&m_cam, &m_light_manager, m_marble_tex.id(), 0);
-    ex::DefaultShader m_ground_shader = ex::DefaultShader(&m_cam, &m_light_manager, m_wood_tex.id(), 0);
-    ex::UnlitShader m_light_source_shader = ex::UnlitShader(&m_cam);
+    // ex::DefaultShader m_cube_shader = ex::DefaultShader(&m_cam, &m_light_manager, m_container_dif_tex.id(), m_container_spec_tex.id());
+    // ex::DefaultShader m_sphere_shader = ex::DefaultShader(&m_cam, &m_light_manager, m_marble_tex.id(), 0);
+    // ex::DefaultShader m_ground_shader = ex::DefaultShader(&m_cam, &m_light_manager, m_wood_tex.id(), 0);
+    // ex::UnlitShader m_light_source_shader = ex::UnlitShader(&m_cam);
 #pragma endregion
-
-    ex::EntityManager ettman;
 
 public:
     TestGame1()
@@ -67,10 +65,10 @@ public:
         app.cam = &m_cam;
         app.setup_shadow_map(&m_light_manager.dir_light);
 
-        auto sphere_entt = ettman.add_entity("sphere");
+        auto sphere_entt = app.entt_man.add_entity("sphere");
         sphere_entt->mesh = std::make_unique<ex::MeshComponent>("src/res/models/sphere.obj");
-        sphere_entt->shader = std::make_unique<ex::DefaultShader>(&m_cam, &m_light_manager, m_marble_tex.id(), 0);
         sphere_entt->tr = std::make_unique<ex::Transform>();
+        sphere_entt->shader = std::make_unique<ex::DefaultShader>(&m_cam, &m_light_manager, sphere_entt, m_marble_tex.id(), 0);
         app.run();
     }
 private:
@@ -83,19 +81,19 @@ private:
         for (size_t i = 0; i < 5; i++)
         {
             m_cube.tr.pos.x = (4 - ((int)i * 2));
-            app.draw(m_cube, m_cube_shader);
+            // app.draw(m_cube, m_cube_shader);
         }
 
-        app.draw(m_sphere, m_sphere_shader);
+        // app.draw(m_sphere, m_sphere_shader);
 
-        app.draw(m_ground, m_ground_shader);
+        // app.draw(m_ground, m_ground_shader);
 
         for (size_t i = 0; i < m_light_manager.point_lights.size(); i++)
         {
             m_light.tr.scale = glm::vec3(0.2f);
             m_light.tr.pos = m_light_manager.point_lights[i].tr.pos;
-            m_light_source_shader.color = m_light_manager.point_lights[i].color;
-            app.draw(m_light, m_light_source_shader);
+            // m_light_source_shader.color = m_light_manager.point_lights[i].color;
+            // app.draw(m_light, m_light_source_shader);
         }        
     }
 

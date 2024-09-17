@@ -18,6 +18,7 @@
 #include "shadow_map.hpp"
 #include "light.hpp"
 #include "base_shader.hpp"
+#include "entity_manager.hpp"
 
 namespace ex
 {
@@ -60,6 +61,8 @@ namespace ex
 
     public:
         Camera* cam = nullptr;
+        EntityManager entt_man;
+
         int screen_width() const 
         {
             int width, height;
@@ -294,15 +297,31 @@ namespace ex
                 glClearColor(0.9f, 0.2f, 0.2f, 1.0f);
             }
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            draw();
         }
 
-        void draw(Model& model, BaseShader& shader)
+        void draw()
         {
-            shader.update(model);
-
-            for (unsigned int i = 0; i < model.meshes.size(); i++)
-                model.meshes[i].Draw(shader.id());
+            for(auto& e : entt_man.entities)
+            {
+                if(e.shader && e.mesh && e.tr)
+                {
+                    e.shader->update();
+                    for (unsigned int i = 0; i < e.mesh->meshes.size(); i++)
+                    {
+                        e.mesh->meshes[i].Draw();
+                    }
+                }                
+            }
         }
+
+        // void draw(Model& model, BaseShader& shader)
+        // {
+        //     shader.update(model);
+        //     for (unsigned int i = 0; i < model.meshes.size(); i++)
+        //         model.meshes[i].Draw(shader.id());
+        // }
 
         void shadow_pass(Model& model)
         {

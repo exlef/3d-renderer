@@ -9,17 +9,19 @@ namespace ex
     class EntityManager
     {
     private:
-        std::vector<Entity> m_entities;
+        
     public:
+        std::vector<Entity> entities;
+
         Entity* add_entity(std::string_view id)
         {
-            m_entities.emplace_back(id);
-            return &m_entities.back();
+            entities.emplace_back(id);
+            return &entities.back();
         }
 
         Entity* get_entity(std::string_view id)
         {
-            for(auto& e: m_entities)
+            for (auto& e : entities)
             {
                 if(e.id() == id)
                 {

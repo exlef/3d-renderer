@@ -29,15 +29,17 @@ namespace ex
 
         const Camera* m_cam = nullptr;
         const Light* m_light_manager = nullptr;
+        const Entity* m_entt = nullptr;
 
     public:
         DefaultShader() = delete;
-        DefaultShader(const Camera* cam, const Light* light_manager, uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0)
+        DefaultShader(const Camera* cam, const Light* light_manager, const Entity* entt, uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0)
         {
             create_shader_program(m_vert_source_path, m_frag_source_path);
             
             m_cam = cam;
             m_light_manager = light_manager;
+            m_entt = entt;
 
             m_diffuse_texture_id = diffuse_texture_id;
             m_spec_texture_id = spec_texture_id;
@@ -47,7 +49,7 @@ namespace ex
             setFloat("material.shininess", 32.0f);
         }
 
-        void update(Model& model) override
+        void update() override
         {
             assert(m_cam != nullptr);
             assert(m_light_manager != nullptr);
@@ -56,7 +58,7 @@ namespace ex
 
             set_textures();
 
-            setMat4("model", model.tr.get_model_matrix());
+            setMat4("model", m_entt->tr->get_model_matrix());
 
             setMat4("view", m_cam->get_view_matrix());
 
