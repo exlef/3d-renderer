@@ -29,7 +29,13 @@ namespace ex
         float linear = 0.09f;
         float quadratic = 0.032f;
     };
-
+    // TODO: implemnet some sort of light component to be able to add light components to entities
+    // maybe 2 component 
+    // directional light (or don't create a component for this. we can store this in light manager itself together with sky light)
+    // point light
+    // also a class named light manager probably needed? 
+    // we can turn this class to light manager class
+    // 
     class Light
     {
     private:

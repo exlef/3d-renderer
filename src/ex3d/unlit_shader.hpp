@@ -14,6 +14,7 @@
 
 #include "open_gl_error_checking.hpp"
 #include "camera.hpp"
+#include "base_shader.hpp"
 
 namespace ex
 {
