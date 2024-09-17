@@ -47,8 +47,7 @@ namespace ex
         std::chrono::high_resolution_clock::time_point lastTime = std::chrono::high_resolution_clock::now();
         float m_dt = 0;
 
-        // TODO: we need these being created after openGL context is created so I will make it pointer to not initialize when app class initialized. is there a better way to handle this?
-
+        // -------------- TODO: we need these being created after openGL context is created so I will make it pointer to not initialize when app class initialized. is there a better way to handle this?
         // post-processing
         std::unique_ptr<PostProcessing> m_post_processing = nullptr;
 
@@ -57,6 +56,7 @@ namespace ex
 
         // shadow
         std::unique_ptr<ShadowMap> m_shadow_map = nullptr;
+        // -----------------------
 
     public:
         Camera* cam = nullptr;
