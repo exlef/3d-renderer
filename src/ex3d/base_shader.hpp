@@ -2,6 +2,7 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <filesystem>
@@ -11,6 +12,7 @@
 
 #include "open_gl_error_checking.hpp"
 #include "helper.hpp"
+#include "lights.hpp"
 
 
 namespace ex
@@ -198,7 +200,22 @@ namespace ex
 
         u_int32_t id() const { return m_id; }
 
-        virtual void update(/*Model& model*/) { /*UNUSED(model);*/ }
+        virtual void update(const glm::mat4& model_mat, const glm::mat4& view_mat, const glm::mat4& proj_mat,
+                            glm::vec3 cam_pos,
+                            glm::vec3 entity_pos,
+                            SkyLight sky_light,
+                            DirectionalLight dir_light,
+                            std::vector<PointLight*> point_lights) 
+        { 
+            UNUSED(model_mat);
+            UNUSED(view_mat);
+            UNUSED(proj_mat);
+            UNUSED(cam_pos );
+            UNUSED(entity_pos);
+            UNUSED(sky_light);
+            UNUSED(dir_light);
+            UNUSED(point_lights);
+        }
 
         // utility uniform functions
         // ------------------------------------------------------------------------

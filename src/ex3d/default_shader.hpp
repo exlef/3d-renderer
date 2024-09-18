@@ -6,14 +6,10 @@
 #include <string>
 #include <vector>
 
-#include "base_shader.hpp"
 #include "camera.hpp"
-#include "light.hpp"
 #include "texture.hpp"
-#include "light.hpp"
 #include "helper.hpp"
 #include "open_gl_error_checking.hpp"
-#include "model.hpp"
 
 namespace ex
 {
@@ -27,19 +23,15 @@ namespace ex
         uint32_t m_diffuse_texture_id = 0;
         uint32_t m_spec_texture_id = 0;
 
-        const Transform* m_tr = nullptr;
         const Camera* m_cam = nullptr;
-        const Light* m_light_manager = nullptr;
 
     public:
         DefaultShader() = delete;
-        DefaultShader(const Transform* tr, const Camera* cam, const Light* light_manager, uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0)
+        DefaultShader(const Camera* cam, uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0)
         {
             create_shader_program(m_vert_source_path, m_frag_source_path);
             
             m_cam = cam;
-            m_light_manager = light_manager;
-            m_tr = tr;
 
             m_diffuse_texture_id = diffuse_texture_id;
             m_spec_texture_id = spec_texture_id;
@@ -49,16 +41,65 @@ namespace ex
             setFloat("material.shininess", 32.0f);
         }
 
-        void update() override
-        {
-            assert(m_cam != nullptr);
-            assert(m_light_manager != nullptr);
+        virtual void update(const glm::mat4& model_mat, const glm::mat4& view_mat, const glm::mat4& proj_mat,
+                            glm::vec3 cam_pos,
+                            glm::vec3 entity_pos,
+                            SkyLight sky_light,
+                            DirectionalLight dir_light,
+                            std::vector<PointLight*> point_lights) 
+        { 
+            UNUSED(model_mat);
+            UNUSED(view_mat);
+            UNUSED(proj_mat);
+            UNUSED(cam_pos );
+            UNUSED(entity_pos);
+            UNUSED(sky_light);
+            UNUSED(dir_light);
+            UNUSED(point_lights);
+
 
             use();
 
             set_textures();
 
-            setMat4("model", m_tr->get_model_matrix());
+            setMat4("model", model_mat);
+
+            setMat4("view", view_mat);
+
+            setVec3("viewPos", cam_pos);
+
+            setMat4("projection", proj_mat);
+
+            setFloat("skyLight", sky_light.strength);
+
+            setVec3("dirLight.direction", dir_light.tr.get_forward());
+            setVec3("dirLight.color", dir_light.color);
+            setFloat("dirLight.strength", dir_light.strength);
+
+            size_t point_light_count = point_lights.size();
+            setInt("pointLightCount", point_light_count);
+
+            for (size_t i = 0; i < point_light_count; i++)
+            {
+                const PointLight* light =  point_lights[i];
+
+                std::string index_str = std::to_string(i);
+                setVec3("pointLights[" + index_str + "].position", entity_pos);
+                setVec3("pointLights[" + index_str + "].color", light->color);
+                setFloat("pointLights[" + index_str + "].strength", light->strength);
+                setFloat("pointLights[" + index_str + "].constant", light->constant);
+                setFloat("pointLights[" + index_str + "].linear", light->linear);
+                setFloat("pointLights[" + index_str + "].quadratic", light->quadratic);
+            }
+        }
+
+        /*void update(const App& app, const Entity& entity) override
+        {
+            use();
+
+            set_textures();
+
+            setMat4("model", entity.tr->get_model_matrix());
 
             setMat4("view", m_cam->get_view_matrix());
 
@@ -66,28 +107,29 @@ namespace ex
 
             setMat4("projection", m_cam->get_projection_matrix());
 
-            setFloat("skyLight", m_light_manager->sky_light.strength);
+            setFloat("skyLight", app.sky_light.strength);
 
-            setVec3("dirLight.direction", m_light_manager->dir_light.tr.get_forward());
-            setVec3("dirLight.color", m_light_manager->dir_light.color);
-            setFloat("dirLight.strength", m_light_manager->dir_light.strength);
+            setVec3("dirLight.direction", app.dir_light.tr.get_forward());
+            setVec3("dirLight.color", app.dir_light.color);
+            setFloat("dirLight.strength", app.dir_light.strength);
 
-            setInt("pointLightCount", m_light_manager->point_lights.size());
+            size_t point_light_count = app.get_point_lights().size();
+            setInt("pointLightCount", point_light_count);
 
-            for (size_t i = 0; i < m_light_manager->point_lights.size(); i++)
+            for (size_t i = 0; i < point_light_count; i++)
             {
-                const PointLight& light = m_light_manager->point_lights[i];
+                const PointLight* light =  app.get_point_lights()[i];
                 // set_point_light(m_light_manager->point_lights[i], i);
 
                 std::string index_str = std::to_string(i);
-                setVec3("pointLights[" + index_str + "].position", light.tr.pos);
-                setVec3("pointLights[" + index_str + "].color", light.color);
-                setFloat("pointLights[" + index_str + "].strength", light.strength);
-                setFloat("pointLights[" + index_str + "].constant", light.constant);
-                setFloat("pointLights[" + index_str + "].linear", light.linear);
-                setFloat("pointLights[" + index_str + "].quadratic", light.quadratic);
+                setVec3("pointLights[" + index_str + "].position", entity.tr->pos);
+                setVec3("pointLights[" + index_str + "].color", light->color);
+                setFloat("pointLights[" + index_str + "].strength", light->strength);
+                setFloat("pointLights[" + index_str + "].constant", light->constant);
+                setFloat("pointLights[" + index_str + "].linear", light->linear);
+                setFloat("pointLights[" + index_str + "].quadratic", light->quadratic);
             }
-        }
+        }*/
 
         void set_textures() const
         {

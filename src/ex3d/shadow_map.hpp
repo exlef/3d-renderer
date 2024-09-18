@@ -4,7 +4,6 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "light.hpp"
 #include "shadow_map_shader.hpp"
 
 namespace ex
@@ -21,7 +20,7 @@ namespace ex
 
         ShadowMapShader shadow_map_shader;
 
-        void setup_dir_light_shadow(const DirectionalLight* dir_light)
+        /*void setup_dir_light_shadow(const DirectionalLight* dir_light)
         {
             
             glGenFramebuffers(1, &depthMapFBO);
@@ -51,7 +50,7 @@ namespace ex
 
             shadow_map_shader.use();
             shadow_map_shader.setMat4("lightProjection", lightProjection);
-        }
+        }*/
 
         ShadowMap() = default;
         ~ShadowMap() = default;

@@ -10,15 +10,13 @@
 
 #include "input.hpp"
 #include "mesh.hpp"
-#include "model.hpp"
 #include "post_processing.hpp"
 #include "config.hpp"
 #include "camera.hpp"
 #include "skybox.hpp"
-#include "shadow_map.hpp"
-#include "light.hpp"
-#include "base_shader.hpp"
+// #include "shadow_map.hpp"
 #include "entity_manager.hpp"
+#include "lights.hpp"
 
 namespace ex
 {
@@ -56,12 +54,16 @@ namespace ex
         std::unique_ptr<Skybox> m_skybox = nullptr;
 
         // shadow
-        std::unique_ptr<ShadowMap> m_shadow_map = nullptr;
+        //std::unique_ptr<ShadowMap> m_shadow_map = nullptr;
         // -----------------------
 
     public:
-        Camera* cam = nullptr;
         EntityManager entt_man;
+
+        // TODO: implment scene system and add these to the scene
+        Camera* cam = nullptr;
+        SkyLight sky_light;
+        DirectionalLight dir_light;
 
         int screen_width() const 
         {
@@ -136,12 +138,12 @@ namespace ex
             m_skybox = std::make_unique<Skybox>();
         }
 
-        void setup_shadow_map(const DirectionalLight* dir_light)
-        {
-            m_shadow_map = std::make_unique<ShadowMap>();
-            assert(dir_light != nullptr);
-            m_shadow_map->setup_dir_light_shadow(dir_light);
-        }
+        // void setup_shadow_map(const DirectionalLight* dir_light)
+        // {
+            // m_shadow_map = std::make_unique<ShadowMap>();
+            // assert(dir_light != nullptr);
+            // m_shadow_map->setup_dir_light_shadow(dir_light);
+        // }
 
         ~App()
         {
@@ -307,13 +309,32 @@ namespace ex
             {
                 if(e.shader && e.mesh && e.tr)
                 {
-                    e.shader->update();
+                    e.shader->update(e.tr->get_model_matrix(), cam->get_view_matrix(), cam->get_projection_matrix(),
+                            cam->tr.pos,
+                            e.tr->pos,
+                            sky_light,
+                            dir_light,
+                            get_point_lights());
                     for (unsigned int i = 0; i < e.mesh->meshes.size(); i++)
                     {
                         e.mesh->meshes[i].Draw();
                     }
                 }                
             }
+        }
+
+        std::vector<PointLight*> get_point_lights() const
+        {
+            std::vector<PointLight*> lights;
+            for(auto& e : entt_man.entities)
+            {
+                if(e.point_light && e.tr)
+                {
+                    PointLight* l =  e.point_light.get();
+                    lights.push_back(l);
+                }                
+            }
+            return lights;
         }
 
         // void draw(Model& model, BaseShader& shader)
@@ -323,7 +344,7 @@ namespace ex
         //         model.meshes[i].Draw(shader.id());
         // }
 
-        void shadow_pass(Model& model)
+        /*void shadow_pass(Model& model)
         {
             // Depth testing needed for Shadow Map
             glEnable(GL_DEPTH_TEST);
@@ -344,7 +365,7 @@ namespace ex
             reset_viewport();
             // ----------------------------------------------------------------------------------
             // pre_render();
-        }
+        }*/
 
         void reset_viewport()
         {

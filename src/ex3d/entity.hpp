@@ -2,11 +2,10 @@
 
 #include <memory>
 
-#include "model.hpp"
-#include "light.hpp"
 #include "transform.hpp"
 #include "base_shader.hpp"
 #include "mesh_comp.hpp"
+#include "lights.hpp"
 
 namespace ex
 {
@@ -19,6 +18,7 @@ namespace ex
         std::unique_ptr<Transform> tr = nullptr;
         std::unique_ptr<MeshComponent> mesh = nullptr;
         std::unique_ptr<BaseShader> shader = nullptr;
+        std::unique_ptr<PointLight> point_light = nullptr;
 
         Entity(std::string_view id)
         {
