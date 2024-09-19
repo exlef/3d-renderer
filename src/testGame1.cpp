@@ -59,7 +59,23 @@ TestGame1::TestGame1()
 
 void TestGame1::update()
 {
-    fly_cam.move(app);
+
+#pragma region camera movement
+    // TODO: move this to fly_camera class
+    float cam_speed = 10;
+    if (ex::is_key_down(app.window(), KEY_E))
+        m_cam.tr.pos. y += (app.dt() * cam_speed);
+    if (ex::is_key_down(app.window(), KEY_Q))
+        m_cam.tr.pos.y += (app.dt() * -cam_speed);
+    if (ex::is_key_down(app.window(), KEY_W))
+        m_cam.tr.local_translateZ(app.dt() * cam_speed);
+    if (ex::is_key_down(app.window(), KEY_S))
+        m_cam.tr.local_translateZ(app.dt() * -cam_speed);
+    if (ex::is_key_down(app.window(), KEY_A))
+        m_cam.tr.local_translateX(app.dt() * -cam_speed);
+    if (ex::is_key_down(app.window(), KEY_D))
+        m_cam.tr.local_translateX(app.dt() * cam_speed);
+#pragma endregion
 }
 
 void TestGame1::handle_key_callbacks(int key, int action)
