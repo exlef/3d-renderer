@@ -51,13 +51,11 @@ namespace ex
 
         m_skybox = std::make_unique<Skybox>();
     }
-
     App::~App()
     {
         // This will clean up the window and other GLFW resources
         glfwTerminate();
     }
-
     void App::run()
     {
         while (running())
@@ -105,9 +103,7 @@ namespace ex
             }
         }
     }
-#pragma region getters
 
-#pragma endregion
     int App::screen_width() const 
     {
         int width, height;
@@ -129,6 +125,12 @@ namespace ex
     }
     float App::dt() const { return m_dt; }
     GLFWwindow* App::window() const { return m_window; }
+
+    bool App::is_key_down(GLFWwindow* window, u_int32_t key_code)
+    {
+        return glfwGetKey(window, key_code) == KEY_PRESS;
+    }
+
 #pragma region callbacks
     static void framebuffer_size_callback(__attribute__((unused)) GLFWwindow* window, int width, int height)
     {
@@ -293,4 +295,5 @@ namespace ex
         glfwGetFramebufferSize(m_window, &framebufferWidth, &framebufferHeight);
         glViewport(0, 0, framebufferWidth, framebufferHeight);
     }
+
 }
