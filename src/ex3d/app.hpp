@@ -309,12 +309,7 @@ namespace ex
             {
                 if(e.shader && e.mesh && e.tr)
                 {
-                    e.shader->update(e.tr->get_model_matrix(), cam->get_view_matrix(), cam->get_projection_matrix(),
-                            cam->tr.pos,
-                            e.tr->pos,
-                            sky_light,
-                            dir_light,
-                            get_point_lights());
+                    e.shader->update();
                     for (unsigned int i = 0; i < e.mesh->meshes.size(); i++)
                     {
                         e.mesh->meshes[i].Draw();
