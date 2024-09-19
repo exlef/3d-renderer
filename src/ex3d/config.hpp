@@ -1,3 +1,3 @@
 #pragma once
 
-#define APPLY_GAMMA_CRRC true
+#define APPLY_GAMMA_CRRC false
