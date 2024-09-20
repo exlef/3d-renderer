@@ -73,6 +73,8 @@ namespace ex
             dt = std::chrono::duration<double>(currentTime - lastTime).count();
             lastTime = currentTime;
 
+            update_scene();
+
             start_drawing();
 
             on_update();
@@ -107,6 +109,24 @@ namespace ex
                 sleepTime = TARGET_FRAME_TIME - frameDuration.count();
             }
         }
+    }
+
+    void App::update_scene()
+    {
+        scene.sky_light = sky_light;
+        scene.dir_light = dir_light;
+        
+        scene.point_lights.clear();
+        for(auto& e : entt_man.entities)
+        {
+            if(e.point_light && e.tr)
+            {
+                // complete this line to add point lights tho scene
+                scene.point_lights.emplace_back(e.tr->pos, e.point_light.get());
+            }                
+        }
+
+        scene.camera = &cam;
     }
 
     void App::start_drawing()

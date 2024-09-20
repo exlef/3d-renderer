@@ -13,14 +13,14 @@ namespace ex
     class Entity
     {
     public:
-        Entity(std::string_view id);
-        std::string_view id() const;
+        Entity(std::string id);
+        std::string id() const;
         // components
         std::unique_ptr<Transform> tr = nullptr;
         std::unique_ptr<MeshComponent> mesh = nullptr;
         std::unique_ptr<BaseEntityMaterial> material = nullptr;
         std::unique_ptr<PointLight> point_light = nullptr;
     private:
-        std::string_view m_id = "";
+        std::string m_id = "";
     };
 } // namespace ex

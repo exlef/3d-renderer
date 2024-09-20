@@ -62,6 +62,8 @@ namespace ex
         int frameCount = 0;
         double elapsedTime = 0.0;
         std::chrono::high_resolution_clock::time_point lastTime = std::chrono::high_resolution_clock::now();
+
+        void update_scene();
     };
 
 

@@ -32,6 +32,7 @@ TestGame1::TestGame1() : App(800, 600, "game")
 
     for (int i = 0; i < 5; i++) // boxes
     {
+        std::cout << i << std::endl;
         auto box_entt = ex::entt_man.add_entity("box_" + std::to_string(i));
         box_entt->mesh = std::make_unique<ex::MeshComponent>("src/res/models/cube.obj");
         box_entt->tr = std::make_unique<ex::Transform>();

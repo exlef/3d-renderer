@@ -2,12 +2,12 @@
 
 namespace ex 
 {
-    Entity::Entity(std::string_view id)
+    Entity::Entity(std::string id)
     {
         m_id = id;
     }
 
-    std::string_view Entity::id() const 
+    std::string Entity::id() const 
     {
          return m_id; 
     }
