@@ -1,4 +1,5 @@
 #include "default_material.hpp"
+#include "entity_manager.hpp"
 
 
 #include <GL/glew.h>
@@ -20,41 +21,43 @@ namespace ex
             shader.setFloat("material.shininess", 32.0f);
         }
 
-        void DefaultMaterial::update() 
+        void DefaultMaterial::update(Scene scene, std::string entity_id) 
         { 
-            // use();
+            shader.use();
 
-            // set_textures();
+            set_textures();
 
-            // setMat4("model", model_mat);
+            shader.setMat4("model", ex::entt_man.get_entity(entity_id)->tr->get_model_matrix());
 
-            // setMat4("view", view_mat);
+            shader.setMat4("view", scene.camera->get_view_matrix());
 
-            // setVec3("viewPos", cam_pos);
+            shader.setVec3("viewPos", scene.camera->tr.pos);
 
-            // setMat4("projection", proj_mat);
+            shader.setMat4("projection", scene.camera->get_projection_matrix());
 
-            // setFloat("skyLight", sky_light.strength);
+            shader.setFloat("skyLight", scene.sky_light.strength);
 
-            // setVec3("dirLight.direction", dir_light.tr.get_forward());
-            // setVec3("dirLight.color", dir_light.color);
-            // setFloat("dirLight.strength", dir_light.strength);
+            shader.setVec3("dirLight.direction", scene.dir_light.tr.get_forward());
+            shader.setVec3("dirLight.color", scene.dir_light.color);
+            shader.setFloat("dirLight.strength", scene.dir_light.strength);
 
-            // size_t point_light_count = point_lights.size();
-            // setInt("pointLightCount", point_light_count);
+            size_t point_light_count = scene.point_lights.size();
+            shader.setInt("pointLightCount", point_light_count);
 
-            // for (size_t i = 0; i < point_light_count; i++)
-            // {
-            //     const PointLight* light =  point_lights[i];
+            for (size_t i = 0; i < point_light_count; i++)
+            {
+                
+                const glm::vec3 light_pos = std::get<0>(scene.point_lights[i]);
+                const PointLight* light =  std::get<1>(scene.point_lights[i]);
 
-            //     std::string index_str = std::to_string(i);
-            //     setVec3("pointLights[" + index_str + "].position", entity_pos);
-            //     setVec3("pointLights[" + index_str + "].color", light->color);
-            //     setFloat("pointLights[" + index_str + "].strength", light->strength);
-            //     setFloat("pointLights[" + index_str + "].constant", light->constant);
-            //     setFloat("pointLights[" + index_str + "].linear", light->linear);
-            //     setFloat("pointLights[" + index_str + "].quadratic", light->quadratic);
-            // }
+                std::string index_str = std::to_string(i);
+                shader.setVec3("pointLights[" + index_str + "].position", light_pos);
+                shader.setVec3("pointLights[" + index_str + "].color", light->color);
+                shader.setFloat("pointLights[" + index_str + "].strength", light->strength);
+                shader.setFloat("pointLights[" + index_str + "].constant", light->constant);
+                shader.setFloat("pointLights[" + index_str + "].linear", light->linear);
+                shader.setFloat("pointLights[" + index_str + "].quadratic", light->quadratic);
+            }
         }
 
         void DefaultMaterial::set_textures() const

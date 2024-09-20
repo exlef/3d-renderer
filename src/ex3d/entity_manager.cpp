@@ -5,6 +5,8 @@
 
 namespace ex 
 {
+    EntityManager entt_man;
+
     Entity* EntityManager::add_entity(std::string_view id)
     {
         entities.emplace_back(id);

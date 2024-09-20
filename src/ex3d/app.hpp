@@ -7,15 +7,15 @@
 #define GL_SILENCE_DEPRECATION
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "entity_manager.hpp"
 #include "post_processing.hpp"
 #include "config.hpp"
 #include "skybox.hpp"
-#include "entity_manager.hpp"
 #include "scene.hpp"
 
 namespace ex
 {
-    extern EntityManager entt_man;
+    // extern EntityManager entt_man;
     
     class App
     {

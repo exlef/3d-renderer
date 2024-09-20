@@ -14,4 +14,7 @@ namespace ex
         Entity* add_entity(std::string_view id);
         Entity* get_entity(std::string_view id);
     };
+
+    extern EntityManager entt_man;
+
 } // namespace ex

@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "scene.hpp"
+#include "base_entity_material.hpp"
 #include "camera.hpp"
 #include "texture.hpp"
 #include "helper.hpp"
@@ -12,7 +14,7 @@
 
 namespace ex
 {
-    class DefaultMaterial
+    class DefaultMaterial : BaseEntityMaterial
     {
     public:
         Shader shader;
@@ -20,7 +22,7 @@ namespace ex
         DefaultMaterial(const Camera* cam, uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0);
 
         void set_textures() const;
-        void update();
+        void update(Scene scene, std::string entity_id) override;
     
     private:
         std::string m_vert_source_path = "src/ex3d/shaders/default.vert";

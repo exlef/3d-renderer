@@ -4,7 +4,7 @@
 
 namespace ex 
 {
-    EntityManager entt_man;
+    // EntityManager entt_man;
 
     static void framebuffer_resize_callback(__attribute__((unused)) GLFWwindow* window, int width, int height);
     static void key_callbacks(GLFWwindow* window, int key, int scancode, int action, int mods);
