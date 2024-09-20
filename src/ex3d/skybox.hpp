@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "skybox_shader.hpp"
+#include "shader.hpp"
 #include "camera.hpp"
 
 namespace ex
@@ -10,6 +10,7 @@ namespace ex
     class Skybox
     {
     public:
+        Shader shader;
         unsigned int skyboxVAO;
         unsigned int cubemapTexture;
         
@@ -17,7 +18,9 @@ namespace ex
         void update_shader(const Camera* cam);
 
     private:
-        SkyboxShader m_skybox_shader;
+        std::string m_vert_source_path = "src/ex3d/shaders/skybox.vert";
+        std::string m_frag_source_path = "src/ex3d/shaders/skybox.frag";
+
         unsigned int loadCubemap(std::vector<std::string> faces);
     };
     

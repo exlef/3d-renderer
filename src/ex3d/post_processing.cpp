@@ -8,8 +8,10 @@ namespace ex
 {
     PostProcessing::PostProcessing(glm::vec2 framebuffer_dimensions)
     {
-        pp_shader_prog.use();
-        pp_shader_prog.setTexture("screenTexture", 0);
+
+        shader.create_shader_program(m_vert_source_path, m_frag_source_path);
+        shader.use();
+        shader.setTexture("screenTexture", 0);
 
         float rectangleVertices[24]  = {
 

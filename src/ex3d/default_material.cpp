@@ -1,4 +1,4 @@
-#include "default_shader.hpp"
+#include "default_material.hpp"
 
 
 #include <GL/glew.h>
@@ -6,21 +6,21 @@
 
 namespace ex 
 {
-        DefaultShader::DefaultShader(const Camera* cam, uint32_t diffuse_texture_id, uint32_t spec_texture_id)
+        DefaultMaterial::DefaultMaterial(const Camera* cam, uint32_t diffuse_texture_id, uint32_t spec_texture_id)
         {
-            create_shader_program(m_vert_source_path, m_frag_source_path);
+            shader.create_shader_program(m_vert_source_path, m_frag_source_path);
             
             m_cam = cam;
 
             m_diffuse_texture_id = diffuse_texture_id;
             m_spec_texture_id = spec_texture_id;
 
-            use();
+            shader.use();
             set_textures();
-            setFloat("material.shininess", 32.0f);
+            shader.setFloat("material.shininess", 32.0f);
         }
 
-        void DefaultShader::update() 
+        void DefaultMaterial::update() 
         { 
             // use();
 
@@ -57,7 +57,7 @@ namespace ex
             // }
         }
 
-        void DefaultShader::set_textures() const
+        void DefaultMaterial::set_textures() const
         {
             // set a default color for diffuse in case there is no textures provided
             if (m_diffuse_texture_id == 0)
@@ -65,20 +65,20 @@ namespace ex
                 ex::Texture m_default_texture = ex::Texture("src/ex3d/res/default2.png");
                 glc(glActiveTexture(GL_TEXTURE0));
                 glc(glBindTexture(GL_TEXTURE_2D, m_default_texture.id()));
-                glc(glUniform1i(glGetUniformLocation(m_id, "material.diffuse"), 0));
+                glc(glUniform1i(glGetUniformLocation(shader.id(), "material.diffuse"), 0));
             }
             else
             {
                 glc(glActiveTexture(GL_TEXTURE0));
                 glc(glBindTexture(GL_TEXTURE_2D, m_diffuse_texture_id));
-                glc(glUniform1i(glGetUniformLocation(m_id, "material.diffuse"), 0));
+                glc(glUniform1i(glGetUniformLocation(shader.id(), "material.diffuse"), 0));
             }
 
             if (m_spec_texture_id != 0)
             {
                 glc(glActiveTexture(GL_TEXTURE1));
                 glc(glBindTexture(GL_TEXTURE_2D, m_spec_texture_id));
-                glc(glUniform1i(glGetUniformLocation(m_id, "material.specular"), 1));
+                glc(glUniform1i(glGetUniformLocation(shader.id(), "material.specular"), 1));
             }
         }
 }

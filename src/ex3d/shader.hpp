@@ -10,22 +10,22 @@
 
 namespace ex
 {
-    class BaseShader
+    class Shader
     {
     public:
-        BaseShader() = default;
-        virtual ~BaseShader() = default;
+        Shader() = default;
+        ~Shader() = default;
         // Copy constructor
-        BaseShader(const BaseShader& other) = delete;
+        Shader(const Shader& other) = delete;
         // Copy Assignment Operator
-        BaseShader& operator=(const BaseShader& other) = delete;
+        Shader& operator=(const Shader& other) = delete;
         // Move Constructor (deleted)
-        BaseShader(BaseShader&& other) = delete;
+        Shader(Shader&& other) = delete;
         // Move Assignment Operator (deleted)
-        BaseShader& operator=(BaseShader&& other) = delete;
-        
+        Shader& operator=(Shader&& other) = delete;
+
+        void create_shader_program(const std::string& vert_file, const std::string& frag_file);
         void use();
-        virtual void update() { }
         inline u_int32_t id() const { return m_id; }
 
         // utility uniform functions
@@ -43,11 +43,8 @@ namespace ex
         void setMat2(const std::string& name, const glm::mat2& mat) const;
         void setMat3(const std::string& name, const glm::mat3& mat) const;
         void setMat4(const std::string& name, const glm::mat4& mat) const;
-    
-    protected:
-        u_int32_t m_id = 0;
 
-        void create_shader_program(const std::string& vert_file, const std::string& frag_file);
-    
+        private:
+        u_int32_t m_id = 0;
     };
 } // namespace ex

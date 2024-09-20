@@ -1,15 +1,15 @@
-#include "unlit_shader.hpp"
+#include "unlit_material.hpp"
 
 namespace ex 
 {
     UnlitShader::UnlitShader(const Camera* cam)
     {
-        create_shader_program(m_vert_source_path, m_frag_source_path);
+        shader.create_shader_program(m_vert_source_path, m_frag_source_path);
 
         m_cam = cam;
 
-        use();
-        setVec3("color", color);
+        shader.use();
+        shader.setVec3("color", color);
     }
 
     void UnlitShader::update() 

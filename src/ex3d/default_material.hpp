@@ -8,12 +8,20 @@
 #include "texture.hpp"
 #include "helper.hpp"
 #include "open_gl_error_checking.hpp"
-#include "base_shader.hpp"
+#include "shader.hpp"
 
 namespace ex
 {
-    class DefaultShader : public BaseShader
+    class DefaultMaterial
     {
+    public:
+        Shader shader;
+        DefaultMaterial() = delete;
+        DefaultMaterial(const Camera* cam, uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0);
+
+        void set_textures() const;
+        void update();
+    
     private:
         std::string m_vert_source_path = "src/ex3d/shaders/default.vert";
         std::string m_frag_source_path = "src/ex3d/shaders/default.frag";
@@ -23,13 +31,6 @@ namespace ex
         uint32_t m_spec_texture_id = 0;
 
         const Camera* m_cam = nullptr;
-
-    public:
-        DefaultShader() = delete;
-        DefaultShader(const Camera* cam, uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0);
-
-        void update() override;
-        void set_textures() const;
     };
 } // namespace ex
 

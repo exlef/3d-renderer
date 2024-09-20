@@ -128,17 +128,17 @@ namespace ex
 
     void App::draw()
     {
-        for(auto& e : entt_man.entities)
-        {
-            if(e.shader && e.mesh && e.tr)
-            {
-                e.shader->update();
-                for (unsigned int i = 0; i < e.mesh->meshes.size(); i++)
-                {
-                    e.mesh->meshes[i].Draw();
-                }
-            }                
-        }
+        // for(auto& e : entt_man.entities)
+        // {
+        //     if(e.shader && e.mesh && e.tr)
+        //     {
+        //         e.shader->update();
+        //         for (unsigned int i = 0; i < e.mesh->meshes.size(); i++)
+        //         {
+        //             e.mesh->meshes[i].Draw();
+        //         }
+        //     }                
+        // }
     }
 
     void App::end_drawing()
@@ -161,7 +161,7 @@ namespace ex
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             // Draw the framebuffer rectangle
 
-            post_processing->pp_shader_prog.use();
+            post_processing->shader.use();
             glBindVertexArray(post_processing->rectVAO);
             glDisable(GL_DEPTH_TEST); // prevents framebuffer rectangle from being discarded
             glBindTexture(GL_TEXTURE_2D, post_processing->framebufferTexture);

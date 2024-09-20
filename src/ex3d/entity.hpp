@@ -3,7 +3,6 @@
 #include <memory>
 
 #include "transform.hpp"
-#include "base_shader.hpp"
 #include "mesh_comp.hpp"
 #include "lights.hpp"
 
@@ -18,7 +17,7 @@ namespace ex
         // components
         std::unique_ptr<Transform> tr = nullptr;
         std::unique_ptr<MeshComponent> mesh = nullptr;
-        std::unique_ptr<BaseShader> shader = nullptr;
+        // std::unique_ptr<BaseShader> shader = nullptr; // TODO: add base material when you done that.
         std::unique_ptr<PointLight> point_light = nullptr;
     private:
         std::string_view m_id = "";

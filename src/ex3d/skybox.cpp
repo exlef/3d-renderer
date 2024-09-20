@@ -9,9 +9,7 @@
 #include <string>
 #include <iostream>
 
-#include "skybox_shader.hpp"
 #include "open_gl_error_checking.hpp"
-#include "camera.hpp"
 #include "stb_image.hpp"
 
 namespace ex
@@ -80,11 +78,22 @@ namespace ex
         glc(glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW));
         glc(glEnableVertexAttribArray(0));
         glc(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
+
+        shader.create_shader_program(m_vert_source_path, m_frag_source_path);
     }
 
     void Skybox::update_shader(const Camera* cam)
     {
-        m_skybox_shader.update_skybox(cam);
+        shader.use();
+        shader.setTexture("skybox", 0);
+
+        // We make the mat4 into a mat3 and then a mat4 again in order to get rid of the last row and column
+        // The last row and column affect the translation of the skybox (which we don't want to affect)
+        glm::mat4 view = glm::mat4(glm::mat3(cam->get_view_matrix()));
+        glm::mat4 projection = cam->get_projection_matrix();
+
+        shader.setMat4("view", view);
+        shader.setMat4("projection", projection);
     }
 
     // loads a cubemap texture from 6 individual texture faces

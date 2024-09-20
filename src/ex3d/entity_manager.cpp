@@ -1,5 +1,8 @@
 #include "entity_manager.hpp"
 
+
+#include <iostream>
+
 namespace ex 
 {
     Entity* EntityManager::add_entity(std::string_view id)
