@@ -148,17 +148,17 @@ namespace ex
 
     void App::draw()
     {
-        // for(auto& e : entt_man.entities)
-        // {
-        //     if(e.shader && e.mesh && e.tr)
-        //     {
-        //         e.shader->update();
-        //         for (unsigned int i = 0; i < e.mesh->meshes.size(); i++)
-        //         {
-        //             e.mesh->meshes[i].Draw();
-        //         }
-        //     }                
-        // }
+        for(auto& e : entt_man.entities)
+        {
+            if(e.material && e.mesh && e.tr)
+            {
+                e.material->update(scene, e.id());
+                for (unsigned int i = 0; i < e.mesh->meshes.size(); i++)
+                {
+                    e.mesh->meshes[i].Draw();
+                }
+            }                
+        }
     }
 
     void App::end_drawing()

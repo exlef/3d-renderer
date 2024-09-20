@@ -14,7 +14,7 @@
 
 namespace ex
 {
-    class DefaultMaterial : BaseEntityMaterial
+    class DefaultMaterial : public BaseEntityMaterial
     {
     public:
         Shader shader;
