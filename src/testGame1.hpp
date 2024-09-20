@@ -5,17 +5,11 @@
 #include "ex3d/app.hpp"
 #include "ex3d/camera.hpp"
 #include "ex3d/texture.hpp"
-#include "fly_cam.hpp"
 
 
 
-class TestGame1
+class TestGame1 : public ex::App
 {
-private:
-    ex::App app = ex::App(800, 600, "test");
-    ex::Camera m_cam = ex::Camera(app.aspect_ratio(), glm::vec3(0, 2, 10));
-    FlyCam fly_cam = FlyCam(&m_cam);
-
 #pragma region textures
     ex::Texture m_container_dif_tex = ex::Texture("src/res/textures/container2.png");
     ex::Texture m_container_spec_tex = ex::Texture("src/res/textures/container2_specular.png");
@@ -25,13 +19,20 @@ private:
 
 public:
     TestGame1();
+
 private:
-    void update();
+    float last_x = 0;
+    float last_y = 0;
+    bool is_first = true;
+    float cam_speed = 10;
+    float sensitivity = 5;
+private:
+    void on_update() override;
 
-    void handle_key_callbacks(int key, int action);
+    void on_key_callbacks(int key, int action) override;
 
-    void handle_mouse_move(float xpos, float ypos);
+    void on_mouse_move(float xpos, float ypos) override;
 
-    void handle_window_resize(int width, int height);
+    void on_framebuffer_resize(int width, int height) override;
 };
 

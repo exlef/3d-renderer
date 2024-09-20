@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "glm/fwd.hpp"
 #include "post_processing_shader.hpp"
 
 namespace ex
@@ -14,7 +15,7 @@ namespace ex
         unsigned int framebufferTexture = 0;
         PostProcessingShader pp_shader_prog;
 
-        PostProcessing(int width, int height);
+        PostProcessing(glm::vec2 framebuffer_dimensions);
     };
     
 } // namespace ex
