@@ -11,16 +11,20 @@
 #include "config.hpp"
 #include "skybox.hpp"
 #include "entity_manager.hpp"
+#include "scene.hpp"
 
 namespace ex
 {
+    extern EntityManager entt_man;
+    
     class App
     {
     public:
         GLFWwindow* window = nullptr;
         float dt = 0;
-        EntityManager entt_man;
+        
         std::unique_ptr<PostProcessing> post_processing = nullptr;
+        Scene scene;
         Camera cam;
         SkyLight sky_light;
         DirectionalLight dir_light;
