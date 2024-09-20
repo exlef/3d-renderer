@@ -15,8 +15,6 @@
 
 namespace ex
 {
-    // extern EntityManager entt_man;
-    
     class App
     {
     public:
