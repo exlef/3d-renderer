@@ -121,14 +121,7 @@ namespace ex
 
     void App::start_drawing()
     {
-        if(APPLY_PP)
-        {
-            // Bind the custom framebuffer
-            glBindFramebuffer(GL_FRAMEBUFFER, post_processing->FBO);
-            // Enable depth testing since it's disabled when drawing the framebuffer rectangle
-            glEnable(GL_DEPTH_TEST);
-        }
-        
+        if(APPLY_PP) { post_processing->prepare(); }
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
@@ -150,24 +143,12 @@ namespace ex
     void App::end_drawing()
     {
         if(SHOW_SKYBOX) m_skybox->draw(&scene.camera);
-
-        if (APPLY_PP)
-        {
-            // Bind the default framebuffer
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            // Draw the framebuffer rectangle
-
-            post_processing->shader.use();
-            glBindVertexArray(post_processing->rectVAO);
-            glDisable(GL_DEPTH_TEST); // prevents framebuffer rectangle from being discarded
-            glBindTexture(GL_TEXTURE_2D, post_processing->framebufferTexture);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-        }
+        if (APPLY_PP) { post_processing->draw(); }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
+#pragma region helper functions, getters and input
     void App::quit()
     {
         glfwSetWindowShouldClose(window, true);
@@ -193,7 +174,9 @@ namespace ex
     }
 
     bool App::is_key_down(u_int32_t key_code){ return glfwGetKey(window, key_code) == KEY_PRESS; }
+#pragma endregion
 
+#pragma region callbacks
     static void framebuffer_resize_callback(__attribute__((unused)) GLFWwindow* window, int width, int height)
     {
         // Retrieve the App instance from the user pointer
@@ -226,4 +209,5 @@ namespace ex
             app->on_mouse_move(xpos, ypos);
         }
     }
+#pragma endregion
 }
