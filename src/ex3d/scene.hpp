@@ -18,7 +18,8 @@ namespace ex
         SkyLight sky_light;
         DirectionalLight dir_light;
         std::vector<std::tuple<glm::vec3, PointLight*>> point_lights;
+        Camera camera;
 
-        Camera* camera;
+        Scene(float aspect_ration);
     };
 }

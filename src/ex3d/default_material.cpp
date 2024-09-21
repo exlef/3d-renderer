@@ -32,11 +32,11 @@ namespace ex
 
             shader.setMat4("model", ex::entt_man.get_entity(entity_id)->tr->get_model_matrix());
 
-            shader.setMat4("view", scene.camera->get_view_matrix());
+            shader.setMat4("view", scene.camera.get_view_matrix());
 
-            shader.setVec3("viewPos", scene.camera->tr.pos);
+            shader.setVec3("viewPos", scene.camera.tr.pos);
 
-            shader.setMat4("projection", scene.camera->get_projection_matrix());
+            shader.setMat4("projection", scene.camera.get_projection_matrix());
 
             shader.setFloat("skyLight", scene.sky_light.strength);
 

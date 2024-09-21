@@ -18,14 +18,10 @@ namespace ex
     class App
     {
     public:
+        Scene scene;
         GLFWwindow* window = nullptr;
         float dt = 0;
-        
         std::unique_ptr<PostProcessing> post_processing = nullptr;
-        Scene scene;
-        Camera cam;
-        SkyLight sky_light;
-        DirectionalLight dir_light;
 
         App() = delete;
         App(int width, int height, const std::string& title);

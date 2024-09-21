@@ -8,8 +8,7 @@ namespace ex
     static void key_callbacks(GLFWwindow* window, int key, int scancode, int action, int mods);
     static void mouse_callback(__attribute__((unused)) GLFWwindow* window, double xpos, double ypos);
 
-    App::App(int width, int height, const std::string& title)
-        :cam((float)width / (float)height, glm::vec3(0, 2, 10))
+    App::App(int width, int height, const std::string& title) : scene((float)width/(float)height)
     {
         // glfw: initialize and configure
         glfwInit();
@@ -111,20 +110,14 @@ namespace ex
 
     void App::update_scene()
     {
-        scene.sky_light = sky_light;
-        scene.dir_light = dir_light;
-        
         scene.point_lights.clear();
         for(auto& e : entt_man.entities)
         {
             if(e.point_light && e.tr)
             {
-                // complete this line to add point lights tho scene
                 scene.point_lights.emplace_back(e.tr->pos, e.point_light.get());
             }                
         }
-
-        scene.camera = &cam;
     }
 
     void App::start_drawing()
@@ -167,7 +160,7 @@ namespace ex
 
         // draw skybox as last
         glc(glDepthFunc(GL_LEQUAL)); // change depth function so depth test passes when values are equal to depth buffer's content
-        m_skybox->update_shader(&cam);
+        m_skybox->update_shader(&scene.camera);
         glc(glBindVertexArray(m_skybox->skyboxVAO));
         glc(glActiveTexture(GL_TEXTURE0));
         glc(glBindTexture(GL_TEXTURE_CUBE_MAP, m_skybox->cubemapTexture));

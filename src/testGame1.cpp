@@ -37,7 +37,7 @@ TestGame1::TestGame1() : App(800, 600, "game")
         box_entt->tr = std::make_unique<ex::Transform>();
         box_entt->material = std::make_unique<ex::DefaultMaterial>(m_container_dif_tex.id(), m_container_spec_tex.id());
 
-        box_entt->tr->pos = glm::vec3(-5 + i*2, 0, 0);
+        box_entt->tr->pos = glm::vec3(-4 + i*2, 0, 0);
     }
 
     { // point-light
@@ -51,8 +51,10 @@ TestGame1::TestGame1() : App(800, 600, "game")
         light_entt->tr->pos = glm::vec3(0,0,2);
     }
 
-    dir_light.tr.local_rotateX(-45);
-    dir_light.tr.local_rotateY(45);
+    scene.dir_light.tr.local_rotateX(-45);
+    scene.dir_light.tr.local_rotateY(45);
+
+    scene.camera.tr.pos = glm::vec3(0, 3, 10);
 
     run();
 }
@@ -62,17 +64,17 @@ void TestGame1::on_update()
     ex::entt_man.get_entity("sphere")->tr->pos.y += sinf(get_time()) * dt;
 
     if (is_key_down(KEY_E))
-        cam.tr.pos.y += (dt * cam_speed);
+        scene.camera.tr.pos.y += (dt * cam_speed);
     if (is_key_down(KEY_Q))
-        cam.tr.pos.y += (dt * -cam_speed);
+        scene.camera.tr.pos.y += (dt * -cam_speed);
     if (is_key_down(KEY_W))
-        cam.tr.local_translateZ(dt * cam_speed);
+        scene.camera.tr.local_translateZ(dt * cam_speed);
     if (is_key_down(KEY_S))
-        cam.tr.local_translateZ(dt * -cam_speed);
+        scene.camera.tr.local_translateZ(dt * -cam_speed);
     if (is_key_down(KEY_A))
-        cam.tr.local_translateX(dt * -cam_speed);
+        scene.camera.tr.local_translateX(dt * -cam_speed);
     if (is_key_down(KEY_D))
-        cam.tr.local_translateX(dt * cam_speed);
+        scene.camera.tr.local_translateX(dt * cam_speed);
 }
 
 void TestGame1::on_key_callbacks(int key, int action)
@@ -98,12 +100,12 @@ void TestGame1::on_mouse_move(float xpos, float ypos)
     float dy = (last_y - ypos) * sensitivity;
     last_x = xpos;
     last_y = ypos;
-    cam.tr.local_rotateY(dx * dt);
-    cam.tr.local_rotateX(dy * dt);
+    scene.camera.tr.local_rotateY(dx * dt);
+    scene.camera.tr.local_rotateX(dy * dt);
 }
 
 void TestGame1::on_framebuffer_resize(int width, int height)
 {
-    cam.aspect_ratio = (float)width / (float)height;
+    scene.camera.aspect_ratio = (float)width / (float)height;
 }
 
