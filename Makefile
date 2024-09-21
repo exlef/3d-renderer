@@ -1,11 +1,3 @@
-# .PHONY: build
-# build:
-# 	clang++ -Wall -Wextra -std=c++17 ./src/ex3d/*.cpp ./src/*.cpp -I ./include -L ./lib -lGLEW -lglfw3 -lassimp.5 -framework IOKit -framework Cocoa -framework OpenGL -o demo.out
-# run:
-# 	DYLD_LIBRARY_PATH="./lib" ./demo.out
-# clean:
-# 	rm -f ./demo.out
-
 # Compiler and flags
 CXX = clang++
 CXXFLAGS = -Wall -Wextra -Wpedantic -std=c++17 -g -ferror-limit=1 -Wfatal-errors -I ./include
@@ -22,7 +14,7 @@ OBJ_FILES = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(wildcard $(SRC_DIR)/*.c
             $(patsubst $(EX3D_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(wildcard $(EX3D_DIR)/*.cpp))
 
 # Output file
-TARGET = demo.out
+TARGET = a.out
 
 # Default build target
 .PHONY: build
