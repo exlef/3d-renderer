@@ -8,15 +8,14 @@ namespace ex
 {
     struct SkyLight
     {
-        // TODO: change this to zero when you figure out the lights.
-        float strength = 1;
+        float strength = 0;
     };
 
     struct DirectionalLight
     {
         ex::Transform tr;
-        glm::vec3 color = glm::vec3(0);
-        float strength = 0;
+        glm::vec3 color = glm::vec3(1);
+        float strength = 1;
     };
 
     class PointLight

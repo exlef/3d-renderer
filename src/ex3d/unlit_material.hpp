@@ -13,8 +13,7 @@ namespace ex
     {
     public:
         Shader shader;
-        glm::vec3 color = glm::vec3(1);
-        UnlitMaterial(glm::vec3 color);
+        UnlitMaterial();
         
         void update(Scene scene, std::string entity_id) override;
 

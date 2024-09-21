@@ -3,6 +3,7 @@
 
 #include "GLFW/glfw3.h"
 #include "ex3d/default_material.hpp"
+#include "ex3d/lights.hpp"
 #include "ex3d/unlit_material.hpp"
 #include "ex3d/entity_manager.hpp"
 #include "ex3d/mesh_comp.hpp"
@@ -44,11 +45,15 @@ TestGame1::TestGame1() : App(800, 600, "game")
         auto light_entt = ex::entt_man.add_entity("p_light_red");
         light_entt->mesh = std::make_unique<ex::MeshComponent>("src/res/models/sphere.obj");
         light_entt->tr = std::make_unique<ex::Transform>();
-        light_entt->material = std::make_unique<ex::UnlitMaterial>(glm::vec3(1,0,0));
+        light_entt->material = std::make_unique<ex::UnlitMaterial>();
+        light_entt->point_light = std::make_unique<ex::PointLight>(glm::vec3(1,0,0));
 
         light_entt->tr->scale = glm::vec3(0.2);
         light_entt->tr->pos = glm::vec3(0,0,2);
     }
+
+    dir_light.tr.local_rotateX(-45);
+    dir_light.tr.local_rotateY(45);
 
     run();
 }
@@ -58,7 +63,7 @@ void TestGame1::on_update()
     ex::entt_man.get_entity("sphere")->tr->pos.y += sinf(glfwGetTime()) * dt;
 
     if (is_key_down(KEY_E))
-        cam.tr.pos. y += (dt * cam_speed);
+        cam.tr.pos.y += (dt * cam_speed);
     if (is_key_down(KEY_Q))
         cam.tr.pos.y += (dt * -cam_speed);
     if (is_key_down(KEY_W))
