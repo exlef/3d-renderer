@@ -1,3 +1,7 @@
 #pragma once
 
-#define APPLY_GAMMA_CRRC true
+namespace ex 
+{
+    #define APPLY_GAMMA_CRRC true
+    constexpr bool SHOW_SKYBOX = true;
+}

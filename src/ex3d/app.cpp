@@ -1,4 +1,5 @@
 #include "app.hpp"
+#include "config.hpp"
 #include "glm/fwd.hpp"
 #include "helper.hpp"
 
@@ -156,17 +157,16 @@ namespace ex
 
     void App::end_drawing()
     {
-        
-
-        // draw skybox as last
-        glc(glDepthFunc(GL_LEQUAL)); // change depth function so depth test passes when values are equal to depth buffer's content
-        m_skybox->update_shader(&scene.camera);
-        glc(glBindVertexArray(m_skybox->skyboxVAO));
-        glc(glActiveTexture(GL_TEXTURE0));
-        glc(glBindTexture(GL_TEXTURE_CUBE_MAP, m_skybox->cubemapTexture));
-        glc(glDrawArrays(GL_TRIANGLES, 0, 36));
-        glc(glBindVertexArray(0));
-        glc(glDepthFunc(GL_LESS)); // set depth function back to default
+        if(SHOW_SKYBOX) m_skybox->draw(&scene.camera);
+        // // draw skybox as last
+        // glc(glDepthFunc(GL_LEQUAL)); // change depth function so depth test passes when values are equal to depth buffer's content
+        // m_skybox->update_shader(&scene.camera);
+        // glc(glBindVertexArray(m_skybox->skyboxVAO));
+        // glc(glActiveTexture(GL_TEXTURE0));
+        // glc(glBindTexture(GL_TEXTURE_CUBE_MAP, m_skybox->cubemapTexture));
+        // glc(glDrawArrays(GL_TRIANGLES, 0, 36));
+        // glc(glBindVertexArray(0));
+        // glc(glDepthFunc(GL_LESS)); // set depth function back to default
 
         if (apply_pp)
         {
