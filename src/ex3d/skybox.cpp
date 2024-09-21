@@ -17,12 +17,12 @@ namespace ex
     Skybox::Skybox()
     {
         std::vector<std::string> faces{
-            std::filesystem::path("src/res/skybox/right.jpg"),
-            std::filesystem::path("src/res/skybox/left.jpg"),
-            std::filesystem::path("src/res/skybox/top.jpg"),
-            std::filesystem::path("src/res/skybox/bottom.jpg"),
-            std::filesystem::path("src/res/skybox/front.jpg"),
-            std::filesystem::path("src/res/skybox/back.jpg")};
+            std::filesystem::path("src/res/skybox2/right.jpg"),
+            std::filesystem::path("src/res/skybox2/left.jpg"),
+            std::filesystem::path("src/res/skybox2/top.jpg"),
+            std::filesystem::path("src/res/skybox2/bottom.jpg"),
+            std::filesystem::path("src/res/skybox2/front.jpg"),
+            std::filesystem::path("src/res/skybox2/back.jpg")};
 
         cubemapTexture = loadCubemap(faces);
 

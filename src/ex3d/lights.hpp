@@ -8,14 +8,14 @@ namespace ex
 {
     struct SkyLight
     {
-        float strength = 0;
+        float strength = 0.2f;
     };
 
     struct DirectionalLight
     {
         ex::Transform tr;
         glm::vec3 color = glm::vec3(1);
-        float strength = 1;
+        float strength = 0.5f;
     };
 
     class PointLight
