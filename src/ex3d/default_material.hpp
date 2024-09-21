@@ -1,15 +1,9 @@
 #pragma once
 
-#include <iostream>
 #include <string>
-#include <vector>
 
-#include "scene.hpp"
 #include "base_entity_material.hpp"
-#include "camera.hpp"
-#include "texture.hpp"
-#include "helper.hpp"
-#include "open_gl_error_checking.hpp"
+#include "scene.hpp"
 #include "shader.hpp"
 
 namespace ex
@@ -19,7 +13,7 @@ namespace ex
     public:
         Shader shader;
         DefaultMaterial() = delete;
-        DefaultMaterial(const Camera* cam, uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0);
+        DefaultMaterial(uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0);
 
         void set_textures() const;
         void update(Scene scene, std::string entity_id) override;
@@ -27,12 +21,9 @@ namespace ex
     private:
         std::string m_vert_source_path = "src/ex3d/shaders/default.vert";
         std::string m_frag_source_path = "src/ex3d/shaders/default.frag";
-        
         // https://stackoverflow.com/questions/7322147/what-is-the-range-of-opengl-texture-id
         uint32_t m_diffuse_texture_id = 0;
         uint32_t m_spec_texture_id = 0;
-
-        const Camera* m_cam = nullptr;
     };
 } // namespace ex
 

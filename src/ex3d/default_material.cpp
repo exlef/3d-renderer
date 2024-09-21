@@ -1,18 +1,21 @@
 #include "default_material.hpp"
-#include "entity_manager.hpp"
 
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "entity_manager.hpp"
+#include "open_gl_error_checking.hpp"
+#include "texture.hpp"
+
+
+
 namespace ex 
 {
-        DefaultMaterial::DefaultMaterial(const Camera* cam, uint32_t diffuse_texture_id, uint32_t spec_texture_id)
+        DefaultMaterial::DefaultMaterial(uint32_t diffuse_texture_id, uint32_t spec_texture_id)
         {
             shader.create_shader_program(m_vert_source_path, m_frag_source_path);
             
-            m_cam = cam;
-
             m_diffuse_texture_id = diffuse_texture_id;
             m_spec_texture_id = spec_texture_id;
 

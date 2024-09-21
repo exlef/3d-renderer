@@ -1,6 +1,7 @@
 #include "testGame1.hpp"
 
 
+#include "GLFW/glfw3.h"
 #include "ex3d/default_material.hpp"
 #include "ex3d/unlit_material.hpp"
 #include "ex3d/entity_manager.hpp"
@@ -14,43 +15,47 @@ TestGame1::TestGame1() : App(800, 600, "game")
         auto sphere_entt = ex::entt_man.add_entity("sphere");
         sphere_entt->mesh = std::make_unique<ex::MeshComponent>("src/res/models/sphere.obj");
         sphere_entt->tr = std::make_unique<ex::Transform>();
-        sphere_entt->material = std::make_unique<ex::DefaultMaterial>(&cam, m_marble_tex.id(), 0);
+        sphere_entt->material = std::make_unique<ex::DefaultMaterial>(m_marble_tex.id(), 0);
         sphere_entt->tr->pos = glm::vec3(0, 1, -2);
         sphere_entt->tr->scale = glm::vec3(0.5f);
     }
 
-    // { // ground
-    //     auto ground_entt = ex::entt_man.add_entity("ground");
-    //     ground_entt->mesh = std::make_unique<ex::MeshComponent>("src/res/models/plane.obj");
-    //     ground_entt->tr = std::make_unique<ex::Transform>();
-    //     // ground_entt->shader = std::make_unique<ex::DefaultShader>(&cam, m_wood_tex.id(), 0);
+    { // ground
+        auto ground_entt = ex::entt_man.add_entity("ground");
+        ground_entt->mesh = std::make_unique<ex::MeshComponent>("src/res/models/plane.obj");
+        ground_entt->tr = std::make_unique<ex::Transform>();
+        ground_entt->material = std::make_unique<ex::DefaultMaterial>(m_wood_tex.id(), 0);
 
-    //     ground_entt->tr->pos = glm::vec3(0, -1, 0);
-    //     ground_entt->tr->scale = glm::vec3(10, 1, 10);
-    // }
+        ground_entt->tr->pos = glm::vec3(0, -1, 0);
+        ground_entt->tr->scale = glm::vec3(10, 1, 10);
+    }
 
-    // for (int i = 0; i < 5; i++) // boxes
-    // {
-    //     auto box_entt = ex::entt_man.add_entity("box_" + std::to_string(i));
-    //     box_entt->mesh = std::make_unique<ex::MeshComponent>("src/res/models/cube.obj");
-    //     box_entt->tr = std::make_unique<ex::Transform>();
-    //     // box_entt->shader = std::make_unique<ex::DefaultShader>(&cam, m_container_dif_tex.id(), m_container_spec_tex.id());
+    for (int i = 0; i < 5; i++) // boxes
+    {
+        auto box_entt = ex::entt_man.add_entity("box_" + std::to_string(i));
+        box_entt->mesh = std::make_unique<ex::MeshComponent>("src/res/models/cube.obj");
+        box_entt->tr = std::make_unique<ex::Transform>();
+        box_entt->material = std::make_unique<ex::DefaultMaterial>(m_container_dif_tex.id(), m_container_spec_tex.id());
 
-    //     box_entt->tr->pos = glm::vec3(-5 + i*2, 0, 0);
-    // }
+        box_entt->tr->pos = glm::vec3(-5 + i*2, 0, 0);
+    }
 
-    // static int i = 0;
-    // auto light_entt = app.entt_man.add_entity("p_light_" + std::to_string(i));
-    // light_entt->mesh = std::make_unique<ex::MeshComponent>("src/res/models/sphere.obj");
-    // light_entt->tr = std::make_unique<ex::Transform>();
-    // light_entt->shader = std::make_unique<ex::UnlitShader>(&m_cam);
-    // light_entt
+    { // point-light
+        auto light_entt = ex::entt_man.add_entity("p_light_red");
+        light_entt->mesh = std::make_unique<ex::MeshComponent>("src/res/models/sphere.obj");
+        light_entt->tr = std::make_unique<ex::Transform>();
+        light_entt->material = std::make_unique<ex::UnlitMaterial>(glm::vec3(1,0,0));
+
+        light_entt->tr->scale = glm::vec3(0.2);
+        light_entt->tr->pos = glm::vec3(0,0,2);
+    }
 
     run();
 }
 
 void TestGame1::on_update()
 {
+    ex::entt_man.get_entity("sphere")->tr->pos.y += sinf(glfwGetTime()) * dt;
 
     if (is_key_down(KEY_E))
         cam.tr.pos. y += (dt * cam_speed);

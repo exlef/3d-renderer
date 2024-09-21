@@ -2,26 +2,25 @@
 
 #include <glm/glm.hpp>
 
-#include "camera.hpp"
+#include "base_entity_material.hpp"
+#include "scene.hpp"
 #include "shader.hpp"
 
 namespace ex
 {
 
-    class UnlitShader
+    class UnlitMaterial : public BaseEntityMaterial
     {
     public:
         Shader shader;
         glm::vec3 color = glm::vec3(1);
-        UnlitShader(const Camera* cam);
+        UnlitMaterial(glm::vec3 color);
         
-        void update();
+        void update(Scene scene, std::string entity_id) override;
 
     private:
         std::string m_vert_source_path = "src/ex3d/shaders/unlit.vert";
         std::string m_frag_source_path = "src/ex3d/shaders/unlit.frag";
-        
-        const Camera* m_cam = nullptr;
     };
 } // namespace ex
 
