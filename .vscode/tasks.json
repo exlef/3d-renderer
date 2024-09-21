@@ -10,7 +10,21 @@
                 "reveal": "silent",
                 "focus": false,
                 "panel": "shared",
-                "showReuseMessage": true,
+                "showReuseMessage": false,
+                "clear": false
+            }
+        },
+
+        {
+            "label": "Clean",
+            "type": "shell",
+            "command": "clear && make clean",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": false,
                 "clear": false
             }
         }

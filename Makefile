@@ -8,8 +8,9 @@
 
 # Compiler and flags
 CXX = clang++
-CXXFLAGS = -Wall -Wextra -std=c++17 -I ./include
+CXXFLAGS = -Wall -Wextra -Wpedantic -std=c++17 -g -ferror-limit=1 -Wfatal-errors -I ./include
 LDFLAGS = -L ./lib -lGLEW -lglfw3 -lassimp.5 -framework IOKit -framework Cocoa -framework OpenGL
+#-fsanitize=address -fsanitize=undefined
 
 # Folders and files
 SRC_DIR = ./src
