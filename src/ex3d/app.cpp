@@ -21,21 +21,17 @@ namespace ex
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-        // glfw window creation
         window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
         if (window == NULL)
         {
             std::cerr << "Failed to create GLFW window" << std::endl;
             glfwTerminate();
         }
-        // this function makes the context of specified window current on the calling thread.
-        glfwMakeContextCurrent(window);
-        // set vsyn on
-        glfwSwapInterval(1);
-        // Set the user pointer to the current instance of App
-        glfwSetWindowUserPointer(window, this);
-        // hide cursor
-        if(hide_cursor) glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        
+        glfwMakeContextCurrent(window);// this function makes the context of specified window current on the calling thread.
+        glfwSwapInterval(1); // set vsyn on
+        glfwSetWindowUserPointer(window, this);// Set the user pointer to the current instance of App
+        if(HIDE_CURSOR) glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         if (glewInit() != GLEW_OK)
         {
@@ -46,6 +42,8 @@ namespace ex
         glfwSetFramebufferSizeCallback(window, framebuffer_resize_callback);
         glfwSetKeyCallback(window, key_callbacks);
         glfwSetCursorPosCallback(window, mouse_callback);
+
+        glClearColor(CLEAR_COLOR.r, CLEAR_COLOR.g, CLEAR_COLOR.b, CLEAR_COLOR.a);
 
         // configure global opengl states
         glEnable(GL_DEPTH_TEST);
@@ -123,20 +121,14 @@ namespace ex
 
     void App::start_drawing()
     {
-        if(apply_pp)
+        if(APPLY_PP)
         {
             // Bind the custom framebuffer
             glBindFramebuffer(GL_FRAMEBUFFER, post_processing->FBO);
-            // Specify the color of the background
-            float gamma = 2.2; // TODO: this should be stored somewhere and send to the post processing fragment shader
-            glClearColor(pow(0.07f, gamma), pow(0.13f, gamma), pow(0.17f, gamma), 1.0f); // if the post processing is enabled I want to background color also be effected from gamma correction. since we can't set it from post processing fragment shader I set it here.
             // Enable depth testing since it's disabled when drawing the framebuffer rectangle
             glEnable(GL_DEPTH_TEST);
         }
-        else 
-        {
-            glClearColor(0.9f, 0.2f, 0.2f, 1.0f);
-        }
+        
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
@@ -158,17 +150,8 @@ namespace ex
     void App::end_drawing()
     {
         if(SHOW_SKYBOX) m_skybox->draw(&scene.camera);
-        // // draw skybox as last
-        // glc(glDepthFunc(GL_LEQUAL)); // change depth function so depth test passes when values are equal to depth buffer's content
-        // m_skybox->update_shader(&scene.camera);
-        // glc(glBindVertexArray(m_skybox->skyboxVAO));
-        // glc(glActiveTexture(GL_TEXTURE0));
-        // glc(glBindTexture(GL_TEXTURE_CUBE_MAP, m_skybox->cubemapTexture));
-        // glc(glDrawArrays(GL_TRIANGLES, 0, 36));
-        // glc(glBindVertexArray(0));
-        // glc(glDepthFunc(GL_LESS)); // set depth function back to default
 
-        if (apply_pp)
+        if (APPLY_PP)
         {
             // Bind the default framebuffer
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -207,20 +190,6 @@ namespace ex
     float App::get_time() const
     {
         return glfwGetTime();
-    }
-
-    std::vector<PointLight*> App::get_point_lights() const
-    {
-        std::vector<PointLight*> lights;
-        for(auto& e : entt_man.entities)
-        {
-            if(e.point_light && e.tr)
-            {
-                PointLight* l =  e.point_light.get();
-                lights.push_back(l);
-            }                
-        }
-        return lights;
     }
 
     bool App::is_key_down(u_int32_t key_code){ return glfwGetKey(window, key_code) == KEY_PRESS; }

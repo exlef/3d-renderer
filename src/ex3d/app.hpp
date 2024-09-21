@@ -45,12 +45,7 @@ namespace ex
         std::vector<PointLight*> get_point_lights() const;
 
     private:
-        // config
-        bool hide_cursor = true;
-        bool apply_pp = APPLY_GAMMA_CRRC; // apply post processing
-
         std::unique_ptr<Skybox> m_skybox = nullptr;
-
         // delta time calculation variables
         const int TARGET_FPS = 60;
         const double TARGET_FRAME_TIME = 1.0 / TARGET_FPS;

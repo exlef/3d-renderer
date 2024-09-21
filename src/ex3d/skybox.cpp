@@ -96,7 +96,6 @@ namespace ex
 
         // draw skybox (as farthest object)
         glc(glDepthFunc(GL_LEQUAL)); // change depth function so depth test passes when values are equal to depth buffer's content
-        // update_shader(cam);
         glc(glBindVertexArray(skyboxVAO));
         glc(glActiveTexture(GL_TEXTURE0));
         glc(glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture));
@@ -105,29 +104,15 @@ namespace ex
         glc(glDepthFunc(GL_LESS)); // set depth function back to default
     }
 
-    // void Skybox::update_shader(const Camera* cam)
-    // {
-    //     shader.use();
-    //     shader.setTexture("skybox", 0);
-
-    //     // We make the mat4 into a mat3 and then a mat4 again in order to get rid of the last row and column
-    //     // The last row and column affect the translation of the skybox (which we don't want to affect)
-    //     glm::mat4 view = glm::mat4(glm::mat3(cam->get_view_matrix()));
-    //     glm::mat4 projection = cam->get_projection_matrix();
-
-    //     shader.setMat4("view", view);
-    //     shader.setMat4("projection", projection);
-    // }
-
     // loads a cubemap texture from 6 individual texture faces
-        // order:
-        // +X (right)
-        // -X (left)
-        // +Y (top)
-        // -Y (bottom)
-        // +Z (front)
-        // -Z (back)
-        // -------------------------------------------------------
+    // order:
+    // +X (right)
+    // -X (left)
+    // +Y (top)
+    // -Y (bottom)
+    // +Z (front)
+    // -Z (back)
+    // -------------------------------------------------------
     unsigned int Skybox::loadCubemap(std::vector<std::string> faces)
     {
         // openGL handle cubemap differently so it shouldn't be flipped like textures
