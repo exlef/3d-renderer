@@ -211,6 +211,11 @@ namespace ex
         return dimensions.x / dimensions.y;
     }
 
+    float App::get_time() const
+    {
+        return glfwGetTime();
+    }
+
     std::vector<PointLight*> App::get_point_lights() const
     {
         std::vector<PointLight*> lights;

@@ -1,7 +1,6 @@
 #include "testGame1.hpp"
 
 
-#include "GLFW/glfw3.h"
 #include "ex3d/default_material.hpp"
 #include "ex3d/lights.hpp"
 #include "ex3d/unlit_material.hpp"
@@ -60,7 +59,7 @@ TestGame1::TestGame1() : App(800, 600, "game")
 
 void TestGame1::on_update()
 {
-    ex::entt_man.get_entity("sphere")->tr->pos.y += sinf(glfwGetTime()) * dt;
+    ex::entt_man.get_entity("sphere")->tr->pos.y += sinf(get_time()) * dt;
 
     if (is_key_down(KEY_E))
         cam.tr.pos.y += (dt * cam_speed);

@@ -44,6 +44,7 @@ namespace ex
 
         glm::vec2 get_framebuffer_dimensions() const;
         float get_aspect_ratio() const;
+        float get_time() const;
         bool is_key_down(u_int32_t key_code);
         std::vector<PointLight*> get_point_lights() const;
 
