@@ -24,7 +24,7 @@ namespace ex
             shader.setFloat("material.shininess", 32.0f);
         }
 
-        void DefaultMaterial::update(Scene scene, std::string entity_id) 
+        void DefaultMaterial::update(const Scene& scene, std::string entity_id) 
         { 
             shader.use();
 

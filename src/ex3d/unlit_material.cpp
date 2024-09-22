@@ -14,7 +14,7 @@ namespace ex
         shader.setVec3("color", glm::vec3(1,0,1));
     }
 
-    void UnlitMaterial::update(Scene scene, std::string entity_id)
+    void UnlitMaterial::update(const Scene& scene, std::string entity_id)
     { 
         shader.use();
 

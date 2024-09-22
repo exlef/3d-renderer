@@ -15,7 +15,7 @@ namespace ex
         Shader shader;
         UnlitMaterial();
         
-        void update(Scene scene, std::string entity_id) override;
+        void update(const Scene& scene, std::string entity_id) override;
 
     private:
         std::string m_vert_source_path = "src/ex3d/shaders/unlit.vert";

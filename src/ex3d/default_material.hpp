@@ -16,7 +16,7 @@ namespace ex
         DefaultMaterial(uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0);
 
         void set_textures() const;
-        void update(Scene scene, std::string entity_id) override;
+        void update(const Scene& scene, std::string entity_id) override;
     
     private:
         std::string m_vert_source_path = "src/ex3d/shaders/default.vert";
