@@ -18,7 +18,7 @@
         {
             "label": "Clean",
             "type": "shell",
-            "command": "clear && make clean",
+            "command": "clear && make clean && make build && make run",
             "presentation": {
                 "echo": true,
                 "reveal": "always",
