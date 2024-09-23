@@ -46,4 +46,8 @@ void main()
     color = pow(color, vec3(1.0/gamma));
     
     FragColor = vec4(color, 1.0);
+
+    //  debug. delete it later.
+    float depthValue = texture(screenTexture, texCoords).r;
+    FragColor = vec4(vec3(depthValue), 1.0);
 }
