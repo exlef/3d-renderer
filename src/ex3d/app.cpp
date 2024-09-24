@@ -149,10 +149,15 @@ namespace ex
             glReadBuffer(GL_NONE);
 
             std::cout << depthMap << std::endl;
+            float dir_light_distance_factor = 4;
+            glm::vec3 light_pos = -scene.dir_light.tr.get_forward() * dir_light_distance_factor;
             
             float near_plane = 1.0f, far_plane = 7.5f;
             glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane); 
-            glm::mat4 lightView = glm::lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), 
+            // glm::mat4 lightView = glm::lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), 
+            //                         glm::vec3( 0.0f, 0.0f,  0.0f), 
+            //                         glm::vec3( 0.0f, 1.0f,  0.0f));
+            glm::mat4 lightView = glm::lookAt(light_pos, 
                                     glm::vec3( 0.0f, 0.0f,  0.0f), 
                                     glm::vec3( 0.0f, 1.0f,  0.0f));
             glm::mat4 lightSpaceMatrix = lightProjection * lightView;  
@@ -175,6 +180,12 @@ namespace ex
                     }
                 }                
             }
+
+            // set required shadow related variables in scene for deault shader
+            scene.lightSpaceMatrix = lightSpaceMatrix;
+            scene.shadow_map_texture_id = depthMap;
+            scene.lightPos = light_pos;
+
             // reset
             glViewport(0, 0, dims.x, dims.y);
             glBindFramebuffer(GL_FRAMEBUFFER, 0);

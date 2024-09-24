@@ -51,8 +51,8 @@ TestGame1::TestGame1() : App(800, 600, "game")
         light_entt->tr->pos = glm::vec3(0,0,2);
     }
 
-    scene.dir_light.tr.local_rotateX(-45);
-    scene.dir_light.tr.local_rotateY(45);
+    scene.dir_light.tr.local_rotateX(-90);
+    // scene.dir_light.tr.local_rotateY(45);
 
     scene.camera.tr.pos = glm::vec3(0, 3, 10);
 

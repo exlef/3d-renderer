@@ -15,7 +15,7 @@ namespace ex
         DefaultMaterial() = delete;
         DefaultMaterial(uint32_t diffuse_texture_id = 0, uint32_t spec_texture_id = 0);
 
-        void set_textures() const;
+        void set_textures(unsigned int shadow_map_texture_id) const;
         void update(const Scene& scene, std::string entity_id) override;
     
     private:

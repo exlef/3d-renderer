@@ -20,7 +20,7 @@ namespace ex
             m_spec_texture_id = spec_texture_id;
 
             shader.use();
-            set_textures();
+            // set_textures();
             shader.setFloat("material.shininess", 32.0f);
         }
 
@@ -28,7 +28,9 @@ namespace ex
         { 
             shader.use();
 
-            set_textures();
+            set_textures(scene.shadow_map_texture_id);
+
+            shader.setVec3("lightPos", scene.lightPos);
 
             shader.setMat4("model", ex::entt_man.get_entity(entity_id)->tr->get_model_matrix());
 
@@ -37,6 +39,8 @@ namespace ex
             shader.setVec3("viewPos", scene.camera.tr.pos);
 
             shader.setMat4("projection", scene.camera.get_projection_matrix());
+
+            shader.setMat4("lightSpaceMatrix", scene.lightSpaceMatrix);
 
             shader.setFloat("skyLight", scene.sky_light.strength);
 
@@ -63,7 +67,7 @@ namespace ex
             }
         }
 
-        void DefaultMaterial::set_textures() const
+        void DefaultMaterial::set_textures(unsigned int shadow_map_texture_id) const
         {
             // set a default color for diffuse in case there is no textures provided
             if (m_diffuse_texture_id == 0)
@@ -86,5 +90,9 @@ namespace ex
                 glc(glBindTexture(GL_TEXTURE_2D, m_spec_texture_id));
                 glc(glUniform1i(glGetUniformLocation(shader.id(), "material.specular"), 1));
             }
+
+            glc(glActiveTexture(GL_TEXTURE2));
+            glc(glBindTexture(GL_TEXTURE_2D, shadow_map_texture_id));
+            glc(glUniform1i(glGetUniformLocation(shader.id(), "shadowMap"), 2));
         }
 }

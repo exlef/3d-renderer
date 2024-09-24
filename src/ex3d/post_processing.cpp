@@ -86,8 +86,8 @@ namespace ex
         m_shader.use();
         glBindVertexArray(m_rectVAO);
         glDisable(GL_DEPTH_TEST); // prevents framebuffer rectangle from being discarded
-        // glBindTexture(GL_TEXTURE_2D, m_framebufferTexture);
-        glBindTexture(GL_TEXTURE_2D, 7); // debug. delete later
+        glBindTexture(GL_TEXTURE_2D, m_framebufferTexture);
+        // glBindTexture(GL_TEXTURE_2D, 7); // debug. delete later
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 }
