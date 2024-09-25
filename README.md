@@ -2,6 +2,13 @@
 
 A custom 3D renderer built with OpenGL and C++ as a personal project to explore graphics programming concepts.
 
+
+<img width="797" alt="skybox_model_loading" src="https://github.com/user-attachments/assets/179c861b-43fd-41b5-a419-1b5a5439b595">
+
+
+https://github.com/user-attachments/assets/4b40e94b-9d18-402a-84f6-d97dbc395640
+
+
 ## Features
 
 - Modern OpenGL (3.3+) implementation
